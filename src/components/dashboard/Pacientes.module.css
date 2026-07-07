@@ -1330,7 +1330,6 @@
   flex-direction: column;
   gap: 24px;
   min-width: 0;
-  overflow: hidden;
 }
 
 /* Rail: overview shortcut + neutral avatar */
