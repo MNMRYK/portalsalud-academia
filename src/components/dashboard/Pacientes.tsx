@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Search,
   Plus,
@@ -20,15 +20,24 @@ import {
   BellRing,
   History,
   CalendarCheck,
+  CalendarDays,
+  ListChecks,
+  Flag,
   LayoutDashboard,
   ChevronLeft,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { AddPatientModal } from "./AddPatientModal";
+import {
+  useTasks,
+  toISODate,
+  type TaskPriority,
+} from "@/context/TasksContext";
 import styles from "./Pacientes.module.css";
 
-type TabId = "datos" | "diario" | "documentos" | "historial";
+type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
+
 
 const patientList = [
   { name: "Elena Martín", meta: "Fase 2 · Activo", initials: "EM", avClass: styles.avPlum },
@@ -52,13 +61,20 @@ const upcomingAppointments = [
   { date: "10 Jul 2026", time: "12:00", patient: "Elena Martín", type: "Analítica de control" },
 ];
 
-const initialTasks = [
-  { id: "t1", label: "Revisar analítica de Lucía Fernández", done: false },
-  { id: "t2", label: "Enviar plan nutricional a Marcos Iglesias", done: false },
-  { id: "t3", label: "Confirmar cita de seguimiento con Javier Morán", done: true },
-  { id: "t4", label: "Actualizar consentimiento firmado de Elena Martín", done: false },
-  { id: "t5", label: "Preparar pauta de mantenimiento", done: false },
-];
+const priorityClass: Record<TaskPriority, string> = {
+  Alta: styles.priorityHigh,
+  Media: styles.priorityMedium,
+  Baja: styles.priorityLow,
+};
+
+const formatLongDate = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+};
 
 const treatmentPhases = [
   "Fase 1: Détox hepático",
@@ -136,10 +152,12 @@ const documents = {
 };
 
 export function Pacientes() {
+  const { addTask, toggleTask, removeTask, tasksForPatient, tasksForDate } =
+    useTasks();
+
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("datos");
   const [phase, setPhase] = useState(treatmentPhases[1]);
-  const [tasks, setTasks] = useState(initialTasks);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMetricOpen, setIsMetricOpen] = useState(false);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
@@ -150,24 +168,60 @@ export function Pacientes() {
   const [isApptOpen, setIsApptOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
 
+  // Filtro de fecha del panel "Acciones rápidas pendientes"
+  const todayISO = toISODate(new Date());
+  const [filterDate, setFilterDate] = useState(todayISO);
+  const filterInputRef = useRef<HTMLInputElement>(null);
+  const isToday = filterDate === todayISO;
+  const dayTasks = tasksForDate(filterDate);
+
+  // Modal "Añadir tarea" del Plan de Trabajo
+  const [isTaskOpen, setIsTaskOpen] = useState(false);
+  const [taskDesc, setTaskDesc] = useState("");
+  const [taskDue, setTaskDue] = useState(todayISO);
+  const [taskPriority, setTaskPriority] = useState<TaskPriority>("Media");
+
   const patient = patientList.find((p) => p.name === selectedPatient) ?? null;
+  const patientTasks = selectedPatient ? tasksForPatient(selectedPatient) : [];
 
   const openPatient = (name: string) => {
     setSelectedPatient(name);
     setActiveTab("datos");
   };
 
-  const toggleTask = (id: string) =>
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
-    );
+  const openDatePicker = () => {
+    const input = filterInputRef.current;
+    if (!input) return;
+    if (typeof input.showPicker === "function") input.showPicker();
+    else input.focus();
+  };
+
+  const resetTaskForm = () => {
+    setTaskDesc("");
+    setTaskDue(todayISO);
+    setTaskPriority("Media");
+  };
+
+  const submitTask = () => {
+    if (!selectedPatient || !taskDesc.trim()) return;
+    addTask({
+      patientName: selectedPatient,
+      description: taskDesc.trim(),
+      dueDate: taskDue,
+      priority: taskPriority,
+    });
+    resetTaskForm();
+    setIsTaskOpen(false);
+  };
 
   const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
     { id: "datos", label: "Datos y Evolución", icon: Activity },
     { id: "diario", label: "Diario Clínico", icon: ClipboardList },
+    { id: "plan", label: "Plan de Trabajo", icon: ListChecks },
     { id: "historial", label: "Historial de Consultas", icon: History },
     { id: "documentos", label: "Documentos", icon: FolderLock },
   ];
+
 
   return (
     <div className={styles.page}>
@@ -298,29 +352,83 @@ export function Pacientes() {
                 <div className={styles.panel}>
                   <div className={styles.panelHead}>
                     <div>
-                      <h3 className={styles.panelTitle}>Acciones rápidas pendientes</h3>
-                      <p className={styles.panelSub}>Marca las tareas completadas.</p>
+                      <h3 className={styles.panelTitle}>
+                        Acciones rápidas pendientes
+                      </h3>
+                      <p className={styles.panelSub}>
+                        Tareas con fecha límite en el día seleccionado.
+                      </p>
+                    </div>
+                    <div className={styles.dateFilter}>
+                      <button
+                        type="button"
+                        className={styles.datePickerTrigger}
+                        onClick={openDatePicker}
+                        aria-label="Filtrar tareas por fecha"
+                      >
+                        <CalendarDays size={16} />
+                        {isToday ? "Hoy" : formatLongDate(filterDate)}
+                      </button>
+                      <input
+                        ref={filterInputRef}
+                        type="date"
+                        className={styles.dateFilterInput}
+                        value={filterDate}
+                        onChange={(e) =>
+                          setFilterDate(e.target.value || todayISO)
+                        }
+                        aria-label="Selector de fecha"
+                      />
                     </div>
                   </div>
-                  <ul className={styles.taskList}>
-                    {tasks.map((t) => (
-                      <li key={t.id}>
-                        <label
-                          className={`${styles.taskItem} ${
-                            t.done ? styles.taskItemDone : ""
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            className={styles.taskCheck}
-                            checked={t.done}
-                            onChange={() => toggleTask(t.id)}
-                          />
-                          <span className={styles.taskLabel}>{t.label}</span>
-                        </label>
-                      </li>
-                    ))}
-                  </ul>
+
+                  {!isToday && (
+                    <div className={styles.dateNotice}>
+                      <CalendarDays size={15} />
+                      Visualizando tareas del {formatLongDate(filterDate)}
+                    </div>
+                  )}
+
+                  {dayTasks.length === 0 ? (
+                    <p className={styles.taskEmpty}>
+                      No hay tareas programadas para este día.
+                    </p>
+                  ) : (
+                    <ul className={styles.taskList}>
+                      {dayTasks.map((t) => (
+                        <li key={t.id}>
+                          <label
+                            className={`${styles.taskItem} ${
+                              t.isCompleted ? styles.taskItemDone : ""
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              className={styles.taskCheck}
+                              checked={t.isCompleted}
+                              onChange={() => toggleTask(t.id)}
+                            />
+                            <span className={styles.taskBody}>
+                              <span className={styles.taskLabel}>
+                                {t.description}
+                              </span>
+                              <span className={styles.taskMeta}>
+                                <span className={styles.taskPatient}>
+                                  {t.patientName}
+                                </span>
+                                <span
+                                  className={`${styles.priorityTag} ${priorityClass[t.priority]}`}
+                                >
+                                  <Flag size={12} />
+                                  {t.priority}
+                                </span>
+                              </span>
+                            </span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             </section>
@@ -516,6 +624,83 @@ export function Pacientes() {
                 </div>
               )}
 
+              {activeTab === "plan" && (
+                <div className={styles.panel}>
+                  <div className={styles.panelHead}>
+                    <div>
+                      <h3 className={styles.panelTitle}>Plan de trabajo</h3>
+                      <p className={styles.panelSub}>
+                        Tareas asociadas a {patient?.name}. Se sincronizan con las
+                        acciones rápidas del panel general.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={() => {
+                        resetTaskForm();
+                        setIsTaskOpen(true);
+                      }}
+                    >
+                      <Plus size={18} strokeWidth={2.5} /> Añadir tarea
+                    </button>
+                  </div>
+
+                  {patientTasks.length === 0 ? (
+                    <p className={styles.taskEmpty}>
+                      Este paciente aún no tiene tareas. Crea la primera con
+                      “Añadir tarea”.
+                    </p>
+                  ) : (
+                    <ul className={styles.taskList}>
+                      {patientTasks.map((t) => (
+                        <li key={t.id}>
+                          <div
+                            className={`${styles.taskItem} ${
+                              t.isCompleted ? styles.taskItemDone : ""
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              className={styles.taskCheck}
+                              checked={t.isCompleted}
+                              onChange={() => toggleTask(t.id)}
+                              aria-label={`Marcar tarea: ${t.description}`}
+                            />
+                            <span className={styles.taskBody}>
+                              <span className={styles.taskLabel}>
+                                {t.description}
+                              </span>
+                              <span className={styles.taskMeta}>
+                                <span className={styles.taskDate}>
+                                  <CalendarDays size={12} />
+                                  {formatLongDate(t.dueDate)}
+                                </span>
+                                <span
+                                  className={`${styles.priorityTag} ${priorityClass[t.priority]}`}
+                                >
+                                  <Flag size={12} />
+                                  {t.priority}
+                                </span>
+                              </span>
+                            </span>
+                            <button
+                              type="button"
+                              className={styles.deleteAction}
+                              onClick={() => removeTask(t.id)}
+                              aria-label={`Eliminar tarea: ${t.description}`}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+
+
               {activeTab === "historial" && (
                 <div className={styles.panel}>
                   <div className={styles.panelHead}>
@@ -624,6 +809,107 @@ export function Pacientes() {
       </main>
 
       <AddPatientModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {isTaskOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsTaskOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="task-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="task-title" className={styles.modalTitle}>
+                  Añadir tarea
+                </h2>
+                <p className={styles.modalSub}>
+                  Nueva tarea del plan de trabajo de {patient?.name}.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsTaskOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formFields}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="task-desc">
+                    Descripción de la tarea
+                  </label>
+                  <textarea
+                    id="task-desc"
+                    className={styles.textarea}
+                    rows={3}
+                    placeholder="Ej: Revisar analítica y actualizar la pauta…"
+                    value={taskDesc}
+                    onChange={(e) => setTaskDesc(e.target.value)}
+                  />
+                </div>
+
+                <div className={styles.formGrid}>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="task-due">
+                      Fecha límite
+                    </label>
+                    <input
+                      id="task-due"
+                      type="date"
+                      className={styles.textInputPlain}
+                      value={taskDue}
+                      onChange={(e) => setTaskDue(e.target.value || todayISO)}
+                    />
+                  </div>
+
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="task-priority">
+                      Prioridad
+                    </label>
+                    <select
+                      id="task-priority"
+                      className={styles.selectPlain}
+                      value={taskPriority}
+                      onChange={(e) =>
+                        setTaskPriority(e.target.value as TaskPriority)
+                      }
+                    >
+                      <option value="Baja">Baja</option>
+                      <option value="Media">Media</option>
+                      <option value="Alta">Alta</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsTaskOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitTask}
+                disabled={!taskDesc.trim()}
+              >
+                Guardar tarea
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
 
       {isApptOpen && (
         <div
