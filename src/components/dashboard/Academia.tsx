@@ -18,6 +18,7 @@ import {
   CalendarIcon,
   Save,
   CheckCircle2,
+  X,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { Switch } from "@/components/ui/switch";
@@ -128,7 +129,7 @@ const initialLessons: Lesson[] = [
   { id: "l6", courseId: "c3", title: "Eje intestino-cerebro", duration: "14 min" },
 ];
 
-const platforms = ["Vimeo", "YouTube", "Bunny.net"];
+
 
 export function Academia() {
   const [view, setView] = useState<View>("home");
@@ -504,14 +505,31 @@ function LessonFormView({
   const [courseId, setCourseId] = useState(courses[0]?.id ?? "");
   const [title, setTitle] = useState("");
   const [duration, setDuration] = useState("");
-  const [platform, setPlatform] = useState(platforms[0]);
   const [videoUrl, setVideoUrl] = useState("");
   const [files, setFiles] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
 
   const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const list = Array.from(e.target.files ?? []).map((f) => f.name);
     setFiles((prev) => [...prev, ...list]);
   };
+
+  const addTag = () => {
+    const value = tagInput.trim();
+    if (value && !tags.includes(value)) {
+      setTags((prev) => [...prev, value]);
+    }
+    setTagInput("");
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTag();
+    }
+  };
+
 
   return (
     <>
@@ -558,31 +576,48 @@ function LessonFormView({
           </div>
         </div>
 
-        <div className={academia.formRow}>
-          <div className={academia.formGroup}>
-            <label className={academia.formLabel}>Plataforma de vídeo</label>
-            <select
-              className={academia.formSelect}
-              value={platform}
-              onChange={(e) => setPlatform(e.target.value)}
-            >
-              {platforms.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className={academia.formGroup}>
-            <label className={academia.formLabel}>URL o ID del vídeo</label>
-            <input
-              className={academia.formInput}
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
-              placeholder="Ej. 76979871 o https://…"
-            />
-          </div>
+        <div className={academia.formGroup}>
+          <label className={academia.formLabel}>
+            ID o URL del vídeo (Bunny.net)
+          </label>
+          <input
+            className={academia.formInput}
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            placeholder="Ej. 76979871 o https://iframe.mediadelivery.net/…"
+          />
         </div>
+
+        <div className={academia.formGroup}>
+          <label className={academia.formLabel}>Etiquetas / Categorías</label>
+          <input
+            className={academia.tagInput}
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={handleTagKeyDown}
+            placeholder="Escribe una etiqueta y pulsa Enter"
+          />
+          {tags.length > 0 && (
+            <div className={academia.chipList}>
+              {tags.map((tag) => (
+                <span key={tag} className={academia.chip}>
+                  {tag}
+                  <button
+                    type="button"
+                    className={academia.chipRemove}
+                    aria-label={`Quitar ${tag}`}
+                    onClick={() =>
+                      setTags((prev) => prev.filter((t) => t !== tag))
+                    }
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
 
         <div className={academia.formGroup}>
           <label className={academia.formLabel}>Contenido de la lección</label>
@@ -636,13 +671,56 @@ function LessonFormView({
 /* ============================================================
    Vista: Crear Clase en Directo
    ============================================================ */
+const mockPatients = [
+  "Laura Giménez",
+  "Marcos Ruiz",
+  "Ana Belén Torres",
+  "Javier Molina",
+  "Carla Sanz",
+  "Pablo Herrera",
+  "Nuria Castaño",
+];
+
 function LiveClassFormView({ onBack }: { onBack: () => void }) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState("");
   const [roomUrl, setRoomUrl] = useState("");
   const [agenda, setAgenda] = useState("");
-  const [notify, setNotify] = useState(true);
+  const [notifyMode, setNotifyMode] = useState<"all" | "advanced">("all");
+
+  // Destinatarios avanzados
+  const [recipients, setRecipients] = useState<string[]>([]);
+  const [patientPick, setPatientPick] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+
+  const addRecipient = (value: string) => {
+    const clean = value.trim();
+    if (clean && !recipients.includes(clean)) {
+      setRecipients((prev) => [...prev, clean]);
+    }
+  };
+
+  const addPatient = (name: string) => {
+    if (!name) return;
+    addRecipient(name);
+    setPatientPick("");
+  };
+
+  const addEmail = () => {
+    addRecipient(emailInput);
+    setEmailInput("");
+  };
+
+  const handleEmailKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addEmail();
+    }
+  };
+
+  const availablePatients = mockPatients.filter((p) => !recipients.includes(p));
+
 
   return (
     <>
@@ -721,15 +799,121 @@ function LiveClassFormView({ onBack }: { onBack: () => void }) {
           />
         </div>
 
-        <div className={academia.toggleRow}>
-          <div className={academia.toggleText}>
-            <span className={academia.toggleTitle}>Notificar a alumnos por email</span>
-            <span className={academia.toggleDesc}>
-              Se enviará un recordatorio automático con el enlace de la sala.
-            </span>
+        <div className={academia.formGroup}>
+          <label className={academia.formLabel}>Notificaciones</label>
+          <div className={academia.notifyOptions}>
+            <label
+              className={`${academia.radioOption} ${
+                notifyMode === "all" ? academia.radioOptionActive : ""
+              }`}
+            >
+              <input
+                type="radio"
+                name="notifyMode"
+                className={academia.radioInput}
+                checked={notifyMode === "all"}
+                onChange={() => setNotifyMode("all")}
+              />
+              <span className={academia.radioText}>
+                <span className={academia.radioTitle}>
+                  Notificar a todos los alumnos
+                </span>
+                <span className={academia.radioDesc}>
+                  Se enviará un recordatorio automático con el enlace de la sala.
+                </span>
+              </span>
+            </label>
+
+            <label
+              className={`${academia.radioOption} ${
+                notifyMode === "advanced" ? academia.radioOptionActive : ""
+              }`}
+            >
+              <input
+                type="radio"
+                name="notifyMode"
+                className={academia.radioInput}
+                checked={notifyMode === "advanced"}
+                onChange={() => setNotifyMode("advanced")}
+              />
+              <span className={academia.radioText}>
+                <span className={academia.radioTitle}>
+                  Selección avanzada (Elegir alumnos)
+                </span>
+                <span className={academia.radioDesc}>
+                  Elige pacientes concretos o añade correos externos.
+                </span>
+              </span>
+            </label>
           </div>
-          <Switch checked={notify} onCheckedChange={setNotify} />
         </div>
+
+        {notifyMode === "advanced" && (
+          <div className={academia.advancedPanel}>
+            <div className={academia.formGroup}>
+              <label className={academia.formLabel}>Buscar pacientes</label>
+              <select
+                className={academia.formSelect}
+                value={patientPick}
+                onChange={(e) => addPatient(e.target.value)}
+              >
+                <option value="">Selecciona un paciente…</option>
+                {availablePatients.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={academia.formGroup}>
+              <label className={academia.formLabel}>Añadir correo externo</label>
+              <div className={academia.inlineAddRow}>
+                <input
+                  className={academia.tagInput}
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  onKeyDown={handleEmailKeyDown}
+                  placeholder="nombre@correo.com"
+                  type="email"
+                />
+                <button
+                  type="button"
+                  className={academia.inlineAddBtn}
+                  onClick={addEmail}
+                >
+                  <Plus size={15} /> Añadir
+                </button>
+              </div>
+            </div>
+
+            {recipients.length > 0 && (
+              <div className={academia.formGroup}>
+                <label className={academia.formLabel}>
+                  Destinatarios ({recipients.length})
+                </label>
+                <div className={academia.chipList}>
+                  {recipients.map((r) => (
+                    <span key={r} className={academia.chip}>
+                      {r}
+                      <button
+                        type="button"
+                        className={academia.chipRemove}
+                        aria-label={`Quitar ${r}`}
+                        onClick={() =>
+                          setRecipients((prev) => prev.filter((x) => x !== r))
+                        }
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
 
         <div className={academia.formActions}>
           <button type="button" className={academia.ghostButton} onClick={onBack}>

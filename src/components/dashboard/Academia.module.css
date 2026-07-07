@@ -798,3 +798,173 @@
   }
 }
 
+/* ============================================================
+   Tags / Chips (lecciones y clases en directo)
+   ============================================================ */
+.tagInput {
+  width: 100%;
+  border: 1px solid #e6ddd0;
+  border-radius: 11px;
+  background-color: #fbf8f4;
+  padding: 11px 14px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.92rem;
+  color: #3d3540;
+  outline: none;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.tagInput:focus {
+  border-color: #cdbad6;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
+.tagInput::placeholder {
+  color: #b3a898;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  background-color: #f4eff7;
+  border: 1px solid #e3d9ea;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
+.chipRemove {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 999px;
+  background-color: rgba(135, 92, 128, 0.14);
+  color: #875c80;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.chipRemove:hover {
+  background-color: #875c80;
+  color: #ffffff;
+}
+
+/* ============================================================
+   Notificaciones: opciones (radio) + panel avanzado
+   ============================================================ */
+.notifyOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radioOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid #ece4d8;
+  border-radius: 12px;
+  background-color: #fbf8f4;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.radioOptionActive {
+  border-color: #cdbad6;
+  background-color: #f4eff7;
+}
+
+.radioInput {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  accent-color: #875c80;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.radioText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.radioTitle {
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #3d3540;
+}
+
+.radioDesc {
+  font-size: 0.8rem;
+  color: #9a8fa0;
+}
+
+.advancedPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background-color: #f7f3ee;
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.inlineAddRow {
+  display: flex;
+  gap: 8px;
+}
+
+.inlineAddRow .tagInput {
+  flex: 1;
+}
+
+.inlineAddBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  border-radius: 11px;
+  background: linear-gradient(140deg, #9d719a, #875c80);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    filter 0.18s ease,
+    transform 0.18s ease;
+}
+
+.inlineAddBtn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+
