@@ -596,13 +596,13 @@ export function Recursos() {
               </div>
               <div className={styles.fieldGroup}>
                 <label className={styles.fieldLabel}>Categoría</label>
-                <select className={styles.selectPlain} defaultValue={detailResource.category}>
-                  {uploadCategories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
+                <CategoryDropdown
+                  categories={resourceCategories}
+                  value={detailCategory}
+                  onChange={setDetailCategory}
+                  onAddCategory={addCategory}
+                  onRemoveCategory={removeCategory}
+                />
               </div>
 
               <div className={styles.versionSection}>
