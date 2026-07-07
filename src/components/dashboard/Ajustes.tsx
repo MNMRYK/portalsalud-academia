@@ -598,7 +598,138 @@ export function Ajustes() {
         </div>
       </main>
 
+      {/* New legal template modal */}
+      {isTemplateOpen && (
+        <div className={styles.modalOverlay} onClick={() => setTemplateOpen(false)}>
+          <div
+            className={`${styles.modal} ${styles["legal-modal"]}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Nueva plantilla legal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <h2 className={styles.modalTitle}>Nueva plantilla legal</h2>
+                <p className={styles.modalSub}>
+                  Se sincronizará automáticamente con el alta de pacientes.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setTemplateOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Nombre del documento</label>
+                <input
+                  className={styles.textInput}
+                  type="text"
+                  placeholder="Ej: Consentimiento de tratamiento"
+                  value={newTemplate.name}
+                  onChange={(e) =>
+                    setNewTemplate((p) => ({ ...p, name: e.target.value }))
+                  }
+                />
+              </div>
+
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Categoría</label>
+                <select
+                  className={styles.selectPlain}
+                  value={newTemplate.category}
+                  onChange={(e) =>
+                    setNewTemplate((p) => ({
+                      ...p,
+                      category: e.target.value as TemplateCategory,
+                    }))
+                  }
+                >
+                  {templateCategories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.toggleRow}>
+                <div className={styles.toggleContent}>
+                  <span className={styles.toggleLabel}>Documento obligatorio</span>
+                  <span className={styles.toggleHint}>
+                    Los obligatorios se marcan y bloquean en el alta del paciente.
+                  </span>
+                </div>
+                <label className={styles.toggleSwitch}>
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.required}
+                    onChange={(e) =>
+                      setNewTemplate((p) => ({ ...p, required: e.target.checked }))
+                    }
+                  />
+                  <span className={styles.toggleTrack} aria-hidden="true" />
+                </label>
+              </div>
+
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Archivo de la plantilla</label>
+                <label className={styles.uploadZone}>
+                  <Upload size={18} strokeWidth={2} />
+                  <span>
+                    {newTemplate.fileName
+                      ? newTemplate.fileName
+                      : "Sube el archivo (.docx o .pdf)"}
+                  </span>
+                  <input
+                    type="file"
+                    accept=".docx,application/pdf"
+                    hidden
+                    onChange={(e) =>
+                      setNewTemplate((p) => ({
+                        ...p,
+                        fileName: e.target.files?.[0]?.name ?? "",
+                        format: e.target.files?.[0]?.name
+                          ?.toLowerCase()
+                          .endsWith(".pdf")
+                          ? "PDF"
+                          : "Word (.docx)",
+                      }))
+                    }
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setTemplateOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitTemplate}
+                disabled={!newTemplate.name.trim()}
+              >
+                <Plus size={16} strokeWidth={2.5} /> Crear plantilla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Invite modal */}
+
       {isInviteOpen && (
         <div className={styles.modalOverlay} onClick={() => setInviteOpen(false)}>
           <div
