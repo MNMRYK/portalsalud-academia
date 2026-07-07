@@ -15,6 +15,7 @@ import {
   GraduationCap,
   Mail,
   User,
+  Pencil,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import styles from "./Pacientes.module.css";
@@ -84,6 +85,7 @@ export function Pacientes() {
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [isMetricOpen, setIsMetricOpen] = useState(false);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
     { id: "datos", label: "Datos y Evolución", icon: Activity },
@@ -148,7 +150,7 @@ export function Pacientes() {
           <section className={styles.file}>
             <div className={styles.fileHeader}>
               <span className={`${styles.fileAvatar} ${styles.avPlum}`}>EM</span>
-              <div>
+              <div className={styles.fileHeaderInfo}>
                 <h2 className={styles.fileName}>Elena Martín</h2>
                 <div className={styles.fileFacts}>
                   <div className={styles.fileFact}>
@@ -165,6 +167,13 @@ export function Pacientes() {
                   </div>
                 </div>
               </div>
+              <button
+                type="button"
+                className={styles.outlineButton}
+                onClick={() => setIsProfileOpen(true)}
+              >
+                <Pencil size={16} /> Editar datos
+              </button>
             </div>
 
             <nav className={styles.tabs}>
@@ -520,7 +529,7 @@ export function Pacientes() {
             </header>
 
             <div className={styles.modalBody}>
-              <div className={styles.formFields}>
+              <div className={styles.formGrid}>
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="metric-date">
                     Fecha
@@ -533,8 +542,25 @@ export function Pacientes() {
                 </div>
 
                 <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="metric-phase">
+                    Fase del tratamiento
+                  </label>
+                  <select
+                    id="metric-phase"
+                    className={styles.selectPlain}
+                    defaultValue={treatmentPhases[1]}
+                  >
+                    {treatmentPhases.map((ph) => (
+                      <option key={ph} value={ph}>
+                        {ph}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="metric-weight">
-                    Peso (kg)
+                    Peso actual (kg)
                   </label>
                   <input
                     id="metric-weight"
@@ -570,7 +596,7 @@ export function Pacientes() {
                 Cancelar
               </button>
               <button type="button" className={styles.primaryButton}>
-                Guardar
+                Guardar registro
               </button>
             </footer>
           </div>
@@ -657,6 +683,131 @@ export function Pacientes() {
               </button>
               <button type="button" className={styles.primaryButton}>
                 Guardar
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {isProfileOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsProfileOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profile-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="profile-title" className={styles.modalTitle}>
+                  Editar Perfil Clínico
+                </h2>
+                <p className={styles.modalSub}>
+                  Actualiza los datos básicos y estáticos del paciente.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsProfileOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formGrid}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-name">
+                    Nombre completo
+                  </label>
+                  <input
+                    id="profile-name"
+                    type="text"
+                    className={styles.textInputPlain}
+                    defaultValue="Elena Martín"
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-age">
+                    Edad
+                  </label>
+                  <input
+                    id="profile-age"
+                    type="number"
+                    min="0"
+                    className={styles.textInputPlain}
+                    defaultValue={42}
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-sex">
+                    Sexo
+                  </label>
+                  <select
+                    id="profile-sex"
+                    className={styles.selectPlain}
+                    defaultValue="Mujer"
+                  >
+                    <option value="Mujer">Mujer</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-dni">
+                    DNI
+                  </label>
+                  <input
+                    id="profile-dni"
+                    type="text"
+                    className={styles.textInputPlain}
+                    defaultValue="12.345.678-A"
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-goal">
+                    Objetivo principal
+                  </label>
+                  <input
+                    id="profile-goal"
+                    type="text"
+                    className={styles.textInputPlain}
+                    defaultValue="Reducir inflamación"
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-target-weight">
+                    Peso objetivo (kg)
+                  </label>
+                  <input
+                    id="profile-target-weight"
+                    type="number"
+                    step="0.1"
+                    className={styles.textInputPlain}
+                    defaultValue={68}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsProfileOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button type="button" className={styles.primaryButton}>
+                Guardar cambios
               </button>
             </footer>
           </div>
