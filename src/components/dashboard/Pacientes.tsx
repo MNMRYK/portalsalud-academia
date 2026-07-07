@@ -875,25 +875,50 @@ export function Pacientes() {
                         Registro cronológico de las consultas del paciente.
                       </p>
                     </div>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={openConsultForm}
+                    >
+                      <Plus size={18} strokeWidth={2.5} /> Registrar Consulta
+                    </button>
                   </div>
-                  <ul className={styles.timeline}>
-                    {consultationHistory.map((c, i) => (
-                      <li key={`${c.date}-${i}`} className={styles.timelineItem}>
-                        <span className={styles.timelineDot} />
-                        <div className={styles.timelineContent}>
-                          <div className={styles.timelineTop}>
-                            <span className={styles.timelineDate}>{c.date}</span>
-                            <span
-                              className={`${styles.consultStatus} ${consultStatusClass[c.status]}`}
-                            >
-                              {c.status}
-                            </span>
-                          </div>
-                          <p className={styles.timelineNote}>{c.note}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                  {patientConsultations.length === 0 ? (
+                    <p className={styles.taskEmpty}>
+                      Este paciente aún no tiene consultas registradas.
+                    </p>
+                  ) : (
+                    <ul className={styles.timeline}>
+                      {patientConsultations.map((c) => (
+                        <li key={c.id} className={styles.timelineItem}>
+                          <span className={styles.timelineDot} />
+                          <button
+                            type="button"
+                            className={styles.timelineButton}
+                            onClick={() => setDetailConsult(c)}
+                          >
+                            <div className={styles.timelineTop}>
+                              <span className={styles.timelineDate}>
+                                {formatLongDate(c.date)} · {c.time}
+                              </span>
+                              <span
+                                className={`${styles.consultStatus} ${consultStatusClass[c.status]}`}
+                              >
+                                {c.status}
+                              </span>
+                            </div>
+                            <p className={styles.timelineNote}>{c.note}</p>
+                            {c.payment && (
+                              <span className={styles.timelinePayment}>
+                                <Wallet size={13} /> Pago: {c.payment.amount} € ·{" "}
+                                {c.payment.method}
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )}
 
