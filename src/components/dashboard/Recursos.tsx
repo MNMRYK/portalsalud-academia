@@ -130,6 +130,12 @@ const railFilters = [
 
 const phaseColors = ["#a3bca0", "#d47f65", "#875c80", "#c9a24b"];
 
+const versionHistory = [
+  { version: "V3", date: "07 jul 2026", note: "Versión actual", current: true },
+  { version: "V2", date: "18 may 2026", note: "Revisión de cantidades", current: false },
+  { version: "V1", date: "02 mar 2026", note: "Documento original", current: false },
+];
+
 export function Recursos() {
   const [resources, setResources] = useState<Resource[]>(initialResources);
   const [query, setQuery] = useState("");
