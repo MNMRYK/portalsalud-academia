@@ -606,12 +606,6 @@ export function Pacientes() {
                                 t.isCompleted ? styles.taskItemDone : ""
                               }`}
                             >
-                              <span
-                                className={`${styles.taskAssigneeIcon} ${styles.assigneeClinic}`}
-                                title="Tarea para la clínica"
-                              >
-                                <Briefcase size={16} />
-                              </span>
                               <input
                                 type="checkbox"
                                 className={styles.taskCheck}
@@ -978,46 +972,64 @@ export function Pacientes() {
                       {patientConsultations.map((c) => (
                         <li key={c.id} className={styles.timelineItem}>
                           <span className={styles.timelineDot} />
-                          <button
-                            type="button"
-                            className={styles.timelineButton}
-                            onClick={() => setDetailConsult(c)}
-                          >
+                          <div className={styles.timelineCard}>
                             <div className={styles.timelineTop}>
                               <span className={styles.timelineDate}>
                                 {formatLongDate(c.date)} · {c.time}
                               </span>
-                              <span
-                                className={`${styles.consultStatus} ${consultStatusClass[c.status]}`}
-                              >
-                                {c.status}
-                              </span>
+                              <div className={styles.timelineTopRight}>
+                                <span
+                                  className={`${styles.consultStatus} ${consultStatusClass[c.status]}`}
+                                >
+                                  {c.status}
+                                </span>
+                                <div className={styles.timelineActions}>
+                                  <button
+                                    type="button"
+                                    className={styles.timelineIconBtn}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openEditConsult(c);
+                                    }}
+                                    aria-label={`Editar consulta del ${formatLongDate(c.date)}`}
+                                  >
+                                    <Pencil size={15} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className={`${styles.timelineIconBtn} ${styles.timelineIconDanger}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      removeConsultation(c.id);
+                                    }}
+                                    aria-label={`Eliminar consulta del ${formatLongDate(c.date)}`}
+                                  >
+                                    <Trash2 size={15} />
+                                  </button>
+                                </div>
+                              </div>
                             </div>
-                            <p className={styles.timelineNote}>{c.note}</p>
-                            {c.payment && (
-                              <span className={styles.timelinePayment}>
-                                <Wallet size={13} /> Pago: {c.payment.amount} € ·{" "}
-                                {c.payment.method}
-                              </span>
-                            )}
-                          </button>
-                          <div className={styles.timelineActions}>
-                            <button
-                              type="button"
-                              className={styles.timelineIconBtn}
-                              onClick={() => openEditConsult(c)}
-                              aria-label={`Editar consulta del ${formatLongDate(c.date)}`}
+                            <div
+                              className={styles.timelineBody}
+                              onClick={() => setDetailConsult(c)}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  setDetailConsult(c);
+                                }
+                              }}
+                              aria-label={`Ver detalle de la consulta del ${formatLongDate(c.date)}`}
                             >
-                              <Pencil size={15} />
-                            </button>
-                            <button
-                              type="button"
-                              className={`${styles.timelineIconBtn} ${styles.timelineIconDanger}`}
-                              onClick={() => removeConsultation(c.id)}
-                              aria-label={`Eliminar consulta del ${formatLongDate(c.date)}`}
-                            >
-                              <Trash2 size={15} />
-                            </button>
+                              <p className={styles.timelineNote}>{c.note}</p>
+                              {c.payment && (
+                                <span className={styles.timelinePayment}>
+                                  <Wallet size={13} /> Pago: {c.payment.amount} € ·{" "}
+                                  {c.payment.method}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </li>
                       ))}
