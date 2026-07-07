@@ -6,17 +6,12 @@ import {
   Circle,
   Phone,
   Info,
-  BookOpen,
   FileText,
   Video,
   ClipboardList as MenuIcon,
   Download,
-  NotebookPen,
   Plus,
-  CreditCard,
-  UserRound,
   LogOut,
-  FolderHeart,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
