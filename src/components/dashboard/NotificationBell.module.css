@@ -1,0 +1,220 @@
+.bellButton {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid #ece4d8;
+  background-color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: #6b6270;
+  flex-shrink: 0;
+  transition: background-color 0.18s ease;
+}
+
+.bellButton:hover {
+  background-color: #f5f0e8;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: linear-gradient(140deg, #e0987f, #d47f65);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 10px -4px rgba(212, 127, 101, 0.9);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background-color: rgba(45, 39, 48, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.drawer {
+  width: 380px;
+  max-width: 92vw;
+  height: 100%;
+  background-color: #f7f3ee;
+  box-shadow: -20px 0 50px -24px rgba(45, 39, 48, 0.4);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.26s ease;
+  font-family: "Nunito", system-ui, sans-serif;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawerHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px 24px 20px;
+  border-bottom: 1px solid #ece4d8;
+  background-color: #ffffff;
+}
+
+.drawerTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #2f2933;
+  margin: 0;
+}
+
+.drawerSub {
+  font-size: 0.82rem;
+  color: #8c8290;
+  margin: 4px 0 0;
+}
+
+.drawerClose {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  background-color: #faf7f2;
+  color: #8c8290;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+  flex-shrink: 0;
+}
+
+.drawerClose:hover {
+  background-color: #f3eef2;
+  color: #875c80;
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  position: relative;
+  transition: border-color 0.16s ease;
+}
+
+.item:hover {
+  border-color: #e3d9ea;
+}
+
+.itemUnread {
+  background-color: #fdf8f4;
+  border-color: #f0e0d6;
+}
+
+.itemIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.iconTerracota {
+  background-color: #fbeee7;
+  color: #d47f65;
+}
+
+.iconPlum {
+  background-color: #f3eef2;
+  color: #875c80;
+}
+
+.iconSage {
+  background-color: #eef3ed;
+  color: #6e9169;
+}
+
+.itemBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemText {
+  font-size: 0.87rem;
+  line-height: 1.45;
+  color: #3d3540;
+  margin: 0 0 6px;
+}
+
+.itemTime {
+  font-size: 0.74rem;
+  color: #9a8fa0;
+  font-weight: 600;
+}
+
+.unreadDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #d47f65;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.markAll {
+  margin: 0 16px 20px;
+  height: 46px;
+  border: 1px solid #e3d9ea;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.markAll:hover {
+  background-color: #f3eef2;
+  border-color: #cdbad6;
+}
