@@ -135,6 +135,28 @@ export function Ajustes() {
     setHistoryUser(user);
   };
 
+  const resetTemplateForm = () =>
+    setNewTemplate({
+      name: "",
+      category: templateCategories[0],
+      format: "PDF",
+      required: false,
+      fileName: "",
+    });
+
+  const submitTemplate = () => {
+    if (!newTemplate.name.trim()) return;
+    addTemplate({
+      name: newTemplate.name.trim(),
+      category: newTemplate.category,
+      format: newTemplate.format,
+      required: newTemplate.required,
+      uploaded: Boolean(newTemplate.fileName),
+    });
+    resetTemplateForm();
+    setTemplateOpen(false);
+  };
+
   return (
     <div className={styles.page}>
       <Sidebar />
