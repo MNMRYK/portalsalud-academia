@@ -509,3 +509,134 @@
 .logoutButton:hover {
   background-color: #fbeee7;
 }
+
+/* ===== Academia alumno ===== */
+.courseFooterStudent {
+  margin-top: 14px;
+}
+
+.continueButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(140deg, #d47f65, #875c80);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.continueButton:hover {
+  filter: brightness(1.04);
+}
+
+.enrollButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border: 1px solid #875c80;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.enrollButton:hover {
+  background-color: #f3eef6;
+}
+
+.enrolledPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #eef4ec;
+  color: #5f8a5b;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 10px 14px;
+}
+
+.miniProgress {
+  font-size: 0.8rem;
+  color: #8a8090;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.liveList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.liveItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid #f0eae0;
+  background-color: #ffffff;
+}
+
+.liveIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #cdbad6, #875c80);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.liveInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.liveTitle {
+  font-weight: 700;
+  color: #3d3540;
+  font-size: 0.96rem;
+}
+
+.liveMeta {
+  font-size: 0.84rem;
+  color: #8a8090;
+  margin-top: 2px;
+}
+
+.liveBadge {
+  font-weight: 700;
+  font-size: 0.76rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.liveBadgeUpcoming {
+  color: #b25c40;
+  background-color: #fbeee7;
+}
+
+.liveBadgeRecorded {
+  color: #6b6270;
+  background-color: #f0eae0;
+}
