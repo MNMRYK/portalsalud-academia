@@ -666,33 +666,15 @@ function LessonFormView({
 
         <div className={academia.formGroup}>
           <label className={academia.formLabel}>Etiquetas / Categorías</label>
-          <input
-            className={academia.tagInput}
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={handleTagKeyDown}
-            placeholder="Escribe una etiqueta y pulsa Enter"
+          <CategoryDropdown
+            categories={categories}
+            value={category}
+            onChange={setCategory}
+            onAddCategory={onAddCategory}
+            onRemoveCategory={onRemoveCategory}
           />
-          {tags.length > 0 && (
-            <div className={academia.chipList}>
-              {tags.map((tag) => (
-                <span key={tag} className={academia.chip}>
-                  {tag}
-                  <button
-                    type="button"
-                    className={academia.chipRemove}
-                    aria-label={`Quitar ${tag}`}
-                    onClick={() =>
-                      setTags((prev) => prev.filter((t) => t !== tag))
-                    }
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
         </div>
+
 
 
         <div className={academia.formGroup}>
