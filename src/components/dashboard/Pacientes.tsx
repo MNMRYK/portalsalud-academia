@@ -810,6 +810,107 @@ export function Pacientes() {
 
       <AddPatientModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
+      {isTaskOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsTaskOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="task-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="task-title" className={styles.modalTitle}>
+                  Añadir tarea
+                </h2>
+                <p className={styles.modalSub}>
+                  Nueva tarea del plan de trabajo de {patient?.name}.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsTaskOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formFields}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="task-desc">
+                    Descripción de la tarea
+                  </label>
+                  <textarea
+                    id="task-desc"
+                    className={styles.textarea}
+                    rows={3}
+                    placeholder="Ej: Revisar analítica y actualizar la pauta…"
+                    value={taskDesc}
+                    onChange={(e) => setTaskDesc(e.target.value)}
+                  />
+                </div>
+
+                <div className={styles.formGrid}>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="task-due">
+                      Fecha límite
+                    </label>
+                    <input
+                      id="task-due"
+                      type="date"
+                      className={styles.textInputPlain}
+                      value={taskDue}
+                      onChange={(e) => setTaskDue(e.target.value || todayISO)}
+                    />
+                  </div>
+
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="task-priority">
+                      Prioridad
+                    </label>
+                    <select
+                      id="task-priority"
+                      className={styles.selectPlain}
+                      value={taskPriority}
+                      onChange={(e) =>
+                        setTaskPriority(e.target.value as TaskPriority)
+                      }
+                    >
+                      <option value="Baja">Baja</option>
+                      <option value="Media">Media</option>
+                      <option value="Alta">Alta</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsTaskOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitTask}
+                disabled={!taskDesc.trim()}
+              >
+                Guardar tarea
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+
       {isApptOpen && (
         <div
           className={styles.modalOverlay}
