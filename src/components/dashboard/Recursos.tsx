@@ -38,7 +38,7 @@ interface Resource {
 
 const categories = ["Todas", "PDFs", "Menús", "Vídeos"] as const;
 
-const uploadCategories = [
+const initialCategories = [
   "Nutrición Deportiva",
   "Détox y depuración",
   "Antiinflamatoria",
