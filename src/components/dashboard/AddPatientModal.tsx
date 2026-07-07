@@ -11,6 +11,7 @@ import {
   Lock,
 } from "lucide-react";
 import { useLegalTemplates } from "../../context/LegalTemplatesContext";
+import { useUser } from "../../context/UserContext";
 import styles from "./AddPatientModal.module.css";
 
 interface AddPatientModalProps {
@@ -22,12 +23,21 @@ type SignMode = "email" | "presencial";
 
 export function AddPatientModal({ open, onClose }: AddPatientModalProps) {
   const { templates } = useLegalTemplates();
+  const {
+    hasClinicalAccess,
+    hasAcademyAccess,
+    setClinicalAccess,
+    setAcademyAccess,
+  } = useUser();
   const [formData, setFormData] = useState({ name: "", email: "" });
-  const [portalEnabled, setPortalEnabled] = useState(true);
-  const [academyEnabled, setAcademyEnabled] = useState(false);
   const [optionalDocs, setOptionalDocs] = useState<string[]>([]);
   const [signMode, setSignMode] = useState<SignMode>("email");
   const [signedFile, setSignedFile] = useState<string | null>(null);
+
+  // Los switches del alta escriben directamente en el estado global de accesos,
+  // de modo que el Portal Clínico / Academia se activan al instante.
+  const portalEnabled = hasClinicalAccess;
+  const academyEnabled = hasAcademyAccess;
 
   if (!open) return null;
 
@@ -135,7 +145,7 @@ export function AddPatientModal({ open, onClose }: AddPatientModalProps) {
                 <input
                   type="checkbox"
                   checked={portalEnabled}
-                  onChange={(e) => setPortalEnabled(e.target.checked)}
+                  onChange={(e) => setClinicalAccess(e.target.checked)}
                 />
                 <span className={styles.toggleTrack} aria-hidden="true" />
               </span>
@@ -157,7 +167,7 @@ export function AddPatientModal({ open, onClose }: AddPatientModalProps) {
                 <input
                   type="checkbox"
                   checked={academyEnabled}
-                  onChange={(e) => setAcademyEnabled(e.target.checked)}
+                  onChange={(e) => setAcademyAccess(e.target.checked)}
                 />
                 <span className={styles.toggleTrack} aria-hidden="true" />
               </span>

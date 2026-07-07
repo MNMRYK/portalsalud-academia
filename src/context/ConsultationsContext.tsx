@@ -116,11 +116,22 @@ function formatInvoiceDate(iso: string): string {
   return `${String(d).padStart(2, "0")} ${monthShort[m - 1]} ${y}`;
 }
 
+/** Aviso que aparece en la bandeja de actividad del admin. */
+export interface ActivityItem {
+  id: string;
+  patientName: string;
+  message: string;
+  date: string;
+  kind: "cancellation";
+}
+
 interface ConsultationsContextValue {
   consultations: Consultation[];
+  activity: ActivityItem[];
   addConsultation: (input: NewConsultationInput) => void;
   updateConsultation: (id: string, patch: Partial<Consultation>) => void;
   removeConsultation: (id: string) => void;
+  cancelConsultation: (id: string) => void;
   consultationsForPatient: (patientName: string) => Consultation[];
   invoicesForPatient: (patientName: string) => DerivedInvoice[];
   patientsWithPayments: () => string[];
@@ -134,6 +145,7 @@ const ConsultationsContext = createContext<ConsultationsContextValue | null>(
 export function ConsultationsProvider({ children }: { children: ReactNode }) {
   const [consultations, setConsultations] =
     useState<Consultation[]>(initialConsultations);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
 
   const addConsultation = (input: NewConsultationInput) => {
     setConsultations((prev) => [
@@ -153,6 +165,27 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
 
   const removeConsultation = (id: string) => {
     setConsultations((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const cancelConsultation = (id: string) => {
+    setConsultations((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, status: "Cancelada" as ConsultationStatus } : c,
+      ),
+    );
+    const target = consultations.find((c) => c.id === id);
+    if (target) {
+      setActivity((prev) => [
+        {
+          id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          patientName: target.patientName,
+          message: `${target.patientName} ha cancelado su cita del ${formatInvoiceDate(target.date)}. Requiere reprogramación.`,
+          date: target.date,
+          kind: "cancellation",
+        },
+        ...prev,
+      ]);
+    }
   };
 
   const consultationsForPatient = (patientName: string) =>
@@ -191,9 +224,11 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
     <ConsultationsContext.Provider
       value={{
         consultations,
+        activity,
         addConsultation,
         updateConsultation,
         removeConsultation,
+        cancelConsultation,
         consultationsForPatient,
         invoicesForPatient,
         patientsWithPayments,
