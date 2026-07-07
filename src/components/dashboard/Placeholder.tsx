@@ -1,5 +1,6 @@
-import { Search, Bell, type LucideIcon } from "lucide-react";
+import { Search, type LucideIcon } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { NotificationBell } from "./NotificationBell";
 import styles from "./Dashboard.module.css";
 import placeholder from "./Placeholder.module.css";
 
