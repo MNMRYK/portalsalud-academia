@@ -928,21 +928,41 @@ export function Ajustes() {
 
             <div className={styles.modalBodyScroll}>
               <div className={styles.invoiceList}>
-                {(invoicesByPatient[invoicePatient] ?? []).map((inv, i) => (
-                  <div key={i} className={styles.invoiceRow}>
-                    <span className={styles.invoiceIcon}>
-                      <Receipt size={18} strokeWidth={1.9} />
-                    </span>
-                    <div className={styles.invoiceInfo}>
-                      <div className={styles.invoiceConcept}>{inv.concept}</div>
-                      <div className={styles.invoiceDate}>{inv.date}</div>
+                {(() => {
+                  const derived = invoicesForPatient(invoicePatient).map(
+                    (inv) => ({
+                      date: inv.date,
+                      concept: `${inv.concept} · ${inv.method}`,
+                      amount: inv.amount,
+                    }),
+                  );
+                  const allInvoices = [
+                    ...derived,
+                    ...(invoicesByPatient[invoicePatient] ?? []),
+                  ];
+                  if (allInvoices.length === 0) {
+                    return (
+                      <p className={styles.emptyState}>
+                        Este paciente todavía no tiene facturas registradas.
+                      </p>
+                    );
+                  }
+                  return allInvoices.map((inv, i) => (
+                    <div key={i} className={styles.invoiceRow}>
+                      <span className={styles.invoiceIcon}>
+                        <Receipt size={18} strokeWidth={1.9} />
+                      </span>
+                      <div className={styles.invoiceInfo}>
+                        <div className={styles.invoiceConcept}>{inv.concept}</div>
+                        <div className={styles.invoiceDate}>{inv.date}</div>
+                      </div>
+                      <span className={styles.invoiceAmount}>{inv.amount}</span>
+                      <button type="button" className={styles.previewButton}>
+                        <Download size={14} strokeWidth={2} /> Descargar PDF
+                      </button>
                     </div>
-                    <span className={styles.invoiceAmount}>{inv.amount}</span>
-                    <button type="button" className={styles.previewButton}>
-                      <Download size={14} strokeWidth={2} /> Descargar PDF
-                    </button>
-                  </div>
-                ))}
+                  ));
+                })()}
               </div>
             </div>
 
