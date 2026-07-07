@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   Search,
   Plus,
@@ -74,6 +75,17 @@ const patients = [
 
 export function Dashboard() {
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleQuickAction = (id: string) => {
+    if (id === "paciente") {
+      setIsPatientModalOpen(true);
+    } else if (id === "leccion") {
+      navigate({ to: "/academia", state: { view: "lessonForm" } as never });
+    } else if (id === "clase") {
+      navigate({ to: "/academia", state: { view: "liveClassForm" } as never });
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -108,11 +120,7 @@ export function Dashboard() {
               key={title}
               type="button"
               className={styles.quickCard}
-              onClick={
-                id === "paciente"
-                  ? () => setIsPatientModalOpen(true)
-                  : undefined
-              }
+              onClick={() => handleQuickAction(id)}
             >
               <span className={`${styles.quickIcon} ${iconClass}`}>
                 <Icon size={22} strokeWidth={2} />
@@ -129,7 +137,16 @@ export function Dashboard() {
         <section className={styles.panel}>
           <div className={styles.panelHead}>
             <h2 className={styles.sectionTitle}>Evolución reciente</h2>
-            <button type="button" className={styles.linkButton}>
+            <button
+              type="button"
+              className={styles.linkButton}
+              onClick={() =>
+                navigate({
+                  to: "/pacientes",
+                  state: { selectedPatient: null } as never,
+                })
+              }
+            >
               Ver todos los pacientes
             </button>
           </div>
@@ -164,7 +181,16 @@ export function Dashboard() {
                     </span>
                   </td>
                   <td className={styles.actionCell}>
-                    <button type="button" className={styles.secondaryButton}>
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() =>
+                        navigate({
+                          to: "/pacientes",
+                          state: { selectedPatient: p.name } as never,
+                        })
+                      }
+                    >
                       <LineChart size={15} />
                       Historial / Analíticas
                       <ArrowRight size={14} />

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "@tanstack/react-router";
 import {
   Search,
   Bell,
@@ -132,7 +133,8 @@ const initialLessons: Lesson[] = [
 
 
 export function Academia() {
-  const [view, setView] = useState<View>("home");
+  const initialView = (useLocation().state as { view?: View })?.view;
+  const [view, setView] = useState<View>(initialView ?? "home");
   const [courses, setCourses] = useState<Course[]>(initialCourses);
   const [lessons, setLessons] = useState<Lesson[]>(initialLessons);
   const [categories, setCategories] = useState<string[]>([
