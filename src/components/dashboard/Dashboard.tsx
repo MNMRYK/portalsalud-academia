@@ -1,6 +1,5 @@
 import {
   Search,
-  Bell,
   Plus,
   BookOpen,
   UserPlus,
@@ -9,6 +8,7 @@ import {
   LineChart,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { NotificationBell } from "./NotificationBell";
 import styles from "./Dashboard.module.css";
 
 const quickActions = [
