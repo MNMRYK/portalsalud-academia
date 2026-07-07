@@ -799,15 +799,121 @@ function LiveClassFormView({ onBack }: { onBack: () => void }) {
           />
         </div>
 
-        <div className={academia.toggleRow}>
-          <div className={academia.toggleText}>
-            <span className={academia.toggleTitle}>Notificar a alumnos por email</span>
-            <span className={academia.toggleDesc}>
-              Se enviará un recordatorio automático con el enlace de la sala.
-            </span>
+        <div className={academia.formGroup}>
+          <label className={academia.formLabel}>Notificaciones</label>
+          <div className={academia.notifyOptions}>
+            <label
+              className={`${academia.radioOption} ${
+                notifyMode === "all" ? academia.radioOptionActive : ""
+              }`}
+            >
+              <input
+                type="radio"
+                name="notifyMode"
+                className={academia.radioInput}
+                checked={notifyMode === "all"}
+                onChange={() => setNotifyMode("all")}
+              />
+              <span className={academia.radioText}>
+                <span className={academia.radioTitle}>
+                  Notificar a todos los alumnos
+                </span>
+                <span className={academia.radioDesc}>
+                  Se enviará un recordatorio automático con el enlace de la sala.
+                </span>
+              </span>
+            </label>
+
+            <label
+              className={`${academia.radioOption} ${
+                notifyMode === "advanced" ? academia.radioOptionActive : ""
+              }`}
+            >
+              <input
+                type="radio"
+                name="notifyMode"
+                className={academia.radioInput}
+                checked={notifyMode === "advanced"}
+                onChange={() => setNotifyMode("advanced")}
+              />
+              <span className={academia.radioText}>
+                <span className={academia.radioTitle}>
+                  Selección avanzada (Elegir alumnos)
+                </span>
+                <span className={academia.radioDesc}>
+                  Elige pacientes concretos o añade correos externos.
+                </span>
+              </span>
+            </label>
           </div>
-          <Switch checked={notify} onCheckedChange={setNotify} />
         </div>
+
+        {notifyMode === "advanced" && (
+          <div className={academia.advancedPanel}>
+            <div className={academia.formGroup}>
+              <label className={academia.formLabel}>Buscar pacientes</label>
+              <select
+                className={academia.formSelect}
+                value={patientPick}
+                onChange={(e) => addPatient(e.target.value)}
+              >
+                <option value="">Selecciona un paciente…</option>
+                {availablePatients.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={academia.formGroup}>
+              <label className={academia.formLabel}>Añadir correo externo</label>
+              <div className={academia.inlineAddRow}>
+                <input
+                  className={academia.tagInput}
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  onKeyDown={handleEmailKeyDown}
+                  placeholder="nombre@correo.com"
+                  type="email"
+                />
+                <button
+                  type="button"
+                  className={academia.inlineAddBtn}
+                  onClick={addEmail}
+                >
+                  <Plus size={15} /> Añadir
+                </button>
+              </div>
+            </div>
+
+            {recipients.length > 0 && (
+              <div className={academia.formGroup}>
+                <label className={academia.formLabel}>
+                  Destinatarios ({recipients.length})
+                </label>
+                <div className={academia.chipList}>
+                  {recipients.map((r) => (
+                    <span key={r} className={academia.chip}>
+                      {r}
+                      <button
+                        type="button"
+                        className={academia.chipRemove}
+                        aria-label={`Quitar ${r}`}
+                        onClick={() =>
+                          setRecipients((prev) => prev.filter((x) => x !== r))
+                        }
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
 
         <div className={academia.formActions}>
           <button type="button" className={academia.ghostButton} onClick={onBack}>
