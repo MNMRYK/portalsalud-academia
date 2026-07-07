@@ -156,7 +156,10 @@ export function Recursos() {
               type="button"
               className={styles.primaryButton}
               onClick={() => {
+                setUploadName("");
                 setUploadCategory("");
+                setUploadAudience("clinico");
+                setUploadShared(true);
                 setUploadOpen(true);
               }}
             >
