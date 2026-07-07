@@ -624,6 +624,83 @@ export function Pacientes() {
                 </div>
               )}
 
+              {activeTab === "plan" && (
+                <div className={styles.panel}>
+                  <div className={styles.panelHead}>
+                    <div>
+                      <h3 className={styles.panelTitle}>Plan de trabajo</h3>
+                      <p className={styles.panelSub}>
+                        Tareas asociadas a {patient?.name}. Se sincronizan con las
+                        acciones rápidas del panel general.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={() => {
+                        resetTaskForm();
+                        setIsTaskOpen(true);
+                      }}
+                    >
+                      <Plus size={18} strokeWidth={2.5} /> Añadir tarea
+                    </button>
+                  </div>
+
+                  {patientTasks.length === 0 ? (
+                    <p className={styles.taskEmpty}>
+                      Este paciente aún no tiene tareas. Crea la primera con
+                      “Añadir tarea”.
+                    </p>
+                  ) : (
+                    <ul className={styles.taskList}>
+                      {patientTasks.map((t) => (
+                        <li key={t.id}>
+                          <div
+                            className={`${styles.taskItem} ${
+                              t.isCompleted ? styles.taskItemDone : ""
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              className={styles.taskCheck}
+                              checked={t.isCompleted}
+                              onChange={() => toggleTask(t.id)}
+                              aria-label={`Marcar tarea: ${t.description}`}
+                            />
+                            <span className={styles.taskBody}>
+                              <span className={styles.taskLabel}>
+                                {t.description}
+                              </span>
+                              <span className={styles.taskMeta}>
+                                <span className={styles.taskDate}>
+                                  <CalendarDays size={12} />
+                                  {formatLongDate(t.dueDate)}
+                                </span>
+                                <span
+                                  className={`${styles.priorityTag} ${priorityClass[t.priority]}`}
+                                >
+                                  <Flag size={12} />
+                                  {t.priority}
+                                </span>
+                              </span>
+                            </span>
+                            <button
+                              type="button"
+                              className={styles.deleteAction}
+                              onClick={() => removeTask(t.id)}
+                              aria-label={`Eliminar tarea: ${t.description}`}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+
+
               {activeTab === "historial" && (
                 <div className={styles.panel}>
                   <div className={styles.panelHead}>
