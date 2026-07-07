@@ -134,7 +134,7 @@ const initialLessons: Lesson[] = [
 export function Academia() {
   const [view, setView] = useState<View>("home");
   const [courses, setCourses] = useState<Course[]>(initialCourses);
-  const [lessons] = useState<Lesson[]>(initialLessons);
+  const [lessons, setLessons] = useState<Lesson[]>(initialLessons);
   const [categories, setCategories] = useState<string[]>([
     "Nutrición",
     "Hormonal",
@@ -147,11 +147,15 @@ export function Academia() {
   // Estado de edición / selección
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
+  const [lessonDefaultCourseId, setLessonDefaultCourseId] = useState<string>("");
 
   const goHome = () => {
     setView("home");
     setEditingCourse(null);
     setSelectedCourse(null);
+    setEditingLesson(null);
+    setLessonDefaultCourseId("");
   };
 
   const openCourseForm = (course: Course | null) => {
@@ -164,8 +168,24 @@ export function Academia() {
     setView("courseDetail");
   };
 
+  const openLessonForm = (lesson: Lesson | null, defaultCourseId = "") => {
+    setEditingLesson(lesson);
+    setLessonDefaultCourseId(defaultCourseId);
+    setView("lessonForm");
+  };
+
+  const backToDetail = () => {
+    setEditingLesson(null);
+    setLessonDefaultCourseId("");
+    setView(selectedCourse ? "courseDetail" : "home");
+  };
+
   const deleteCourse = (id: string) => {
     setCourses((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const deleteLesson = (id: string) => {
+    setLessons((prev) => prev.filter((l) => l.id !== id));
   };
 
   return (
@@ -176,7 +196,8 @@ export function Academia() {
         {view === "home" && (
           <HomeView
             courses={courses}
-            onAddLesson={() => setView("lessonForm")}
+            categories={categories}
+            onAddLesson={() => openLessonForm(null)}
             onCreateCourse={() => openCourseForm(null)}
             onCreateLive={() => setView("liveClassForm")}
             onEditCourse={openCourseForm}
@@ -198,7 +219,17 @@ export function Academia() {
         )}
 
         {view === "lessonForm" && (
-          <LessonFormView courses={courses} onBack={goHome} />
+          <LessonFormView
+            courses={courses}
+            lesson={editingLesson}
+            defaultCourseId={lessonDefaultCourseId}
+            categories={categories}
+            onAddCategory={(name) => setCategories((p) => [...p, name])}
+            onRemoveCategory={(name) =>
+              setCategories((p) => p.filter((c) => c !== name))
+            }
+            onBack={backToDetail}
+          />
         )}
 
         {view === "liveClassForm" && <LiveClassFormView onBack={goHome} />}
@@ -208,6 +239,9 @@ export function Academia() {
             course={selectedCourse}
             lessons={lessons.filter((l) => l.courseId === selectedCourse.id)}
             onBack={goHome}
+            onAddLesson={() => openLessonForm(null, selectedCourse.id)}
+            onEditLesson={(lesson) => openLessonForm(lesson)}
+            onDeleteLesson={deleteLesson}
           />
         )}
       </main>
@@ -215,11 +249,13 @@ export function Academia() {
   );
 }
 
+
 /* ============================================================
    Vista Principal (home)
    ============================================================ */
 function HomeView({
   courses,
+  categories,
   onAddLesson,
   onCreateCourse,
   onCreateLive,
@@ -228,6 +264,7 @@ function HomeView({
   onOpenCourse,
 }: {
   courses: Course[];
+  categories: string[];
   onAddLesson: () => void;
   onCreateCourse: () => void;
   onCreateLive: () => void;
@@ -235,6 +272,18 @@ function HomeView({
   onDeleteCourse: (id: string) => void;
   onOpenCourse: (c: Course) => void;
 }) {
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+
+  const filteredCourses = courses.filter((c) => {
+    const matchStatus =
+      statusFilter === "all" ||
+      (statusFilter === "published" && c.published) ||
+      (statusFilter === "draft" && !c.published);
+    const matchCategory = categoryFilter === "all" || c.tag === categoryFilter;
+    return matchStatus && matchCategory;
+  });
+
   return (
     <>
       <header className={styles.header}>
@@ -314,13 +363,37 @@ function HomeView({
 
       <div className={styles.panelHead}>
         <h2 className={styles.sectionTitle}>Cursos de la academia</h2>
-        <button type="button" className={styles.linkButton}>
-          Ver todos los cursos
-        </button>
+        <div className={academia.sectionFilters}>
+          <select
+            className={academia.filterSelect}
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as "all" | "published" | "draft")
+            }
+            aria-label="Filtrar por estado"
+          >
+            <option value="all">Todos</option>
+            <option value="published">Publicados</option>
+            <option value="draft">Borradores</option>
+          </select>
+          <select
+            className={academia.filterSelect}
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            aria-label="Filtrar por categoría"
+          >
+            <option value="all">Todas</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <section className={academia.courseGrid}>
-        {courses.map((c) => (
+        {filteredCourses.map((c) => (
           <article
             key={c.id}
             className={academia.courseCard}
@@ -341,46 +414,50 @@ function HomeView({
                   <Clock size={14} /> {c.duration}
                 </span>
               </div>
-              <div className={academia.progressWrap}>
+              <div className={academia.courseFooter}>
                 <div className={academia.progressBar}>
                   <div
                     className={academia.progressFill}
                     style={{ width: `${c.progress}%` }}
                   />
                 </div>
-                <span className={academia.progressLabel}>
-                  {c.published ? `${c.progress}% publicado` : "Borrador · sin publicar"}
-                </span>
+                <div className={academia.courseFooterRow}>
+                  <span className={academia.progressLabel}>
+                    {c.published
+                      ? `${c.progress}% publicado`
+                      : "Borrador · sin publicar"}
+                  </span>
+                  <div className={academia.cardActions}>
+                    <button
+                      type="button"
+                      className={academia.cardActionBtn}
+                      aria-label={`Editar ${c.title}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEditCourse(c);
+                      }}
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      className={`${academia.cardActionBtn} ${academia.cardActionDanger}`}
+                      aria-label={`Eliminar ${c.title}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteCourse(c.id);
+                      }}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className={academia.cardActions}>
-              <button
-                type="button"
-                className={academia.cardActionBtn}
-                aria-label={`Editar ${c.title}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEditCourse(c);
-                }}
-              >
-                <Pencil size={15} />
-              </button>
-              <button
-                type="button"
-                className={`${academia.cardActionBtn} ${academia.cardActionDanger}`}
-                aria-label={`Eliminar ${c.title}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteCourse(c.id);
-                }}
-              >
-                <Trash2 size={15} />
-              </button>
             </div>
           </article>
         ))}
       </section>
+
     </>
   );
 }
@@ -497,47 +574,46 @@ function CourseFormView({
    ============================================================ */
 function LessonFormView({
   courses,
+  lesson,
+  defaultCourseId,
+  categories,
+  onAddCategory,
+  onRemoveCategory,
   onBack,
 }: {
   courses: Course[];
+  lesson: Lesson | null;
+  defaultCourseId?: string;
+  categories: string[];
+  onAddCategory: (name: string) => void;
+  onRemoveCategory: (name: string) => void;
   onBack: () => void;
 }) {
-  const [courseId, setCourseId] = useState(courses[0]?.id ?? "");
-  const [title, setTitle] = useState("");
-  const [duration, setDuration] = useState("");
+  const [courseId, setCourseId] = useState(
+    lesson?.courseId ?? defaultCourseId ?? courses[0]?.id ?? "",
+  );
+  const [title, setTitle] = useState(lesson?.title ?? "");
+  const [duration, setDuration] = useState(lesson?.duration ?? "");
   const [videoUrl, setVideoUrl] = useState("");
   const [files, setFiles] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState("");
+  const [category, setCategory] = useState("");
 
   const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const list = Array.from(e.target.files ?? []).map((f) => f.name);
     setFiles((prev) => [...prev, ...list]);
   };
 
-  const addTag = () => {
-    const value = tagInput.trim();
-    if (value && !tags.includes(value)) {
-      setTags((prev) => [...prev, value]);
-    }
-    setTagInput("");
-  };
 
-  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTag();
-    }
-  };
 
 
   return (
     <>
       <ViewHeader
         onBack={onBack}
-        title="Añadir Lección"
+        title={lesson ? "Editar Lección" : "Añadir Lección"}
         sub="Crea el contenido de una lección para uno de tus cursos."
       />
+
 
       <div className={academia.formCard}>
         <div className={academia.formGroup}>
@@ -590,33 +666,15 @@ function LessonFormView({
 
         <div className={academia.formGroup}>
           <label className={academia.formLabel}>Etiquetas / Categorías</label>
-          <input
-            className={academia.tagInput}
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={handleTagKeyDown}
-            placeholder="Escribe una etiqueta y pulsa Enter"
+          <CategoryDropdown
+            categories={categories}
+            value={category}
+            onChange={setCategory}
+            onAddCategory={onAddCategory}
+            onRemoveCategory={onRemoveCategory}
           />
-          {tags.length > 0 && (
-            <div className={academia.chipList}>
-              {tags.map((tag) => (
-                <span key={tag} className={academia.chip}>
-                  {tag}
-                  <button
-                    type="button"
-                    className={academia.chipRemove}
-                    aria-label={`Quitar ${tag}`}
-                    onClick={() =>
-                      setTags((prev) => prev.filter((t) => t !== tag))
-                    }
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
         </div>
+
 
 
         <div className={academia.formGroup}>
@@ -935,24 +993,35 @@ function CourseDetailView({
   course,
   lessons,
   onBack,
+  onAddLesson,
+  onEditLesson,
+  onDeleteLesson,
 }: {
   course: Course;
   lessons: Lesson[];
   onBack: () => void;
+  onAddLesson: () => void;
+  onEditLesson: (lesson: Lesson) => void;
+  onDeleteLesson: (id: string) => void;
 }) {
   return (
     <>
-      <ViewHeader
-        onBack={onBack}
-        title={course.title}
-        sub="Vista previa · modo alumno"
-      />
+      <ViewHeader onBack={onBack} title={course.title} />
 
       <div className={`${academia.detailCover} ${course.coverClass}`}>
         <span className={academia.detailCoverTitle}>{course.title}</span>
       </div>
 
-      <h2 className={styles.sectionTitle}>Lecciones publicadas</h2>
+      <div className={academia.lessonListHeader}>
+        <h2 className={styles.sectionTitle}>Lecciones publicadas</h2>
+        <button
+          type="button"
+          className={academia.secondaryButton}
+          onClick={onAddLesson}
+        >
+          <Plus size={15} strokeWidth={2.5} /> Añadir lección
+        </button>
+      </div>
 
       {lessons.length > 0 ? (
         <div className={academia.lessonList}>
@@ -965,7 +1034,25 @@ function CourseDetailView({
                   <Clock size={13} /> {l.duration}
                 </span>
               </div>
-              <CheckCircle2 size={18} color="#a3bca0" />
+              <div className={academia.lessonActions}>
+                <CheckCircle2 size={18} color="#a3bca0" />
+                <button
+                  type="button"
+                  className={academia.cardActionBtn}
+                  aria-label={`Editar ${l.title}`}
+                  onClick={() => onEditLesson(l)}
+                >
+                  <Pencil size={15} />
+                </button>
+                <button
+                  type="button"
+                  className={`${academia.cardActionBtn} ${academia.cardActionDanger}`}
+                  aria-label={`Eliminar ${l.title}`}
+                  onClick={() => onDeleteLesson(l.id)}
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -975,6 +1062,7 @@ function CourseDetailView({
         </div>
       )}
     </>
+
   );
 }
 
