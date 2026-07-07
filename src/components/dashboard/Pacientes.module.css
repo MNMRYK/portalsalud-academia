@@ -196,6 +196,15 @@
   gap: 20px;
 }
 
+.fileHeaderInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.fileHeader .outlineButton {
+  align-self: flex-start;
+}
+
 .fileAvatar {
   width: 66px;
   height: 66px;
