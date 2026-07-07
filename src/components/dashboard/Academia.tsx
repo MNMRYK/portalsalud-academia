@@ -610,9 +610,10 @@ function LessonFormView({
     <>
       <ViewHeader
         onBack={onBack}
-        title="Añadir Lección"
+        title={lesson ? "Editar Lección" : "Añadir Lección"}
         sub="Crea el contenido de una lección para uno de tus cursos."
       />
+
 
       <div className={academia.formCard}>
         <div className={academia.formGroup}>
