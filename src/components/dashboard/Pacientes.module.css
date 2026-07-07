@@ -115,6 +115,11 @@
 
 /* Patient list rail */
 .rail {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
   background-color: #ffffff;
   border: 1px solid #ece4d8;
   border-radius: 16px;
@@ -122,6 +127,12 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
 }
 
 .railTitle {
