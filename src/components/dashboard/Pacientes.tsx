@@ -846,6 +846,151 @@ export function Pacientes() {
           </div>
         </div>
       )}
+
+      {isFolderOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsFolderOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="folder-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="folder-title" className={styles.modalTitle}>
+                  Crear nueva carpeta segura
+                </h2>
+                <p className={styles.modalSub}>
+                  Organiza los documentos del paciente en una nueva carpeta.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsFolderOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel} htmlFor="folder-name">
+                  Nombre de la carpeta
+                </label>
+                <input
+                  id="folder-name"
+                  type="text"
+                  className={styles.textInputPlain}
+                  placeholder="Nombre de la carpeta (Ej: Analíticas)"
+                />
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsFolderOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button type="button" className={styles.primaryButton}>
+                Crear carpeta
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {isUploadOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsUploadOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="upload-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="upload-title" className={styles.modalTitle}>
+                  Subir nuevo documento al paciente
+                </h2>
+                <p className={styles.modalSub}>
+                  Añade un archivo seguro a la ficha del paciente.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsUploadOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <label className={styles.dropzone} htmlFor="upload-file">
+                <span className={styles.dropzoneIcon}>
+                  <UploadCloud size={28} />
+                </span>
+                <span className={styles.dropzoneText}>
+                  Arrastra tu archivo aquí o haz clic para explorar
+                </span>
+                <input id="upload-file" type="file" className={styles.fileInputHidden} />
+              </label>
+
+              <div className={styles.formFields}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="upload-name">
+                    Nombre del documento
+                  </label>
+                  <input
+                    id="upload-name"
+                    type="text"
+                    className={styles.textInputPlain}
+                    placeholder="Ej: Analítica sangre - Julio"
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="upload-folder">
+                    Carpeta de destino
+                  </label>
+                  <select
+                    id="upload-folder"
+                    className={styles.selectPlain}
+                    defaultValue={Object.keys(documents)[0]}
+                  >
+                    {Object.keys(documents).map((folder) => (
+                      <option key={folder} value={folder}>
+                        {folder}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsUploadOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button type="button" className={styles.primaryButton}>
+                Subir documento
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
