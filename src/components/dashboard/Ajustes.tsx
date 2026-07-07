@@ -133,6 +133,23 @@ export function Ajustes() {
     );
   };
 
+  // Pacientes con pagos registrados desde el módulo de consultas que aún no
+  // figuran en la tabla estática de facturación → se añaden automáticamente.
+  const extraAvatars = [styles.avPlum, styles.avSage, styles.avTerracota];
+  const extraBillingRows = patientsWithPayments()
+    .filter((name) => !billing.some((b) => b.name === name))
+    .map((name, i) => ({
+      name,
+      initials: name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase(),
+      av: extraAvatars[i % extraAvatars.length],
+      payment: lastPaymentFor(name) ?? "—",
+    }));
+
   const openUserHistory = (user: string) => {
     setOpenMenu(null);
     setHistoryUser(user);
