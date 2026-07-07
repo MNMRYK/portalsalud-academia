@@ -261,21 +261,30 @@ export function Ajustes() {
                 </section>
 
                 <section className={styles["settings-section"]}>
-                  <div className={styles.cardHead}>
-                    <h2 className={styles.cardTitle}>Gestión de Plantillas Legales Maestras</h2>
-                    <p className={styles.cardSub}>
-                      El sistema generará los documentos personalizados automáticamente. Usa las
-                      etiquetas <span className={styles.tag}>[NOMBRE]</span>,{" "}
-                      <span className={styles.tag}>[DNI]</span> y{" "}
-                      <span className={styles.tag}>[FECHA]</span> en tus archivos para que el
-                      sistema los rellene con los datos del paciente.
-                    </p>
+                  <div className={styles.cardHeadRow}>
+                    <div>
+                      <h2 className={styles.cardTitle}>Gestión de Plantillas Legales Maestras</h2>
+                      <p className={styles.cardSub}>
+                        El sistema generará los documentos personalizados automáticamente. Usa las
+                        etiquetas <span className={styles.tag}>[NOMBRE]</span>,{" "}
+                        <span className={styles.tag}>[DNI]</span> y{" "}
+                        <span className={styles.tag}>[FECHA]</span> en tus archivos para que el
+                        sistema los rellene con los datos del paciente.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={() => setTemplateOpen(true)}
+                    >
+                      <Plus size={17} strokeWidth={2.5} /> Nueva Plantilla
+                    </button>
                   </div>
 
                   <div className={styles.docList}>
-                    {legalTemplates.map((doc) => (
+                    {templates.map((doc) => (
                       <div
-                        key={doc.name}
+                        key={doc.id}
                         className={`${styles.docRow} ${styles["document-card"]}`}
                       >
                         <span className={styles.docIcon}>
@@ -283,8 +292,30 @@ export function Ajustes() {
                         </span>
                         <div className={styles.docInfo}>
                           <div className={styles.docName}>{doc.name}</div>
-                          <div className={styles.docMeta}>{doc.format}</div>
+                          <div className={styles.docMeta}>
+                            {doc.category} · {doc.format}
+                          </div>
                         </div>
+
+                        <button
+                          type="button"
+                          className={`${styles.reqToggle} ${doc.required ? styles.reqToggleOn : styles.reqToggleOff}`}
+                          onClick={() => toggleRequired(doc.id)}
+                          aria-pressed={doc.required}
+                          title={
+                            doc.required
+                              ? "Marcar como opcional"
+                              : "Marcar como obligatorio"
+                          }
+                        >
+                          {doc.required ? (
+                            <>
+                              <Lock size={13} strokeWidth={2.4} /> Obligatorio
+                            </>
+                          ) : (
+                            "Opcional"
+                          )}
+                        </button>
 
                         <span
                           className={`${styles.legalStatus} ${doc.uploaded ? styles.legalOk : styles.legalMissing}`}
@@ -309,14 +340,35 @@ export function Ajustes() {
                             <Eye size={15} strokeWidth={2} /> Vista previa
                           </button>
                           <label className={styles.uploadSmall}>
-                            <Upload size={14} strokeWidth={2} /> Cargar Plantilla (.docx o .pdf)
-                            <input type="file" accept=".docx,application/pdf" hidden />
+                            <Upload size={14} strokeWidth={2} /> Cargar
+                            <input
+                              type="file"
+                              accept=".docx,application/pdf"
+                              hidden
+                              onChange={(e) => {
+                                if (e.target.files?.[0]) markUploaded(doc.id);
+                              }}
+                            />
                           </label>
+                          <button
+                            type="button"
+                            className={styles.deleteButton}
+                            onClick={() => removeTemplate(doc.id)}
+                            disabled={doc.required}
+                            title={
+                              doc.required
+                                ? "No se puede eliminar un documento obligatorio"
+                                : "Eliminar plantilla"
+                            }
+                          >
+                            <Trash2 size={15} strokeWidth={2} />
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 </section>
+
               </>
             )}
 
