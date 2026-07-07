@@ -23,6 +23,7 @@ import {
 
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { NotificationBell } from "./NotificationBell";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "documentos";
