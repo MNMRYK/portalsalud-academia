@@ -193,6 +193,7 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
         consultations,
         addConsultation,
         updateConsultation,
+        removeConsultation,
         consultationsForPatient,
         invoicesForPatient,
         patientsWithPayments,
