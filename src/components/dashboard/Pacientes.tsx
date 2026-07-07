@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Search,
   Plus,
@@ -20,15 +20,24 @@ import {
   BellRing,
   History,
   CalendarCheck,
+  CalendarDays,
+  ListChecks,
+  Flag,
   LayoutDashboard,
   ChevronLeft,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { AddPatientModal } from "./AddPatientModal";
+import {
+  useTasks,
+  toISODate,
+  type TaskPriority,
+} from "@/context/TasksContext";
 import styles from "./Pacientes.module.css";
 
-type TabId = "datos" | "diario" | "documentos" | "historial";
+type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
+
 
 const patientList = [
   { name: "Elena Martín", meta: "Fase 2 · Activo", initials: "EM", avClass: styles.avPlum },
