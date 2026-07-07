@@ -73,6 +73,8 @@ const patients = [
 ];
 
 export function Dashboard() {
+  const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
+
   return (
     <div className={styles.page}>
       <Sidebar />
