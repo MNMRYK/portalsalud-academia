@@ -193,6 +193,11 @@ export function Academia({ studentSection }: { studentSection?: StudentSection }
     setLessons((prev) => prev.filter((l) => l.id !== id));
   };
 
+  // Vista de alumno (paciente): reutiliza el diseño de la academia en modo lectura.
+  if (!isAdmin) {
+    return <AcademiaStudent section={studentSection} />;
+  }
+
   return (
     <div className={styles.page}>
       <Sidebar />
