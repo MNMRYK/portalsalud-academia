@@ -421,16 +421,13 @@ export function Recursos() {
 
               <div className={styles.fieldGroup}>
                 <label className={styles.fieldLabel}>Categoría</label>
-                <select className={styles.selectPlain} defaultValue="">
-                  <option value="" disabled>
-                    Selecciona una categoría
-                  </option>
-                  {uploadCategories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
+                <CategoryDropdown
+                  categories={resourceCategories}
+                  value={uploadCategory}
+                  onChange={setUploadCategory}
+                  onAddCategory={addCategory}
+                  onRemoveCategory={removeCategory}
+                />
               </div>
 
               <label className={styles.toggleRow}>
