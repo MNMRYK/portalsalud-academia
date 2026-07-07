@@ -117,6 +117,7 @@ export function Pacientes() {
           </div>
 
           <div className={styles.headerRight}>
+            <NotificationBell />
             <div className={styles.search}>
               <Search size={18} className={styles.searchIcon} />
               <input
