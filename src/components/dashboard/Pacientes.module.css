@@ -2,8 +2,6 @@
 .page {
   display: flex;
   min-height: 100vh;
-  max-width: 100%;
-  overflow-x: hidden;
   background-color: #f7f3ee;
   font-family: "Nunito", system-ui, sans-serif;
   color: #3d3540;
