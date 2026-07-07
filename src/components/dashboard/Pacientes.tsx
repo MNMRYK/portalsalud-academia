@@ -196,12 +196,7 @@ export function Pacientes() {
     setActiveTab("datos");
   };
 
-  const openDatePicker = () => {
-    const input = filterInputRef.current;
-    if (!input) return;
-    if (typeof input.showPicker === "function") input.showPicker();
-    else input.focus();
-  };
+
 
   const resetTaskForm = () => {
     setTaskDesc("");
