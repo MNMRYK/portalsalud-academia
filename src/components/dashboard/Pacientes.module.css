@@ -1850,19 +1850,6 @@
   color: #c0564a;
 }
 
-@media (max-width: 1024px) {
-  .kpiGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .workGrid {
-    display: flex;
-    flex-direction: column;
-  }
-  .workGrid > .panel {
-    width: 100%;
-    max-width: 100%;
-  }
-}
 
 @media (max-width: 640px) {
   .kpiGrid {
