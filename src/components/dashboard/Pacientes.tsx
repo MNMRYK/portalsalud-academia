@@ -19,6 +19,7 @@ import {
   FolderPlus,
   Trash2,
   UploadCloud,
+  AlertTriangle,
 
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
@@ -92,6 +93,8 @@ export function Pacientes() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isFolderOpen, setIsFolderOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
 
   const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
     { id: "datos", label: "Datos y Evolución", icon: Activity },
@@ -831,17 +834,30 @@ export function Pacientes() {
               </div>
             </div>
 
-            <footer className={styles.modalFooter}>
+            <footer className={styles.modalFooterSplit}>
               <button
                 type="button"
-                className={styles.ghostButton}
-                onClick={() => setIsProfileOpen(false)}
+                className={styles.dangerGhostButton}
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  setDeleteConfirm("");
+                  setIsDeleteOpen(true);
+                }}
               >
-                Cancelar
+                <Trash2 size={16} /> Eliminar paciente
               </button>
-              <button type="button" className={styles.primaryButton}>
-                Guardar cambios
-              </button>
+              <div className={styles.footerRight}>
+                <button
+                  type="button"
+                  className={styles.ghostButton}
+                  onClick={() => setIsProfileOpen(false)}
+                >
+                  Cancelar
+                </button>
+                <button type="button" className={styles.primaryButton}>
+                  Guardar cambios
+                </button>
+              </div>
             </footer>
           </div>
         </div>
@@ -986,6 +1002,76 @@ export function Pacientes() {
               </button>
               <button type="button" className={styles.primaryButton}>
                 Subir documento
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {isDeleteOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsDeleteOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="delete-title" className={styles.modalTitleDanger}>
+                  ¿Eliminar paciente definitivamente?
+                </h2>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsDeleteOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.dangerBox}>
+                <AlertTriangle size={20} className={styles.dangerIcon} />
+                <p className={styles.dangerText}>
+                  Estás a punto de eliminar a este paciente y todo su historial
+                  clínico, documentos y métricas. Esta acción no se puede deshacer.
+                </p>
+              </div>
+
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel} htmlFor="delete-confirm">
+                  Escribe <strong>ELIMINAR</strong> para confirmar
+                </label>
+                <input
+                  id="delete-confirm"
+                  type="text"
+                  className={styles.textInputPlain}
+                  placeholder="ELIMINAR"
+                  value={deleteConfirm}
+                  onChange={(e) => setDeleteConfirm(e.target.value)}
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsDeleteOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.dangerButton}
+                disabled={deleteConfirm.trim() !== "ELIMINAR"}
+              >
+                <Trash2 size={16} /> Sí, eliminar
               </button>
             </footer>
           </div>
