@@ -181,7 +181,16 @@ export function Dashboard() {
                     </span>
                   </td>
                   <td className={styles.actionCell}>
-                    <button type="button" className={styles.secondaryButton}>
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() =>
+                        navigate({
+                          to: "/pacientes",
+                          state: { selectedPatient: p.name } as never,
+                        })
+                      }
+                    >
                       <LineChart size={15} />
                       Historial / Analíticas
                       <ArrowRight size={14} />
