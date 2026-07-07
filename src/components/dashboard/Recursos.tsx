@@ -40,75 +40,16 @@ const initialCategories = [
   "Hábitos y mantenimiento",
 ];
 
-const treatmentPhases = [
-  "Fase 1: Détox hepático",
-  "Fase 2: Reducción de inflamación",
-  "Fase 3: Reparación intestinal",
-  "Fase 4: Mantenimiento y hábitos",
-];
-
 const typeMeta: Record<ResourceType, { icon: LucideIcon; label: string; className: string }> = {
   pdf: { icon: FileText, label: "PDF", className: styles.iconPdf },
   video: { icon: Video, label: "Vídeo", className: styles.iconVideo },
   menu: { icon: ClipboardList, label: "Menú", className: styles.iconMenu },
 };
 
-const initialResources: Resource[] = [
-  {
-    id: 1,
-    name: "Guía de nutrición antiinflamatoria",
-    type: "pdf",
-    category: "Antiinflamatoria",
-    phase: treatmentPhases[1],
-    favorite: true,
-    recent: true,
-  },
-  {
-    id: 2,
-    name: "Menú semanal détox de primavera",
-    type: "menu",
-    category: "Détox y depuración",
-    phase: treatmentPhases[0],
-    favorite: false,
-    recent: true,
-  },
-  {
-    id: 3,
-    name: "Vídeo: batch cooking saludable",
-    type: "video",
-    category: "Hábitos y mantenimiento",
-    phase: treatmentPhases[3],
-    favorite: true,
-    recent: false,
-  },
-  {
-    id: 4,
-    name: "Lista de la compra intestinal",
-    type: "pdf",
-    category: "Salud intestinal",
-    phase: treatmentPhases[2],
-    favorite: false,
-    recent: true,
-  },
-  {
-    id: 5,
-    name: "Plantilla de menú deportivo",
-    type: "menu",
-    category: "Nutrición Deportiva",
-    phase: treatmentPhases[3],
-    favorite: false,
-    recent: false,
-  },
-  {
-    id: 6,
-    name: "Vídeo: respiración y digestión",
-    type: "video",
-    category: "Salud intestinal",
-    phase: treatmentPhases[2],
-    favorite: false,
-    recent: true,
-  },
-];
+const audienceLabels: Record<ResourceAudience, string> = {
+  clinico: "Clínico",
+  academico: "Académico",
+};
 
 const patients = [
   { id: 1, name: "Laura Giménez", note: "Fase 2 · Antiinflamatoria" },
