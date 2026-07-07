@@ -606,12 +606,6 @@ export function Pacientes() {
                                 t.isCompleted ? styles.taskItemDone : ""
                               }`}
                             >
-                              <span
-                                className={`${styles.taskAssigneeIcon} ${styles.assigneeClinic}`}
-                                title="Tarea para la clínica"
-                              >
-                                <Briefcase size={16} />
-                              </span>
                               <input
                                 type="checkbox"
                                 className={styles.taskCheck}
