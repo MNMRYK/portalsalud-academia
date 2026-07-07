@@ -120,11 +120,7 @@ export function Dashboard() {
               key={title}
               type="button"
               className={styles.quickCard}
-              onClick={
-                id === "paciente"
-                  ? () => setIsPatientModalOpen(true)
-                  : undefined
-              }
+              onClick={() => handleQuickAction(id)}
             >
               <span className={`${styles.quickIcon} ${iconClass}`}>
                 <Icon size={22} strokeWidth={2} />
