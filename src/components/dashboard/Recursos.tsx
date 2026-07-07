@@ -357,6 +357,8 @@ export function Recursos() {
                 <input
                   className={styles.textInputPlain}
                   placeholder="Ej: Guía de nutrición antiinflamatoria"
+                  value={uploadName}
+                  onChange={(e) => setUploadName(e.target.value)}
                 />
               </div>
 
@@ -371,6 +373,26 @@ export function Recursos() {
                 />
               </div>
 
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Destinado a</label>
+                <div className={styles.audienceRow}>
+                  <button
+                    type="button"
+                    className={`${styles.audienceChip} ${uploadAudience === "clinico" ? styles.audienceChipActive : ""}`}
+                    onClick={() => setUploadAudience("clinico")}
+                  >
+                    Portal Clínico
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.audienceChip} ${uploadAudience === "academico" ? styles.audienceChipActive : ""}`}
+                    onClick={() => setUploadAudience("academico")}
+                  >
+                    Academia
+                  </button>
+                </div>
+              </div>
+
               <label className={styles.toggleRow}>
                 <span className={styles.toggleIconBox}>
                   <Eye size={18} strokeWidth={2} />
@@ -382,7 +404,11 @@ export function Recursos() {
                   </span>
                 </span>
                 <span className={styles.toggleSwitch}>
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={uploadShared}
+                    onChange={(e) => setUploadShared(e.target.checked)}
+                  />
                   <span className={styles.toggleTrack} />
                 </span>
               </label>
@@ -399,7 +425,16 @@ export function Recursos() {
               <button
                 type="button"
                 className={styles.primaryButton}
-                onClick={() => setUploadOpen(false)}
+                onClick={() => {
+                  addResource({
+                    name: uploadName.trim() || "Nuevo recurso",
+                    type: "pdf",
+                    category: uploadCategory || "Sin categoría",
+                    audience: uploadAudience,
+                    sharedWithPatient: uploadShared,
+                  });
+                  setUploadOpen(false);
+                }}
               >
                 <UploadCloud size={18} strokeWidth={2.2} /> Subir recurso
               </button>
