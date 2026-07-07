@@ -186,13 +186,16 @@ export function Recursos() {
             </p>
           </div>
 
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={() => setUploadOpen(true)}
-          >
-            <Plus size={18} strokeWidth={2.5} /> Subir Recurso Maestro
-          </button>
+          <div className={styles.headerRight}>
+            <NotificationBell />
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={() => setUploadOpen(true)}
+            >
+              <Plus size={18} strokeWidth={2.5} /> Subir Recurso Maestro
+            </button>
+          </div>
         </header>
 
         <div className={styles.toolbar}>
