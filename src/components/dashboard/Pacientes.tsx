@@ -288,13 +288,17 @@ export function Pacientes() {
   const [isDateOpen, setIsDateOpen] = useState(false);
   const filterDate = toISODate(selectedDate);
   const isToday = filterDate === todayISO;
-  const dayTasks = tasksForDate(filterDate);
+  // El panel general solo muestra las tareas asignadas a la clínica.
+  const dayTasks = tasksForDate(filterDate).filter(
+    (t) => t.assignee === "clinica",
+  );
 
   // Modal "Añadir tarea" del Plan de Trabajo
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [taskDesc, setTaskDesc] = useState("");
   const [taskDue, setTaskDue] = useState(todayISO);
   const [taskPriority, setTaskPriority] = useState<TaskPriority>("Media");
+  const [taskAssignee, setTaskAssignee] = useState<TaskAssignee>("clinica");
 
   // Modal "Registrar / Ver consulta" del Historial
   const [isConsultOpen, setIsConsultOpen] = useState(false);
