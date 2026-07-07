@@ -86,9 +86,6 @@ export function Pacientes() {
   const [phase, setPhase] = useState(treatmentPhases[1]);
   const [selected, setSelected] = useState(patientList[0].name);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [portalEnabled, setPortalEnabled] = useState(true);
-  const [academyEnabled, setAcademyEnabled] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "" });
   const [isMetricOpen, setIsMetricOpen] = useState(false);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
