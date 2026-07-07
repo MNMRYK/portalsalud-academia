@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
+import { CategoryDropdown } from "./academia/CategoryDropdown";
 import styles from "./Recursos.module.css";
 
 type ResourceType = "pdf" | "video" | "menu";
@@ -37,7 +38,7 @@ interface Resource {
 
 const categories = ["Todas", "PDFs", "Menús", "Vídeos"] as const;
 
-const uploadCategories = [
+const initialCategories = [
   "Nutrición Deportiva",
   "Détox y depuración",
   "Antiinflamatoria",
@@ -142,10 +143,29 @@ export function Recursos() {
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("Todas");
   const [activeRail, setActiveRail] = useState<string>("all");
 
+  // Categorías dinámicas (compartidas por el modal de subida y el sidebar)
+  const [resourceCategories, setResourceCategories] =
+    useState<string[]>(initialCategories);
+  const addCategory = (name: string) =>
+    setResourceCategories((prev) =>
+      prev.includes(name) ? prev : [...prev, name],
+    );
+  const removeCategory = (name: string) => {
+    setResourceCategories((prev) => prev.filter((c) => c !== name));
+    if (activeRail === `cat:${name}`) setActiveRail("all");
+  };
+
   const [isUploadOpen, setUploadOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState("");
   const [assignResource, setAssignResource] = useState<Resource | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<number | null>(null);
   const [detailResource, setDetailResource] = useState<Resource | null>(null);
+  const [detailCategory, setDetailCategory] = useState("");
+
+  const openDetail = (resource: Resource) => {
+    setDetailResource(resource);
+    setDetailCategory(resource.category);
+  };
 
   const toggleFavorite = (id: number) =>
     setResources((prev) =>
@@ -166,7 +186,7 @@ export function Recursos() {
   const matchesRail = (r: Resource) => {
     if (activeRail === "recent") return r.recent;
     if (activeRail === "favorites") return r.favorite;
-    if (activeRail.startsWith("phase:")) return r.phase === activeRail.slice(6);
+    if (activeRail.startsWith("cat:")) return r.category === activeRail.slice(4);
     return true;
   };
 
@@ -200,7 +220,10 @@ export function Recursos() {
             <button
               type="button"
               className={styles.primaryButton}
-              onClick={() => setUploadOpen(true)}
+              onClick={() => {
+                setUploadCategory("");
+                setUploadOpen(true);
+              }}
             >
               <Plus size={18} strokeWidth={2.5} /> Subir Recurso Maestro
             </button>
@@ -252,22 +275,31 @@ export function Recursos() {
             </div>
 
             <div className={styles.railGroup}>
-              <p className={styles.railLabel}>Categorías de tratamiento</p>
-              {treatmentPhases.map((phase, i) => {
-                const id = `phase:${phase}`;
-                const count = resources.filter((r) => r.phase === phase).length;
+              <p className={styles.railLabel}>Categorías</p>
+              {resourceCategories.length === 0 && (
+                <p className={styles.railEmpty}>
+                  Aún no hay categorías. Créalas al subir un recurso.
+                </p>
+              )}
+              {resourceCategories.map((category, i) => {
+                const id = `cat:${category}`;
+                const count = resources.filter(
+                  (r) => r.category === category,
+                ).length;
                 return (
                   <button
-                    key={phase}
+                    key={category}
                     type="button"
                     className={`${styles.railItem} ${activeRail === id ? styles.railItemActive : ""}`}
                     onClick={() => setActiveRail(id)}
                   >
                     <span
                       className={styles.railDot}
-                      style={{ backgroundColor: phaseColors[i] }}
+                      style={{
+                        backgroundColor: phaseColors[i % phaseColors.length],
+                      }}
                     />
-                    {`Fase ${i + 1}`}
+                    {category}
                     <span className={styles.railCount}>{count}</span>
                   </button>
                 );
@@ -323,7 +355,7 @@ export function Recursos() {
                     <button
                       type="button"
                       className={styles.iconAction}
-                      onClick={() => setDetailResource(resource)}
+                      onClick={() => openDetail(resource)}
                       aria-label="Editar recurso"
                     >
                       <Pencil size={16} strokeWidth={2} />
@@ -392,16 +424,13 @@ export function Recursos() {
 
               <div className={styles.fieldGroup}>
                 <label className={styles.fieldLabel}>Categoría</label>
-                <select className={styles.selectPlain} defaultValue="">
-                  <option value="" disabled>
-                    Selecciona una categoría
-                  </option>
-                  {uploadCategories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
+                <CategoryDropdown
+                  categories={resourceCategories}
+                  value={uploadCategory}
+                  onChange={setUploadCategory}
+                  onAddCategory={addCategory}
+                  onRemoveCategory={removeCategory}
+                />
               </div>
 
               <label className={styles.toggleRow}>
@@ -570,13 +599,13 @@ export function Recursos() {
               </div>
               <div className={styles.fieldGroup}>
                 <label className={styles.fieldLabel}>Categoría</label>
-                <select className={styles.selectPlain} defaultValue={detailResource.category}>
-                  {uploadCategories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
+                <CategoryDropdown
+                  categories={resourceCategories}
+                  value={detailCategory}
+                  onChange={setDetailCategory}
+                  onAddCategory={addCategory}
+                  onRemoveCategory={removeCategory}
+                />
               </div>
 
               <div className={styles.versionSection}>

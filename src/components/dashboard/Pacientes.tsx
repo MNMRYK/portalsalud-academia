@@ -26,10 +26,17 @@ import {
   Flag,
   LayoutDashboard,
   ChevronLeft,
+  Eye,
+  EyeOff,
+  CreditCard,
+  Wallet,
+  Banknote,
+  ArrowRightLeft,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { AddPatientModal } from "./AddPatientModal";
+import { CategoryDropdown } from "./academia/CategoryDropdown";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -41,6 +48,12 @@ import {
   toISODate,
   type TaskPriority,
 } from "@/context/TasksContext";
+import {
+  useConsultations,
+  type Consultation,
+  type ConsultationStatus,
+  type PaymentMethod,
+} from "@/context/ConsultationsContext";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
@@ -98,47 +111,50 @@ const weightData = [
   { label: "Jul", value: 71, height: 44 },
 ];
 
-const diaryEntries = [
+interface DiaryEntry {
+  id: string;
+  date: string;
+  energy: { label: string; cls: string };
+  inflammation: { label: string; cls: string };
+  note: string;
+  internal: boolean;
+}
+
+const levelClassByLabel: Record<string, string> = {
+  Alta: styles.levelSage,
+  Media: styles.levelPlum,
+  Baja: styles.levelTerracota,
+};
+const inflammationClassByLabel: Record<string, string> = {
+  Baja: styles.levelSage,
+  Media: styles.levelPlum,
+  Alta: styles.levelTerracota,
+};
+
+const initialDiaryEntries: DiaryEntry[] = [
   {
+    id: "diary-1",
     date: "5 Jul 2026",
     energy: { label: "Alta", cls: styles.levelSage },
     inflammation: { label: "Baja", cls: styles.levelSage },
     note: "Buena adherencia a la pauta. Duerme mejor.",
+    internal: false,
   },
   {
+    id: "diary-2",
     date: "28 Jun 2026",
     energy: { label: "Media", cls: styles.levelPlum },
     inflammation: { label: "Media", cls: styles.levelPlum },
     note: "Hinchazón abdominal tras comidas fuera de casa.",
+    internal: false,
   },
   {
+    id: "diary-3",
     date: "21 Jun 2026",
     energy: { label: "Baja", cls: styles.levelTerracota },
     inflammation: { label: "Alta", cls: styles.levelTerracota },
-    note: "Semana estresante. Retención de líquidos.",
-  },
-];
-
-const consultationHistory = [
-  {
-    date: "5 Jul 2026",
-    note: "Revisión de fase 2. Reducción visible de inflamación y mejor descanso.",
-    status: "Completada" as const,
-  },
-  {
-    date: "20 Jun 2026",
-    note: "Ajuste de pauta antiinflamatoria y refuerzo de hidratación.",
-    status: "Completada" as const,
-  },
-  {
-    date: "12 Jul 2026",
-    note: "Analítica de control programada para valorar marcadores hepáticos.",
-    status: "Pendiente" as const,
-  },
-  {
-    date: "3 Jun 2026",
-    note: "Consulta anulada por la paciente. Reagendada para la semana siguiente.",
-    status: "Cancelada" as const,
+    note: "Sospecha de intolerancia. No compartir aún con la paciente.",
+    internal: true,
   },
 ];
 
@@ -146,6 +162,15 @@ const consultStatusClass: Record<string, string> = {
   Completada: styles.statusCompleted,
   Pendiente: styles.statusPending,
   Cancelada: styles.statusCancelled,
+};
+
+const paymentMethodMeta: Record<
+  PaymentMethod,
+  { icon: typeof CreditCard; label: string }
+> = {
+  Metálico: { icon: Banknote, label: "Metálico" },
+  Tarjeta: { icon: CreditCard, label: "Tarjeta" },
+  Transferencia: { icon: ArrowRightLeft, label: "Transferencia" },
 };
 
 const documents = {
@@ -161,6 +186,11 @@ const documents = {
 export function Pacientes() {
   const { addTask, toggleTask, removeTask, tasksForPatient, tasksForDate } =
     useTasks();
+  const {
+    addConsultation,
+    updateConsultation,
+    consultationsForPatient,
+  } = useConsultations();
 
   const incomingPatient = (
     useLocation().state as { selectedPatient?: string | null }
@@ -169,9 +199,20 @@ export function Pacientes() {
     incomingPatient ?? null,
   );
   const [activeTab, setActiveTab] = useState<TabId>("datos");
+
+  // Fases de tratamiento dinámicas (compartidas por la ficha y los modales)
+  const [phases, setPhases] = useState<string[]>(treatmentPhases);
   const [phase, setPhase] = useState(treatmentPhases[1]);
+  const addPhase = (name: string) =>
+    setPhases((prev) => (prev.includes(name) ? prev : [...prev, name]));
+  const removePhase = (name: string) => {
+    setPhases((prev) => prev.filter((p) => p !== name));
+    if (phase === name) setPhase("");
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMetricOpen, setIsMetricOpen] = useState(false);
+  const [metricPhase, setMetricPhase] = useState(treatmentPhases[1]);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isFolderOpen, setIsFolderOpen] = useState(false);
@@ -179,6 +220,47 @@ export function Pacientes() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isApptOpen, setIsApptOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+
+  // Diario clínico (con notas internas)
+  const [diaryEntries, setDiaryEntries] =
+    useState<DiaryEntry[]>(initialDiaryEntries);
+  const [entryEnergy, setEntryEnergy] = useState("Media");
+  const [entryInflammation, setEntryInflammation] = useState("Media");
+  const [entryNote, setEntryNote] = useState("");
+  const [entryInternal, setEntryInternal] = useState(false);
+
+  const resetEntryForm = () => {
+    setEntryEnergy("Media");
+    setEntryInflammation("Media");
+    setEntryNote("");
+    setEntryInternal(false);
+  };
+
+  const submitEntry = () => {
+    setDiaryEntries((prev) => [
+      {
+        id: `diary-${Date.now()}`,
+        date: new Date().toLocaleDateString("es-ES", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+        energy: {
+          label: entryEnergy,
+          cls: levelClassByLabel[entryEnergy] ?? styles.levelPlum,
+        },
+        inflammation: {
+          label: entryInflammation,
+          cls: inflammationClassByLabel[entryInflammation] ?? styles.levelPlum,
+        },
+        note: entryNote.trim(),
+        internal: entryInternal,
+      },
+      ...prev,
+    ]);
+    resetEntryForm();
+    setIsEntryOpen(false);
+  };
 
   // Filtro de fecha del panel "Acciones rápidas pendientes"
   const todayISO = toISODate(new Date());
@@ -194,8 +276,57 @@ export function Pacientes() {
   const [taskDue, setTaskDue] = useState(todayISO);
   const [taskPriority, setTaskPriority] = useState<TaskPriority>("Media");
 
+  // Modal "Registrar / Ver consulta" del Historial
+  const [isConsultOpen, setIsConsultOpen] = useState(false);
+  const [detailConsult, setDetailConsult] = useState<Consultation | null>(null);
+  const [consultForm, setConsultForm] = useState({
+    note: "",
+    date: todayISO,
+    time: "10:00",
+    phase: treatmentPhases[1],
+    status: "Pendiente" as ConsultationStatus,
+    withPayment: false,
+    amount: "",
+    method: "Tarjeta" as PaymentMethod,
+  });
+
+  const openConsultForm = () => {
+    setConsultForm({
+      note: "",
+      date: todayISO,
+      time: "10:00",
+      phase: phases[0] ?? "",
+      status: "Pendiente",
+      withPayment: false,
+      amount: "",
+      method: "Tarjeta",
+    });
+    setIsConsultOpen(true);
+  };
+
+  const submitConsult = () => {
+    if (!selectedPatient || !consultForm.note.trim()) return;
+    const amountNum = Number(consultForm.amount);
+    addConsultation({
+      patientName: selectedPatient,
+      note: consultForm.note.trim(),
+      date: consultForm.date,
+      time: consultForm.time,
+      phase: consultForm.phase,
+      status: consultForm.status,
+      payment:
+        consultForm.withPayment && amountNum > 0
+          ? { amount: amountNum, method: consultForm.method }
+          : null,
+    });
+    setIsConsultOpen(false);
+  };
+
   const patient = patientList.find((p) => p.name === selectedPatient) ?? null;
   const patientTasks = selectedPatient ? tasksForPatient(selectedPatient) : [];
+  const patientConsultations = selectedPatient
+    ? consultationsForPatient(selectedPatient)
+    : [];
 
   const openPatient = (name: string) => {
     setSelectedPatient(name);
@@ -562,18 +693,13 @@ export function Pacientes() {
                     <label className={styles.fieldLabel} htmlFor="phase">
                       Fase actual del tratamiento
                     </label>
-                    <select
-                      id="phase"
-                      className={styles.select}
+                    <CategoryDropdown
+                      categories={phases}
                       value={phase}
-                      onChange={(e) => setPhase(e.target.value)}
-                    >
-                      {treatmentPhases.map((ph) => (
-                        <option key={ph} value={ph}>
-                          {ph}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setPhase}
+                      onAddCategory={addPhase}
+                      onRemoveCategory={removePhase}
+                    />
                   </div>
 
                   <div className={styles.chart}>
@@ -606,7 +732,10 @@ export function Pacientes() {
                     <button
                       type="button"
                       className={styles.primaryButton}
-                      onClick={() => setIsEntryOpen(true)}
+                      onClick={() => {
+                        resetEntryForm();
+                        setIsEntryOpen(true);
+                      }}
                     >
                       <Plus size={18} strokeWidth={2.5} /> Nueva Entrada
                     </button>
@@ -614,6 +743,7 @@ export function Pacientes() {
                   <table className={styles.table}>
                     <thead>
                       <tr>
+                        <th>Visibilidad</th>
                         <th>Fecha</th>
                         <th>Nivel de energía</th>
                         <th>Inflamación</th>
@@ -622,7 +752,24 @@ export function Pacientes() {
                     </thead>
                     <tbody>
                       {diaryEntries.map((e) => (
-                        <tr key={e.date}>
+                        <tr key={e.id}>
+                          <td>
+                            {e.internal ? (
+                              <span
+                                className={`${styles.visibilityTag} ${styles.visibilityInternal}`}
+                                title="Nota interna · oculta para el paciente"
+                              >
+                                <EyeOff size={15} /> Interna
+                              </span>
+                            ) : (
+                              <span
+                                className={`${styles.visibilityTag} ${styles.visibilityShared}`}
+                                title="Visible para el paciente"
+                              >
+                                <Eye size={15} /> Compartida
+                              </span>
+                            )}
+                          </td>
                           <td className={styles.dateCell}>{e.date}</td>
                           <td>
                             <span className={`${styles.level} ${e.energy.cls}`}>
@@ -728,25 +875,50 @@ export function Pacientes() {
                         Registro cronológico de las consultas del paciente.
                       </p>
                     </div>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={openConsultForm}
+                    >
+                      <Plus size={18} strokeWidth={2.5} /> Registrar Consulta
+                    </button>
                   </div>
-                  <ul className={styles.timeline}>
-                    {consultationHistory.map((c, i) => (
-                      <li key={`${c.date}-${i}`} className={styles.timelineItem}>
-                        <span className={styles.timelineDot} />
-                        <div className={styles.timelineContent}>
-                          <div className={styles.timelineTop}>
-                            <span className={styles.timelineDate}>{c.date}</span>
-                            <span
-                              className={`${styles.consultStatus} ${consultStatusClass[c.status]}`}
-                            >
-                              {c.status}
-                            </span>
-                          </div>
-                          <p className={styles.timelineNote}>{c.note}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                  {patientConsultations.length === 0 ? (
+                    <p className={styles.taskEmpty}>
+                      Este paciente aún no tiene consultas registradas.
+                    </p>
+                  ) : (
+                    <ul className={styles.timeline}>
+                      {patientConsultations.map((c) => (
+                        <li key={c.id} className={styles.timelineItem}>
+                          <span className={styles.timelineDot} />
+                          <button
+                            type="button"
+                            className={styles.timelineButton}
+                            onClick={() => setDetailConsult(c)}
+                          >
+                            <div className={styles.timelineTop}>
+                              <span className={styles.timelineDate}>
+                                {formatLongDate(c.date)} · {c.time}
+                              </span>
+                              <span
+                                className={`${styles.consultStatus} ${consultStatusClass[c.status]}`}
+                              >
+                                {c.status}
+                              </span>
+                            </div>
+                            <p className={styles.timelineNote}>{c.note}</p>
+                            {c.payment && (
+                              <span className={styles.timelinePayment}>
+                                <Wallet size={13} /> Pago: {c.payment.amount} € ·{" "}
+                                {c.payment.method}
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )}
 
@@ -1056,17 +1228,13 @@ export function Pacientes() {
                   <label className={styles.fieldLabel} htmlFor="metric-phase">
                     Fase del tratamiento
                   </label>
-                  <select
-                    id="metric-phase"
-                    className={styles.selectPlain}
-                    defaultValue={treatmentPhases[1]}
-                  >
-                    {treatmentPhases.map((ph) => (
-                      <option key={ph} value={ph}>
-                        {ph}
-                      </option>
-                    ))}
-                  </select>
+                  <CategoryDropdown
+                    categories={phases}
+                    value={metricPhase}
+                    onChange={setMetricPhase}
+                    onAddCategory={addPhase}
+                    onRemoveCategory={removePhase}
+                  />
                 </div>
 
                 <div className={styles.fieldGroup}>
@@ -1148,7 +1316,12 @@ export function Pacientes() {
                   <label className={styles.fieldLabel} htmlFor="entry-energy">
                     Nivel de Energía
                   </label>
-                  <select id="entry-energy" className={styles.select} defaultValue="Media">
+                  <select
+                    id="entry-energy"
+                    className={styles.select}
+                    value={entryEnergy}
+                    onChange={(e) => setEntryEnergy(e.target.value)}
+                  >
                     <option value="Alta">Alta</option>
                     <option value="Media">Media</option>
                     <option value="Baja">Baja</option>
@@ -1162,7 +1335,8 @@ export function Pacientes() {
                   <select
                     id="entry-inflammation"
                     className={styles.select}
-                    defaultValue="Media"
+                    value={entryInflammation}
+                    onChange={(e) => setEntryInflammation(e.target.value)}
                   >
                     <option value="Alta">Alta</option>
                     <option value="Media">Media</option>
@@ -1179,8 +1353,33 @@ export function Pacientes() {
                     className={styles.textarea}
                     rows={4}
                     placeholder="Describe síntomas, adherencia u observaciones relevantes…"
+                    value={entryNote}
+                    onChange={(e) => setEntryNote(e.target.value)}
                   />
                 </div>
+
+                <label className={styles.privacyRow}>
+                  <span className={styles.privacyIconBox}>
+                    {entryInternal ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </span>
+                  <span className={styles.privacyContent}>
+                    <span className={styles.privacyLabel}>
+                      Nota interna (Oculto para el paciente)
+                    </span>
+                    <span className={styles.privacyHint}>
+                      Solo visible para el equipo de la clínica. El paciente no
+                      verá este registro en su portal.
+                    </span>
+                  </span>
+                  <span className={styles.toggleSwitch}>
+                    <input
+                      type="checkbox"
+                      checked={entryInternal}
+                      onChange={(e) => setEntryInternal(e.target.checked)}
+                    />
+                    <span className={styles.toggleTrack} aria-hidden="true" />
+                  </span>
+                </label>
               </div>
             </div>
 
@@ -1192,7 +1391,12 @@ export function Pacientes() {
               >
                 Cancelar
               </button>
-              <button type="button" className={styles.primaryButton}>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitEntry}
+                disabled={!entryNote.trim()}
+              >
                 Guardar
               </button>
             </footer>
@@ -1547,6 +1751,326 @@ export function Pacientes() {
                 disabled={deleteConfirm.trim() !== "ELIMINAR"}
               >
                 <Trash2 size={16} /> Sí, eliminar
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {isConsultOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsConsultOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="consult-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="consult-title" className={styles.modalTitle}>
+                  Registrar consulta
+                </h2>
+                <p className={styles.modalSub}>
+                  Nueva consulta en el historial de {patient?.name}.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsConsultOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formFields}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="consult-note">
+                    Descripción / Notas
+                  </label>
+                  <textarea
+                    id="consult-note"
+                    className={styles.textarea}
+                    rows={3}
+                    placeholder="Describe el motivo, valoración y observaciones de la consulta…"
+                    value={consultForm.note}
+                    onChange={(e) =>
+                      setConsultForm((f) => ({ ...f, note: e.target.value }))
+                    }
+                  />
+                </div>
+
+                <div className={styles.formGrid}>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="consult-date">
+                      Fecha
+                    </label>
+                    <input
+                      id="consult-date"
+                      type="date"
+                      className={styles.textInputPlain}
+                      value={consultForm.date}
+                      onChange={(e) =>
+                        setConsultForm((f) => ({
+                          ...f,
+                          date: e.target.value || todayISO,
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="consult-time">
+                      Hora
+                    </label>
+                    <input
+                      id="consult-time"
+                      type="time"
+                      className={styles.textInputPlain}
+                      value={consultForm.time}
+                      onChange={(e) =>
+                        setConsultForm((f) => ({ ...f, time: e.target.value }))
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.formGrid}>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>
+                      Fase actual del tratamiento
+                    </label>
+                    <CategoryDropdown
+                      categories={phases}
+                      value={consultForm.phase}
+                      onChange={(v) =>
+                        setConsultForm((f) => ({ ...f, phase: v }))
+                      }
+                      onAddCategory={addPhase}
+                      onRemoveCategory={removePhase}
+                    />
+                  </div>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="consult-status">
+                      Estado
+                    </label>
+                    <select
+                      id="consult-status"
+                      className={styles.selectPlain}
+                      value={consultForm.status}
+                      onChange={(e) =>
+                        setConsultForm((f) => ({
+                          ...f,
+                          status: e.target.value as ConsultationStatus,
+                        }))
+                      }
+                    >
+                      <option value="Pendiente">Pendiente</option>
+                      <option value="Completada">Completada</option>
+                      <option value="Cancelada">Cancelada</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className={styles.paymentBox}>
+                  <label className={styles.privacyRow}>
+                    <span className={styles.privacyIconBox}>
+                      <Wallet size={18} />
+                    </span>
+                    <span className={styles.privacyContent}>
+                      <span className={styles.privacyLabel}>Registrar pago</span>
+                      <span className={styles.privacyHint}>
+                        Añade el cobro de esta consulta. Se sincroniza con el
+                        historial de facturación en Ajustes.
+                      </span>
+                    </span>
+                    <span className={styles.toggleSwitch}>
+                      <input
+                        type="checkbox"
+                        checked={consultForm.withPayment}
+                        onChange={(e) =>
+                          setConsultForm((f) => ({
+                            ...f,
+                            withPayment: e.target.checked,
+                          }))
+                        }
+                      />
+                      <span className={styles.toggleTrack} aria-hidden="true" />
+                    </span>
+                  </label>
+
+                  {consultForm.withPayment && (
+                    <div className={styles.formGrid}>
+                      <div className={styles.fieldGroup}>
+                        <label
+                          className={styles.fieldLabel}
+                          htmlFor="consult-amount"
+                        >
+                          Importe (€)
+                        </label>
+                        <input
+                          id="consult-amount"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          className={styles.textInputPlain}
+                          placeholder="Ej: 65"
+                          value={consultForm.amount}
+                          onChange={(e) =>
+                            setConsultForm((f) => ({
+                              ...f,
+                              amount: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <label
+                          className={styles.fieldLabel}
+                          htmlFor="consult-method"
+                        >
+                          Método de pago
+                        </label>
+                        <select
+                          id="consult-method"
+                          className={styles.selectPlain}
+                          value={consultForm.method}
+                          onChange={(e) =>
+                            setConsultForm((f) => ({
+                              ...f,
+                              method: e.target.value as PaymentMethod,
+                            }))
+                          }
+                        >
+                          <option value="Metálico">Metálico</option>
+                          <option value="Tarjeta">Tarjeta</option>
+                          <option value="Transferencia">Transferencia</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsConsultOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitConsult}
+                disabled={!consultForm.note.trim()}
+              >
+                Guardar consulta
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {detailConsult && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setDetailConsult(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="consult-detail-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="consult-detail-title" className={styles.modalTitle}>
+                  Detalle de la consulta
+                </h2>
+                <p className={styles.modalSub}>
+                  {formatLongDate(detailConsult.date)} · {detailConsult.time}
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setDetailConsult(null)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formFields}>
+                <div className={styles.detailBlock}>
+                  <span className={styles.detailLabel}>Fase del tratamiento</span>
+                  <span className={styles.detailValue}>{detailConsult.phase}</span>
+                </div>
+
+                <div className={styles.detailBlock}>
+                  <span className={styles.detailLabel}>Descripción</span>
+                  <p className={styles.detailValue}>{detailConsult.note}</p>
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label
+                    className={styles.fieldLabel}
+                    htmlFor="detail-status"
+                  >
+                    Estado
+                  </label>
+                  <select
+                    id="detail-status"
+                    className={styles.selectPlain}
+                    value={detailConsult.status}
+                    onChange={(e) => {
+                      const status = e.target.value as ConsultationStatus;
+                      updateConsultation(detailConsult.id, { status });
+                      setDetailConsult((c) => (c ? { ...c, status } : c));
+                    }}
+                  >
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Completada">Completada</option>
+                    <option value="Cancelada">Cancelada</option>
+                  </select>
+                </div>
+
+                <div className={styles.paymentBox}>
+                  <span className={styles.detailLabel}>Datos de pago</span>
+                  {detailConsult.payment ? (
+                    <div className={styles.paymentSummary}>
+                      {(() => {
+                        const Icon =
+                          paymentMethodMeta[detailConsult.payment.method].icon;
+                        return <Icon size={18} />;
+                      })()}
+                      <span className={styles.paymentAmount}>
+                        {detailConsult.payment.amount} €
+                      </span>
+                      <span className={styles.paymentMethod}>
+                        {detailConsult.payment.method}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className={styles.detailValue}>
+                      Sin pago registrado en esta consulta.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={() => setDetailConsult(null)}
+              >
+                Cerrar
               </button>
             </footer>
           </div>

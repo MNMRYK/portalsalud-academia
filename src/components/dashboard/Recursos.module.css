@@ -172,6 +172,13 @@
   padding: 0 8px 10px;
 }
 
+.railEmpty {
+  font-size: 0.78rem;
+  color: #b3a898;
+  line-height: 1.45;
+  padding: 0 8px;
+}
+
 .railItem {
   display: flex;
   align-items: center;

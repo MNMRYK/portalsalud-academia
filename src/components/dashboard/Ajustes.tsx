@@ -28,6 +28,7 @@ import {
   templateCategories,
   type TemplateCategory,
 } from "../../context/LegalTemplatesContext";
+import { useConsultations } from "../../context/ConsultationsContext";
 import styles from "./Ajustes.module.css";
 
 type TabId = "general" | "facturacion" | "equipo" | "seguridad";
@@ -94,6 +95,8 @@ const roleOptions = ["Admin", "Nutricionista", "Administrativo"];
 export function Ajustes() {
   const { templates, addTemplate, removeTemplate, toggleRequired, markUploaded } =
     useLegalTemplates();
+  const { invoicesForPatient, patientsWithPayments, lastPaymentFor } =
+    useConsultations();
   const [activeTab, setActiveTab] = useState<TabId>("general");
   const [isTemplateOpen, setTemplateOpen] = useState(false);
   const [newTemplate, setNewTemplate] = useState<{
@@ -129,6 +132,23 @@ export function Ajustes() {
       prev.map((row, i) => (i === index ? { ...row, [key]: !row[key] } : row))
     );
   };
+
+  // Pacientes con pagos registrados desde el módulo de consultas que aún no
+  // figuran en la tabla estática de facturación → se añaden automáticamente.
+  const extraAvatars = [styles.avPlum, styles.avSage, styles.avTerracota];
+  const extraBillingRows = patientsWithPayments()
+    .filter((name) => !billing.some((b) => b.name === name))
+    .map((name, i) => ({
+      name,
+      initials: name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase(),
+      av: extraAvatars[i % extraAvatars.length],
+      payment: lastPaymentFor(name) ?? "—",
+    }));
 
   const openUserHistory = (user: string) => {
     setOpenMenu(null);
@@ -423,6 +443,40 @@ export function Ajustes() {
                                 checked={access[i].academia}
                                 onChange={() => toggleAccess(i, "academia")}
                               />
+                              <span className={styles.toggleTrack} />
+                            </label>
+                          </td>
+                          <td className={styles.logDoc}>{p.payment}</td>
+                          <td className={styles.tdRight}>
+                            <button
+                              type="button"
+                              className={styles.previewButton}
+                              onClick={() => setInvoicePatient(p.name)}
+                            >
+                              <FolderOpen size={15} strokeWidth={2} /> Ver facturas
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {extraBillingRows.map((p) => (
+                        <tr key={p.name}>
+                          <td>
+                            <span className={styles.logUser}>
+                              <span className={`${styles.logAvatar} ${p.av}`}>
+                                {p.initials}
+                              </span>
+                              {p.name}
+                            </span>
+                          </td>
+                          <td>
+                            <label className={styles.toggleSwitch}>
+                              <input type="checkbox" defaultChecked />
+                              <span className={styles.toggleTrack} />
+                            </label>
+                          </td>
+                          <td>
+                            <label className={styles.toggleSwitch}>
+                              <input type="checkbox" />
                               <span className={styles.toggleTrack} />
                             </label>
                           </td>
@@ -874,21 +928,41 @@ export function Ajustes() {
 
             <div className={styles.modalBodyScroll}>
               <div className={styles.invoiceList}>
-                {(invoicesByPatient[invoicePatient] ?? []).map((inv, i) => (
-                  <div key={i} className={styles.invoiceRow}>
-                    <span className={styles.invoiceIcon}>
-                      <Receipt size={18} strokeWidth={1.9} />
-                    </span>
-                    <div className={styles.invoiceInfo}>
-                      <div className={styles.invoiceConcept}>{inv.concept}</div>
-                      <div className={styles.invoiceDate}>{inv.date}</div>
+                {(() => {
+                  const derived = invoicesForPatient(invoicePatient).map(
+                    (inv) => ({
+                      date: inv.date,
+                      concept: `${inv.concept} · ${inv.method}`,
+                      amount: inv.amount,
+                    }),
+                  );
+                  const allInvoices = [
+                    ...derived,
+                    ...(invoicesByPatient[invoicePatient] ?? []),
+                  ];
+                  if (allInvoices.length === 0) {
+                    return (
+                      <p className={styles.emptyState}>
+                        Este paciente todavía no tiene facturas registradas.
+                      </p>
+                    );
+                  }
+                  return allInvoices.map((inv, i) => (
+                    <div key={i} className={styles.invoiceRow}>
+                      <span className={styles.invoiceIcon}>
+                        <Receipt size={18} strokeWidth={1.9} />
+                      </span>
+                      <div className={styles.invoiceInfo}>
+                        <div className={styles.invoiceConcept}>{inv.concept}</div>
+                        <div className={styles.invoiceDate}>{inv.date}</div>
+                      </div>
+                      <span className={styles.invoiceAmount}>{inv.amount}</span>
+                      <button type="button" className={styles.previewButton}>
+                        <Download size={14} strokeWidth={2} /> Descargar PDF
+                      </button>
                     </div>
-                    <span className={styles.invoiceAmount}>{inv.amount}</span>
-                    <button type="button" className={styles.previewButton}>
-                      <Download size={14} strokeWidth={2} /> Descargar PDF
-                    </button>
-                  </div>
-                ))}
+                  ));
+                })()}
               </div>
             </div>
 
