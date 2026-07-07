@@ -884,16 +884,29 @@ export function Pacientes() {
                         <li key={t.id}>
                           <div
                             className={`${styles.taskItem} ${
-                              t.isCompleted ? styles.taskItemDone : ""
-                            }`}
+                              t.assignee === "paciente"
+                                ? styles.taskItemPatient
+                                : ""
+                            } ${t.isCompleted ? styles.taskItemDone : ""}`}
                           >
-                            <input
-                              type="checkbox"
-                              className={styles.taskCheck}
-                              checked={t.isCompleted}
-                              onChange={() => toggleTask(t.id)}
-                              aria-label={`Marcar tarea: ${t.description}`}
-                            />
+                            <span
+                              className={`${styles.taskAssigneeIcon} ${assigneeMeta[t.assignee].iconClass}`}
+                              title={assigneeMeta[t.assignee].label}
+                            >
+                              {(() => {
+                                const Icon = assigneeMeta[t.assignee].icon;
+                                return <Icon size={16} />;
+                              })()}
+                            </span>
+                            {t.assignee === "clinica" && (
+                              <input
+                                type="checkbox"
+                                className={styles.taskCheck}
+                                checked={t.isCompleted}
+                                onChange={() => toggleTask(t.id)}
+                                aria-label={`Marcar tarea: ${t.description}`}
+                              />
+                            )}
                             <span className={styles.taskBody}>
                               <span className={styles.taskLabel}>
                                 {t.description}
@@ -911,6 +924,17 @@ export function Pacientes() {
                                 </span>
                               </span>
                             </span>
+                            {t.assignee === "paciente" && (
+                              <span
+                                className={`${styles.taskStatusBadge} ${
+                                  t.isCompleted
+                                    ? styles.taskStatusDone
+                                    : styles.taskStatusPending
+                                }`}
+                              >
+                                {t.isCompleted ? "Completado" : "Pendiente"}
+                              </span>
+                            )}
                             <button
                               type="button"
                               className={styles.deleteAction}
