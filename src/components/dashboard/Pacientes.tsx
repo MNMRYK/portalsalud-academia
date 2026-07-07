@@ -111,7 +111,11 @@ export function Pacientes() {
                 aria-label="Buscar pacientes"
               />
             </div>
-            <button type="button" className={styles.primaryButton}>
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={() => setIsModalOpen(true)}
+            >
               <Plus size={18} strokeWidth={2.5} /> Nuevo Paciente
             </button>
           </div>
