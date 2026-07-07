@@ -73,7 +73,8 @@ const versionHistory = [
 ];
 
 export function Recursos() {
-  const [resources, setResources] = useState<Resource[]>(initialResources);
+  const { resources, addResource, updateResource, removeResource, toggleFavorite } =
+    useResources();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("Todas");
   const [activeRail, setActiveRail] = useState<string>("all");
@@ -91,24 +92,23 @@ export function Recursos() {
   };
 
   const [isUploadOpen, setUploadOpen] = useState(false);
+  const [uploadName, setUploadName] = useState("");
   const [uploadCategory, setUploadCategory] = useState("");
+  const [uploadAudience, setUploadAudience] = useState<ResourceAudience>("clinico");
+  const [uploadShared, setUploadShared] = useState(true);
   const [assignResource, setAssignResource] = useState<Resource | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<number | null>(null);
   const [detailResource, setDetailResource] = useState<Resource | null>(null);
   const [detailCategory, setDetailCategory] = useState("");
+  const [detailAudience, setDetailAudience] = useState<ResourceAudience>("clinico");
 
   const openDetail = (resource: Resource) => {
     setDetailResource(resource);
     setDetailCategory(resource.category);
+    setDetailAudience(resource.audience);
   };
 
-  const toggleFavorite = (id: number) =>
-    setResources((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, favorite: !r.favorite } : r)),
-    );
-
-  const deleteResource = (id: number) =>
-    setResources((prev) => prev.filter((r) => r.id !== id));
+  const deleteResource = (id: number) => removeResource(id);
 
   const matchesCategoryChip = (r: Resource) => {
     if (activeCategory === "Todas") return true;
