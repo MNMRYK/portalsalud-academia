@@ -2106,7 +2106,7 @@ export function Pacientes() {
                 onClick={submitConsult}
                 disabled={!consultForm.note.trim()}
               >
-                Guardar consulta
+                {editingConsultId ? "Guardar cambios" : "Guardar consulta"}
               </button>
             </footer>
           </div>
