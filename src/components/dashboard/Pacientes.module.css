@@ -406,6 +406,49 @@
   color: #b3a898;
 }
 
+/* 2-column form grid for modals */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 20px;
+}
+
+.formGrid .fieldGroup {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+@media (max-width: 560px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Select styled to match plain inputs (harmony with text fields) */
+.selectPlain {
+  width: 100%;
+  height: 52px;
+  padding: 0 44px 0 16px;
+  border: 1px solid #e3d9ea;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #3d3540;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23875c80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.selectPlain:focus {
+  outline: none;
+  border-color: #cdbad6;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
 /* Datos y evolución */
 .summaryGrid {
   display: grid;
