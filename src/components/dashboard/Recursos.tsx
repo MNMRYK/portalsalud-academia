@@ -586,6 +586,47 @@ export function Recursos() {
                 />
               </div>
 
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Destinado a</label>
+                <div className={styles.audienceRow}>
+                  <button
+                    type="button"
+                    className={`${styles.audienceChip} ${detailAudience === "clinico" ? styles.audienceChipActive : ""}`}
+                    onClick={() => setDetailAudience("clinico")}
+                  >
+                    Portal Clínico
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.audienceChip} ${detailAudience === "academico" ? styles.audienceChipActive : ""}`}
+                    onClick={() => setDetailAudience("academico")}
+                  >
+                    Academia
+                  </button>
+                </div>
+              </div>
+
+              <label className={styles.toggleRow}>
+                <span className={styles.toggleIconBox}>
+                  <Eye size={18} strokeWidth={2} />
+                </span>
+                <span className={styles.toggleContent}>
+                  <span className={styles.toggleLabel}>Visible en el portal del paciente</span>
+                </span>
+                <span className={styles.toggleSwitch}>
+                  <input
+                    type="checkbox"
+                    checked={detailResource.sharedWithPatient}
+                    onChange={(e) =>
+                      updateResource(detailResource.id, {
+                        sharedWithPatient: e.target.checked,
+                      })
+                    }
+                  />
+                  <span className={styles.toggleTrack} />
+                </span>
+              </label>
+
               <div className={styles.versionSection}>
                 <div className={styles.versionTitle}>
                   <History size={16} strokeWidth={2} /> Historial de versiones
