@@ -1756,6 +1756,326 @@ export function Pacientes() {
           </div>
         </div>
       )}
+
+      {isConsultOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsConsultOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="consult-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="consult-title" className={styles.modalTitle}>
+                  Registrar consulta
+                </h2>
+                <p className={styles.modalSub}>
+                  Nueva consulta en el historial de {patient?.name}.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsConsultOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formFields}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="consult-note">
+                    Descripción / Notas
+                  </label>
+                  <textarea
+                    id="consult-note"
+                    className={styles.textarea}
+                    rows={3}
+                    placeholder="Describe el motivo, valoración y observaciones de la consulta…"
+                    value={consultForm.note}
+                    onChange={(e) =>
+                      setConsultForm((f) => ({ ...f, note: e.target.value }))
+                    }
+                  />
+                </div>
+
+                <div className={styles.formGrid}>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="consult-date">
+                      Fecha
+                    </label>
+                    <input
+                      id="consult-date"
+                      type="date"
+                      className={styles.textInputPlain}
+                      value={consultForm.date}
+                      onChange={(e) =>
+                        setConsultForm((f) => ({
+                          ...f,
+                          date: e.target.value || todayISO,
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="consult-time">
+                      Hora
+                    </label>
+                    <input
+                      id="consult-time"
+                      type="time"
+                      className={styles.textInputPlain}
+                      value={consultForm.time}
+                      onChange={(e) =>
+                        setConsultForm((f) => ({ ...f, time: e.target.value }))
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.formGrid}>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>
+                      Fase actual del tratamiento
+                    </label>
+                    <CategoryDropdown
+                      categories={phases}
+                      value={consultForm.phase}
+                      onChange={(v) =>
+                        setConsultForm((f) => ({ ...f, phase: v }))
+                      }
+                      onAddCategory={addPhase}
+                      onRemoveCategory={removePhase}
+                    />
+                  </div>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="consult-status">
+                      Estado
+                    </label>
+                    <select
+                      id="consult-status"
+                      className={styles.selectPlain}
+                      value={consultForm.status}
+                      onChange={(e) =>
+                        setConsultForm((f) => ({
+                          ...f,
+                          status: e.target.value as ConsultationStatus,
+                        }))
+                      }
+                    >
+                      <option value="Pendiente">Pendiente</option>
+                      <option value="Completada">Completada</option>
+                      <option value="Cancelada">Cancelada</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className={styles.paymentBox}>
+                  <label className={styles.privacyRow}>
+                    <span className={styles.privacyIconBox}>
+                      <Wallet size={18} />
+                    </span>
+                    <span className={styles.privacyContent}>
+                      <span className={styles.privacyLabel}>Registrar pago</span>
+                      <span className={styles.privacyHint}>
+                        Añade el cobro de esta consulta. Se sincroniza con el
+                        historial de facturación en Ajustes.
+                      </span>
+                    </span>
+                    <span className={styles.toggleSwitch}>
+                      <input
+                        type="checkbox"
+                        checked={consultForm.withPayment}
+                        onChange={(e) =>
+                          setConsultForm((f) => ({
+                            ...f,
+                            withPayment: e.target.checked,
+                          }))
+                        }
+                      />
+                      <span className={styles.toggleTrack} aria-hidden="true" />
+                    </span>
+                  </label>
+
+                  {consultForm.withPayment && (
+                    <div className={styles.formGrid}>
+                      <div className={styles.fieldGroup}>
+                        <label
+                          className={styles.fieldLabel}
+                          htmlFor="consult-amount"
+                        >
+                          Importe (€)
+                        </label>
+                        <input
+                          id="consult-amount"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          className={styles.textInputPlain}
+                          placeholder="Ej: 65"
+                          value={consultForm.amount}
+                          onChange={(e) =>
+                            setConsultForm((f) => ({
+                              ...f,
+                              amount: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <label
+                          className={styles.fieldLabel}
+                          htmlFor="consult-method"
+                        >
+                          Método de pago
+                        </label>
+                        <select
+                          id="consult-method"
+                          className={styles.selectPlain}
+                          value={consultForm.method}
+                          onChange={(e) =>
+                            setConsultForm((f) => ({
+                              ...f,
+                              method: e.target.value as PaymentMethod,
+                            }))
+                          }
+                        >
+                          <option value="Metálico">Metálico</option>
+                          <option value="Tarjeta">Tarjeta</option>
+                          <option value="Transferencia">Transferencia</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsConsultOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitConsult}
+                disabled={!consultForm.note.trim()}
+              >
+                Guardar consulta
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {detailConsult && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setDetailConsult(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="consult-detail-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="consult-detail-title" className={styles.modalTitle}>
+                  Detalle de la consulta
+                </h2>
+                <p className={styles.modalSub}>
+                  {formatLongDate(detailConsult.date)} · {detailConsult.time}
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setDetailConsult(null)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formFields}>
+                <div className={styles.detailBlock}>
+                  <span className={styles.detailLabel}>Fase del tratamiento</span>
+                  <span className={styles.detailValue}>{detailConsult.phase}</span>
+                </div>
+
+                <div className={styles.detailBlock}>
+                  <span className={styles.detailLabel}>Descripción</span>
+                  <p className={styles.detailValue}>{detailConsult.note}</p>
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label
+                    className={styles.fieldLabel}
+                    htmlFor="detail-status"
+                  >
+                    Estado
+                  </label>
+                  <select
+                    id="detail-status"
+                    className={styles.selectPlain}
+                    value={detailConsult.status}
+                    onChange={(e) => {
+                      const status = e.target.value as ConsultationStatus;
+                      updateConsultation(detailConsult.id, { status });
+                      setDetailConsult((c) => (c ? { ...c, status } : c));
+                    }}
+                  >
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Completada">Completada</option>
+                    <option value="Cancelada">Cancelada</option>
+                  </select>
+                </div>
+
+                <div className={styles.paymentBox}>
+                  <span className={styles.detailLabel}>Datos de pago</span>
+                  {detailConsult.payment ? (
+                    <div className={styles.paymentSummary}>
+                      {(() => {
+                        const Icon =
+                          paymentMethodMeta[detailConsult.payment.method].icon;
+                        return <Icon size={18} />;
+                      })()}
+                      <span className={styles.paymentAmount}>
+                        {detailConsult.payment.amount} €
+                      </span>
+                      <span className={styles.paymentMethod}>
+                        {detailConsult.payment.method}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className={styles.detailValue}>
+                      Sin pago registrado en esta consulta.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={() => setDetailConsult(null)}
+              >
+                Cerrar
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
