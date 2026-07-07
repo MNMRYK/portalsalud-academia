@@ -148,7 +148,7 @@ export function Pacientes() {
           <section className={styles.file}>
             <div className={styles.fileHeader}>
               <span className={`${styles.fileAvatar} ${styles.avPlum}`}>EM</span>
-              <div>
+              <div className={styles.fileHeaderInfo}>
                 <h2 className={styles.fileName}>Elena Martín</h2>
                 <div className={styles.fileFacts}>
                   <div className={styles.fileFact}>
@@ -165,6 +165,13 @@ export function Pacientes() {
                   </div>
                 </div>
               </div>
+              <button
+                type="button"
+                className={styles.outlineButton}
+                onClick={() => setIsProfileOpen(true)}
+              >
+                <Pencil size={16} /> Editar datos
+              </button>
             </div>
 
             <nav className={styles.tabs}>
