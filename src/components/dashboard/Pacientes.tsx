@@ -1001,6 +1001,24 @@ export function Pacientes() {
                               </span>
                             )}
                           </button>
+                          <div className={styles.timelineActions}>
+                            <button
+                              type="button"
+                              className={styles.timelineIconBtn}
+                              onClick={() => openEditConsult(c)}
+                              aria-label={`Editar consulta del ${formatLongDate(c.date)}`}
+                            >
+                              <Pencil size={15} />
+                            </button>
+                            <button
+                              type="button"
+                              className={`${styles.timelineIconBtn} ${styles.timelineIconDanger}`}
+                              onClick={() => removeConsultation(c.id)}
+                              aria-label={`Eliminar consulta del ${formatLongDate(c.date)}`}
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
                         </li>
                       ))}
                     </ul>
