@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
+import { CategoryDropdown } from "./academia/CategoryDropdown";
 import styles from "./Recursos.module.css";
 
 type ResourceType = "pdf" | "video" | "menu";
