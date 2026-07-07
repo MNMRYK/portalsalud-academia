@@ -1904,10 +1904,12 @@ export function Pacientes() {
             <header className={styles.modalHeader}>
               <div>
                 <h2 id="consult-title" className={styles.modalTitle}>
-                  Registrar consulta
+                  {editingConsultId ? "Editar consulta" : "Registrar consulta"}
                 </h2>
                 <p className={styles.modalSub}>
-                  Nueva consulta en el historial de {patient?.name}.
+                  {editingConsultId
+                    ? `Actualiza los datos de esta consulta de ${patient?.name}.`
+                    : `Nueva consulta en el historial de ${patient?.name}.`}
                 </p>
               </div>
               <button
