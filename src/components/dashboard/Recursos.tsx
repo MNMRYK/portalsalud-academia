@@ -137,6 +137,7 @@ export function Recursos() {
   const [isUploadOpen, setUploadOpen] = useState(false);
   const [assignResource, setAssignResource] = useState<Resource | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<number | null>(null);
+  const [detailResource, setDetailResource] = useState<Resource | null>(null);
 
   const toggleFavorite = (id: number) =>
     setResources((prev) =>
