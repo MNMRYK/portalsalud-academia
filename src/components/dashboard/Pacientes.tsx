@@ -352,29 +352,83 @@ export function Pacientes() {
                 <div className={styles.panel}>
                   <div className={styles.panelHead}>
                     <div>
-                      <h3 className={styles.panelTitle}>Acciones rápidas pendientes</h3>
-                      <p className={styles.panelSub}>Marca las tareas completadas.</p>
+                      <h3 className={styles.panelTitle}>
+                        Acciones rápidas pendientes
+                      </h3>
+                      <p className={styles.panelSub}>
+                        Tareas con fecha límite en el día seleccionado.
+                      </p>
+                    </div>
+                    <div className={styles.dateFilter}>
+                      <button
+                        type="button"
+                        className={styles.datePickerTrigger}
+                        onClick={openDatePicker}
+                        aria-label="Filtrar tareas por fecha"
+                      >
+                        <CalendarDays size={16} />
+                        {isToday ? "Hoy" : formatLongDate(filterDate)}
+                      </button>
+                      <input
+                        ref={filterInputRef}
+                        type="date"
+                        className={styles.dateFilterInput}
+                        value={filterDate}
+                        onChange={(e) =>
+                          setFilterDate(e.target.value || todayISO)
+                        }
+                        aria-label="Selector de fecha"
+                      />
                     </div>
                   </div>
-                  <ul className={styles.taskList}>
-                    {tasks.map((t) => (
-                      <li key={t.id}>
-                        <label
-                          className={`${styles.taskItem} ${
-                            t.done ? styles.taskItemDone : ""
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            className={styles.taskCheck}
-                            checked={t.done}
-                            onChange={() => toggleTask(t.id)}
-                          />
-                          <span className={styles.taskLabel}>{t.label}</span>
-                        </label>
-                      </li>
-                    ))}
-                  </ul>
+
+                  {!isToday && (
+                    <div className={styles.dateNotice}>
+                      <CalendarDays size={15} />
+                      Visualizando tareas del {formatLongDate(filterDate)}
+                    </div>
+                  )}
+
+                  {dayTasks.length === 0 ? (
+                    <p className={styles.taskEmpty}>
+                      No hay tareas programadas para este día.
+                    </p>
+                  ) : (
+                    <ul className={styles.taskList}>
+                      {dayTasks.map((t) => (
+                        <li key={t.id}>
+                          <label
+                            className={`${styles.taskItem} ${
+                              t.isCompleted ? styles.taskItemDone : ""
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              className={styles.taskCheck}
+                              checked={t.isCompleted}
+                              onChange={() => toggleTask(t.id)}
+                            />
+                            <span className={styles.taskBody}>
+                              <span className={styles.taskLabel}>
+                                {t.description}
+                              </span>
+                              <span className={styles.taskMeta}>
+                                <span className={styles.taskPatient}>
+                                  {t.patientName}
+                                </span>
+                                <span
+                                  className={`${styles.priorityTag} ${priorityClass[t.priority]}`}
+                                >
+                                  <Flag size={12} />
+                                  {t.priority}
+                                </span>
+                              </span>
+                            </span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             </section>
