@@ -18,6 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { NotificationBell } from "./NotificationBell";
 import styles from "./Recursos.module.css";
 
 type ResourceType = "pdf" | "video" | "menu";
