@@ -92,6 +92,8 @@ export function Pacientes() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isFolderOpen, setIsFolderOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
 
   const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
     { id: "datos", label: "Datos y Evolución", icon: Activity },
