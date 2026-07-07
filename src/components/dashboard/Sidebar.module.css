@@ -105,8 +105,36 @@
   flex-shrink: 0;
 }
 
-.profile {
+.navItemLocked {
+  justify-content: flex-start;
+  color: #9a8fa0;
+}
+
+.navItemLocked:hover {
+  background-color: #f5f0e8;
+  color: #6b6270;
+}
+
+.lockPill {
+  margin-left: auto;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #b25c40;
+  background-color: #fbeee7;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.footer {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -127,6 +155,31 @@
   font-weight: 700;
   font-size: 0.9rem;
   flex-shrink: 0;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ece4d8;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #a25f4c;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.logoutButton:hover {
+  background-color: #fbeee7;
+  border-color: #f2d8cb;
 }
 
 .profileText {

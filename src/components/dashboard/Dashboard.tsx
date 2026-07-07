@@ -12,6 +12,8 @@ import {
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { AddPatientModal } from "./AddPatientModal";
+import { PortalDashboard } from "./Portal";
+import { useUser } from "../../context/UserContext";
 import styles from "./Dashboard.module.css";
 
 const quickActions = [
@@ -74,8 +76,15 @@ const patients = [
 ];
 
 export function Dashboard() {
+  const { isAdmin } = useUser();
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // El paciente ve su portal personal en lugar del panel de administración.
+  if (!isAdmin) {
+    return <PortalDashboard />;
+  }
+
 
   const handleQuickAction = (id: string) => {
     if (id === "paciente") {

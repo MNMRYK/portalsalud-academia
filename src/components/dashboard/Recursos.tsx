@@ -22,19 +22,13 @@ import {
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { CategoryDropdown } from "./academia/CategoryDropdown";
+import {
+  useResources,
+  type Resource,
+  type ResourceType,
+  type ResourceAudience,
+} from "../../context/ResourcesContext";
 import styles from "./Recursos.module.css";
-
-type ResourceType = "pdf" | "video" | "menu";
-
-interface Resource {
-  id: number;
-  name: string;
-  type: ResourceType;
-  category: string;
-  phase: string;
-  favorite: boolean;
-  recent: boolean;
-}
 
 const categories = ["Todas", "PDFs", "Menús", "Vídeos"] as const;
 
@@ -46,75 +40,16 @@ const initialCategories = [
   "Hábitos y mantenimiento",
 ];
 
-const treatmentPhases = [
-  "Fase 1: Détox hepático",
-  "Fase 2: Reducción de inflamación",
-  "Fase 3: Reparación intestinal",
-  "Fase 4: Mantenimiento y hábitos",
-];
-
 const typeMeta: Record<ResourceType, { icon: LucideIcon; label: string; className: string }> = {
   pdf: { icon: FileText, label: "PDF", className: styles.iconPdf },
   video: { icon: Video, label: "Vídeo", className: styles.iconVideo },
   menu: { icon: ClipboardList, label: "Menú", className: styles.iconMenu },
 };
 
-const initialResources: Resource[] = [
-  {
-    id: 1,
-    name: "Guía de nutrición antiinflamatoria",
-    type: "pdf",
-    category: "Antiinflamatoria",
-    phase: treatmentPhases[1],
-    favorite: true,
-    recent: true,
-  },
-  {
-    id: 2,
-    name: "Menú semanal détox de primavera",
-    type: "menu",
-    category: "Détox y depuración",
-    phase: treatmentPhases[0],
-    favorite: false,
-    recent: true,
-  },
-  {
-    id: 3,
-    name: "Vídeo: batch cooking saludable",
-    type: "video",
-    category: "Hábitos y mantenimiento",
-    phase: treatmentPhases[3],
-    favorite: true,
-    recent: false,
-  },
-  {
-    id: 4,
-    name: "Lista de la compra intestinal",
-    type: "pdf",
-    category: "Salud intestinal",
-    phase: treatmentPhases[2],
-    favorite: false,
-    recent: true,
-  },
-  {
-    id: 5,
-    name: "Plantilla de menú deportivo",
-    type: "menu",
-    category: "Nutrición Deportiva",
-    phase: treatmentPhases[3],
-    favorite: false,
-    recent: false,
-  },
-  {
-    id: 6,
-    name: "Vídeo: respiración y digestión",
-    type: "video",
-    category: "Salud intestinal",
-    phase: treatmentPhases[2],
-    favorite: false,
-    recent: true,
-  },
-];
+const audienceLabels: Record<ResourceAudience, string> = {
+  clinico: "Clínico",
+  academico: "Académico",
+};
 
 const patients = [
   { id: 1, name: "Laura Giménez", note: "Fase 2 · Antiinflamatoria" },
@@ -138,7 +73,8 @@ const versionHistory = [
 ];
 
 export function Recursos() {
-  const [resources, setResources] = useState<Resource[]>(initialResources);
+  const { resources, addResource, updateResource, removeResource, toggleFavorite } =
+    useResources();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("Todas");
   const [activeRail, setActiveRail] = useState<string>("all");
@@ -156,24 +92,23 @@ export function Recursos() {
   };
 
   const [isUploadOpen, setUploadOpen] = useState(false);
+  const [uploadName, setUploadName] = useState("");
   const [uploadCategory, setUploadCategory] = useState("");
+  const [uploadAudience, setUploadAudience] = useState<ResourceAudience>("clinico");
+  const [uploadShared, setUploadShared] = useState(true);
   const [assignResource, setAssignResource] = useState<Resource | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<number | null>(null);
   const [detailResource, setDetailResource] = useState<Resource | null>(null);
   const [detailCategory, setDetailCategory] = useState("");
+  const [detailAudience, setDetailAudience] = useState<ResourceAudience>("clinico");
 
   const openDetail = (resource: Resource) => {
     setDetailResource(resource);
     setDetailCategory(resource.category);
+    setDetailAudience(resource.audience);
   };
 
-  const toggleFavorite = (id: number) =>
-    setResources((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, favorite: !r.favorite } : r)),
-    );
-
-  const deleteResource = (id: number) =>
-    setResources((prev) => prev.filter((r) => r.id !== id));
+  const deleteResource = (id: number) => removeResource(id);
 
   const matchesCategoryChip = (r: Resource) => {
     if (activeCategory === "Todas") return true;
@@ -221,7 +156,10 @@ export function Recursos() {
               type="button"
               className={styles.primaryButton}
               onClick={() => {
+                setUploadName("");
                 setUploadCategory("");
+                setUploadAudience("clinico");
+                setUploadShared(true);
                 setUploadOpen(true);
               }}
             >
@@ -340,6 +278,11 @@ export function Recursos() {
                     <h3 className={styles.cardName}>{resource.name}</h3>
                     <div className={styles.cardMeta}>
                       <span className={styles.badge}>{resource.category}</span>
+                      <span
+                        className={`${styles.audienceBadge} ${resource.audience === "academico" ? styles.audienceBadgeAcademy : styles.audienceBadgeClinic}`}
+                      >
+                        {audienceLabels[resource.audience]}
+                      </span>
                       <span>{meta.label}</span>
                     </div>
                   </div>
@@ -419,6 +362,8 @@ export function Recursos() {
                 <input
                   className={styles.textInputPlain}
                   placeholder="Ej: Guía de nutrición antiinflamatoria"
+                  value={uploadName}
+                  onChange={(e) => setUploadName(e.target.value)}
                 />
               </div>
 
@@ -433,6 +378,26 @@ export function Recursos() {
                 />
               </div>
 
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Destinado a</label>
+                <div className={styles.audienceRow}>
+                  <button
+                    type="button"
+                    className={`${styles.audienceChip} ${uploadAudience === "clinico" ? styles.audienceChipActive : ""}`}
+                    onClick={() => setUploadAudience("clinico")}
+                  >
+                    Portal Clínico
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.audienceChip} ${uploadAudience === "academico" ? styles.audienceChipActive : ""}`}
+                    onClick={() => setUploadAudience("academico")}
+                  >
+                    Academia
+                  </button>
+                </div>
+              </div>
+
               <label className={styles.toggleRow}>
                 <span className={styles.toggleIconBox}>
                   <Eye size={18} strokeWidth={2} />
@@ -444,7 +409,11 @@ export function Recursos() {
                   </span>
                 </span>
                 <span className={styles.toggleSwitch}>
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={uploadShared}
+                    onChange={(e) => setUploadShared(e.target.checked)}
+                  />
                   <span className={styles.toggleTrack} />
                 </span>
               </label>
@@ -461,7 +430,16 @@ export function Recursos() {
               <button
                 type="button"
                 className={styles.primaryButton}
-                onClick={() => setUploadOpen(false)}
+                onClick={() => {
+                  addResource({
+                    name: uploadName.trim() || "Nuevo recurso",
+                    type: "pdf",
+                    category: uploadCategory || "Sin categoría",
+                    audience: uploadAudience,
+                    sharedWithPatient: uploadShared,
+                  });
+                  setUploadOpen(false);
+                }}
               >
                 <UploadCloud size={18} strokeWidth={2.2} /> Subir recurso
               </button>
@@ -608,6 +586,47 @@ export function Recursos() {
                 />
               </div>
 
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Destinado a</label>
+                <div className={styles.audienceRow}>
+                  <button
+                    type="button"
+                    className={`${styles.audienceChip} ${detailAudience === "clinico" ? styles.audienceChipActive : ""}`}
+                    onClick={() => setDetailAudience("clinico")}
+                  >
+                    Portal Clínico
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.audienceChip} ${detailAudience === "academico" ? styles.audienceChipActive : ""}`}
+                    onClick={() => setDetailAudience("academico")}
+                  >
+                    Academia
+                  </button>
+                </div>
+              </div>
+
+              <label className={styles.toggleRow}>
+                <span className={styles.toggleIconBox}>
+                  <Eye size={18} strokeWidth={2} />
+                </span>
+                <span className={styles.toggleContent}>
+                  <span className={styles.toggleLabel}>Visible en el portal del paciente</span>
+                </span>
+                <span className={styles.toggleSwitch}>
+                  <input
+                    type="checkbox"
+                    checked={resources.find((r) => r.id === detailResource.id)?.sharedWithPatient ?? false}
+                    onChange={(e) =>
+                      updateResource(detailResource.id, {
+                        sharedWithPatient: e.target.checked,
+                      })
+                    }
+                  />
+                  <span className={styles.toggleTrack} />
+                </span>
+              </label>
+
               <div className={styles.versionSection}>
                 <div className={styles.versionTitle}>
                   <History size={16} strokeWidth={2} /> Historial de versiones
@@ -644,7 +663,13 @@ export function Recursos() {
               <button
                 type="button"
                 className={styles.primaryButton}
-                onClick={() => setDetailResource(null)}
+                onClick={() => {
+                  updateResource(detailResource.id, {
+                    category: detailCategory,
+                    audience: detailAudience,
+                  });
+                  setDetailResource(null);
+                }}
               >
                 Guardar cambios
               </button>

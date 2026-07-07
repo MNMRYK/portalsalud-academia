@@ -14,6 +14,10 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LegalTemplatesProvider } from "../context/LegalTemplatesContext";
 import { TasksProvider } from "../context/TasksContext";
 import { ConsultationsProvider } from "../context/ConsultationsContext";
+import { UserProvider } from "../context/UserContext";
+import { ResourcesProvider } from "../context/ResourcesContext";
+import { AcademyProvider } from "../context/AcademyContext";
+import { DevSwitcher } from "../components/dashboard/DevSwitcher";
 
 function NotFoundComponent() {
   return (
@@ -136,14 +140,21 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LegalTemplatesProvider>
-        <TasksProvider>
-          <ConsultationsProvider>
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
-          </ConsultationsProvider>
-        </TasksProvider>
-      </LegalTemplatesProvider>
+      <UserProvider>
+        <LegalTemplatesProvider>
+          <TasksProvider>
+            <ConsultationsProvider>
+              <ResourcesProvider>
+                <AcademyProvider>
+                  {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+                  <Outlet />
+                  <DevSwitcher />
+                </AcademyProvider>
+              </ResourcesProvider>
+            </ConsultationsProvider>
+          </TasksProvider>
+        </LegalTemplatesProvider>
+      </UserProvider>
     </QueryClientProvider>
   );
 }

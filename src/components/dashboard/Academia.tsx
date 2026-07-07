@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/popover";
 import { CategoryDropdown } from "./academia/CategoryDropdown";
 import { RichTextEditor } from "./academia/RichTextEditor";
+import { useUser } from "../../context/UserContext";
+import { AcademiaStudent, type StudentSection } from "./AcademiaStudent";
 import styles from "./Dashboard.module.css";
 import academia from "./Academia.module.css";
 
@@ -132,7 +134,8 @@ const initialLessons: Lesson[] = [
 
 
 
-export function Academia() {
+export function Academia({ studentSection }: { studentSection?: StudentSection } = {}) {
+  const { isAdmin } = useUser();
   const initialView = (useLocation().state as { view?: View })?.view;
   const [view, setView] = useState<View>(initialView ?? "home");
   const [courses, setCourses] = useState<Course[]>(initialCourses);
@@ -189,6 +192,11 @@ export function Academia() {
   const deleteLesson = (id: string) => {
     setLessons((prev) => prev.filter((l) => l.id !== id));
   };
+
+  // Vista de alumno (paciente): reutiliza el diseño de la academia en modo lectura.
+  if (!isAdmin) {
+    return <AcademiaStudent section={studentSection} />;
+  }
 
   return (
     <div className={styles.page}>

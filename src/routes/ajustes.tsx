@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Ajustes } from "@/components/dashboard/Ajustes";
+import { AdminOnly } from "@/components/dashboard/AdminOnly";
 
 export const Route = createFileRoute("/ajustes")({
   head: () => ({
@@ -12,5 +13,9 @@ export const Route = createFileRoute("/ajustes")({
       },
     ],
   }),
-  component: Ajustes,
+  component: () => (
+    <AdminOnly>
+      <Ajustes />
+    </AdminOnly>
+  ),
 });
