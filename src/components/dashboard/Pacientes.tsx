@@ -162,7 +162,12 @@ export function Pacientes() {
   const { addTask, toggleTask, removeTask, tasksForPatient, tasksForDate } =
     useTasks();
 
-  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
+  const incomingPatient = (
+    useLocation().state as { selectedPatient?: string | null }
+  )?.selectedPatient;
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(
+    incomingPatient ?? null,
+  );
   const [activeTab, setActiveTab] = useState<TabId>("datos");
   const [phase, setPhase] = useState(treatmentPhases[1]);
   const [isModalOpen, setIsModalOpen] = useState(false);
