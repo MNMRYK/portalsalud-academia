@@ -111,47 +111,50 @@ const weightData = [
   { label: "Jul", value: 71, height: 44 },
 ];
 
-const diaryEntries = [
+interface DiaryEntry {
+  id: string;
+  date: string;
+  energy: { label: string; cls: string };
+  inflammation: { label: string; cls: string };
+  note: string;
+  internal: boolean;
+}
+
+const levelClassByLabel: Record<string, string> = {
+  Alta: styles.levelSage,
+  Media: styles.levelPlum,
+  Baja: styles.levelTerracota,
+};
+const inflammationClassByLabel: Record<string, string> = {
+  Baja: styles.levelSage,
+  Media: styles.levelPlum,
+  Alta: styles.levelTerracota,
+};
+
+const initialDiaryEntries: DiaryEntry[] = [
   {
+    id: "diary-1",
     date: "5 Jul 2026",
     energy: { label: "Alta", cls: styles.levelSage },
     inflammation: { label: "Baja", cls: styles.levelSage },
     note: "Buena adherencia a la pauta. Duerme mejor.",
+    internal: false,
   },
   {
+    id: "diary-2",
     date: "28 Jun 2026",
     energy: { label: "Media", cls: styles.levelPlum },
     inflammation: { label: "Media", cls: styles.levelPlum },
     note: "Hinchazón abdominal tras comidas fuera de casa.",
+    internal: false,
   },
   {
+    id: "diary-3",
     date: "21 Jun 2026",
     energy: { label: "Baja", cls: styles.levelTerracota },
     inflammation: { label: "Alta", cls: styles.levelTerracota },
-    note: "Semana estresante. Retención de líquidos.",
-  },
-];
-
-const consultationHistory = [
-  {
-    date: "5 Jul 2026",
-    note: "Revisión de fase 2. Reducción visible de inflamación y mejor descanso.",
-    status: "Completada" as const,
-  },
-  {
-    date: "20 Jun 2026",
-    note: "Ajuste de pauta antiinflamatoria y refuerzo de hidratación.",
-    status: "Completada" as const,
-  },
-  {
-    date: "12 Jul 2026",
-    note: "Analítica de control programada para valorar marcadores hepáticos.",
-    status: "Pendiente" as const,
-  },
-  {
-    date: "3 Jun 2026",
-    note: "Consulta anulada por la paciente. Reagendada para la semana siguiente.",
-    status: "Cancelada" as const,
+    note: "Sospecha de intolerancia. No compartir aún con la paciente.",
+    internal: true,
   },
 ];
 
@@ -159,6 +162,15 @@ const consultStatusClass: Record<string, string> = {
   Completada: styles.statusCompleted,
   Pendiente: styles.statusPending,
   Cancelada: styles.statusCancelled,
+};
+
+const paymentMethodMeta: Record<
+  PaymentMethod,
+  { icon: typeof CreditCard; label: string }
+> = {
+  Metálico: { icon: Banknote, label: "Metálico" },
+  Tarjeta: { icon: CreditCard, label: "Tarjeta" },
+  Transferencia: { icon: ArrowRightLeft, label: "Transferencia" },
 };
 
 const documents = {
