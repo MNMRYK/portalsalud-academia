@@ -278,6 +278,11 @@ export function Recursos() {
                     <h3 className={styles.cardName}>{resource.name}</h3>
                     <div className={styles.cardMeta}>
                       <span className={styles.badge}>{resource.category}</span>
+                      <span
+                        className={`${styles.audienceBadge} ${resource.audience === "academico" ? styles.audienceBadgeAcademy : styles.audienceBadgeClinic}`}
+                      >
+                        {audienceLabels[resource.audience]}
+                      </span>
                       <span>{meta.label}</span>
                     </div>
                   </div>
