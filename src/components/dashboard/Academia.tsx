@@ -134,7 +134,8 @@ const initialLessons: Lesson[] = [
 
 
 
-export function Academia() {
+export function Academia({ studentSection }: { studentSection?: StudentSection } = {}) {
+  const { isAdmin } = useUser();
   const initialView = (useLocation().state as { view?: View })?.view;
   const [view, setView] = useState<View>(initialView ?? "home");
   const [courses, setCourses] = useState<Course[]>(initialCourses);
