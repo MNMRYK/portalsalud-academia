@@ -176,6 +176,11 @@ export function Dashboard() {
           </table>
         </section>
       </main>
+
+      <AddPatientModal
+        open={isPatientModalOpen}
+        onClose={() => setIsPatientModalOpen(false)}
+      />
     </div>
   );
 }
