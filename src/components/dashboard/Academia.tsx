@@ -255,6 +255,7 @@ export function Academia() {
    ============================================================ */
 function HomeView({
   courses,
+  categories,
   onAddLesson,
   onCreateCourse,
   onCreateLive,
@@ -263,6 +264,7 @@ function HomeView({
   onOpenCourse,
 }: {
   courses: Course[];
+  categories: string[];
   onAddLesson: () => void;
   onCreateCourse: () => void;
   onCreateLive: () => void;
@@ -270,6 +272,18 @@ function HomeView({
   onDeleteCourse: (id: string) => void;
   onOpenCourse: (c: Course) => void;
 }) {
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+
+  const filteredCourses = courses.filter((c) => {
+    const matchStatus =
+      statusFilter === "all" ||
+      (statusFilter === "published" && c.published) ||
+      (statusFilter === "draft" && !c.published);
+    const matchCategory = categoryFilter === "all" || c.tag === categoryFilter;
+    return matchStatus && matchCategory;
+  });
+
   return (
     <>
       <header className={styles.header}>
