@@ -349,7 +349,7 @@ export function Pacientes() {
                   </table>
                 </div>
 
-                <div className={styles.panel}>
+                <div className={`${styles.panel} ${styles.actionsPanel}`}>
                   <div className={styles.panelHead}>
                     <div>
                       <h3 className={styles.panelTitle}>
@@ -382,53 +382,55 @@ export function Pacientes() {
                     </div>
                   </div>
 
-                  {!isToday && (
-                    <div className={styles.dateNotice}>
-                      <CalendarDays size={15} />
-                      Visualizando tareas del {formatLongDate(filterDate)}
-                    </div>
-                  )}
+                  <div className={styles.actionsScroll}>
+                    {!isToday && (
+                      <div className={styles.dateNotice}>
+                        <CalendarDays size={15} />
+                        Visualizando tareas del {formatLongDate(filterDate)}
+                      </div>
+                    )}
 
-                  {dayTasks.length === 0 ? (
-                    <p className={styles.taskEmpty}>
-                      No hay tareas programadas para este día.
-                    </p>
-                  ) : (
-                    <ul className={styles.taskList}>
-                      {dayTasks.map((t) => (
-                        <li key={t.id}>
-                          <label
-                            className={`${styles.taskItem} ${
-                              t.isCompleted ? styles.taskItemDone : ""
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              className={styles.taskCheck}
-                              checked={t.isCompleted}
-                              onChange={() => toggleTask(t.id)}
-                            />
-                            <span className={styles.taskBody}>
-                              <span className={styles.taskLabel}>
-                                {t.description}
-                              </span>
-                              <span className={styles.taskMeta}>
-                                <span className={styles.taskPatient}>
-                                  {t.patientName}
+                    {dayTasks.length === 0 ? (
+                      <p className={styles.taskEmpty}>
+                        No hay tareas programadas para este día.
+                      </p>
+                    ) : (
+                      <ul className={styles.taskList}>
+                        {dayTasks.map((t) => (
+                          <li key={t.id}>
+                            <label
+                              className={`${styles.taskItem} ${
+                                t.isCompleted ? styles.taskItemDone : ""
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                className={styles.taskCheck}
+                                checked={t.isCompleted}
+                                onChange={() => toggleTask(t.id)}
+                              />
+                              <span className={styles.taskBody}>
+                                <span className={styles.taskLabel}>
+                                  {t.description}
                                 </span>
-                                <span
-                                  className={`${styles.priorityTag} ${priorityClass[t.priority]}`}
-                                >
-                                  <Flag size={12} />
-                                  {t.priority}
+                                <span className={styles.taskMeta}>
+                                  <span className={styles.taskPatient}>
+                                    {t.patientName}
+                                  </span>
+                                  <span
+                                    className={`${styles.priorityTag} ${priorityClass[t.priority]}`}
+                                  >
+                                    <Flag size={12} />
+                                    {t.priority}
+                                  </span>
                                 </span>
                               </span>
-                            </span>
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                            </label>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
               </div>
             </section>
