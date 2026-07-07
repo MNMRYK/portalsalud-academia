@@ -2,8 +2,6 @@
 .page {
   display: flex;
   min-height: 100vh;
-  max-width: 100%;
-  overflow-x: hidden;
   background-color: #f7f3ee;
   font-family: "Nunito", system-ui, sans-serif;
   color: #3d3540;
@@ -12,7 +10,6 @@
 .main {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
   padding: 32px 40px 48px;
 }
 
@@ -118,6 +115,11 @@
 
 /* Patient list rail */
 .rail {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
   background-color: #ffffff;
   border: 1px solid #ece4d8;
   border-radius: 16px;
@@ -125,6 +127,12 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
 }
 
 .railTitle {
@@ -1277,8 +1285,24 @@
   .layout {
     grid-template-columns: 1fr;
   }
+  .rail {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
   .summaryGrid {
     grid-template-columns: 1fr;
+  }
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .workGrid {
+    display: flex;
+    flex-direction: column;
+  }
+  .workGrid > .panel {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -1322,7 +1346,6 @@
   flex-direction: column;
   gap: 24px;
   min-width: 0;
-  overflow: hidden;
 }
 
 /* Rail: overview shortcut + neutral avatar */
@@ -1827,19 +1850,6 @@
   color: #c0564a;
 }
 
-@media (max-width: 1024px) {
-  .kpiGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .workGrid {
-    display: flex;
-    flex-direction: column;
-  }
-  .workGrid > .panel {
-    width: 100%;
-    max-width: 100%;
-  }
-}
 
 @media (max-width: 640px) {
   .kpiGrid {
