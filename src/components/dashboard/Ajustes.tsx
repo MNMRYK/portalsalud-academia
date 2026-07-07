@@ -17,6 +17,7 @@ import {
   Pencil,
   Send,
   Trash2,
+  Building2,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
@@ -101,6 +102,13 @@ export function Ajustes() {
   const [access, setAccess] = useState(() =>
     billing.map((b) => ({ portal: b.portal, academia: b.academia }))
   );
+  const [identity, setIdentity] = useState({
+    legalName: "Nutralia Centro de Nutrición S.L.",
+    taxId: "B-12345678",
+    address: "Calle de la Salud 42, 28001 Madrid",
+    primaryColor: "#d47f65",
+    secondaryColor: "#875c80",
+  });
 
   const toggleAccess = (index: number, key: "portal" | "academia") => {
     setAccess((prev) =>
@@ -146,60 +154,161 @@ export function Ajustes() {
 
           <div className={styles.content}>
             {activeTab === "general" && (
-              <section className={styles.card}>
-                <div className={styles.cardHead}>
-                  <h2 className={styles.cardTitle}>Gestión de Plantillas Legales Maestras</h2>
-                  <p className={styles.cardSub}>
-                    El sistema generará los documentos personalizados automáticamente. Usa las
-                    etiquetas <span className={styles.tag}>[NOMBRE]</span>,{" "}
-                    <span className={styles.tag}>[DNI]</span> y{" "}
-                    <span className={styles.tag}>[FECHA]</span> en tus archivos para que el
-                    sistema los rellene con los datos del paciente.
-                  </p>
-                </div>
+              <>
+                <section className={styles["settings-section"]}>
+                  <div className={styles.cardHead}>
+                    <h2 className={styles.cardTitle}>Identidad de la Clínica</h2>
+                    <p className={styles.cardSub}>
+                      Datos corporativos y visuales que aparecerán en documentos y comunicaciones
+                      oficiales.
+                    </p>
+                  </div>
 
-                <div className={styles.docList}>
-                  {legalTemplates.map((doc) => (
-                    <div key={doc.name} className={styles.docRow}>
-                      <span className={styles.docIcon}>
-                        <FileText size={20} strokeWidth={1.9} />
-                      </span>
-                      <div className={styles.docInfo}>
-                        <div className={styles.docName}>{doc.name}</div>
-                        <div className={styles.docMeta}>{doc.format}</div>
-                      </div>
+                  <div className={styles["identity-grid"]}>
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.fieldLabel}>Nombre legal</label>
+                      <input
+                        type="text"
+                        className={styles.textInput}
+                        value={identity.legalName}
+                        onChange={(e) =>
+                          setIdentity((prev) => ({ ...prev, legalName: e.target.value }))
+                        }
+                      />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.fieldLabel}>NIF / CIF</label>
+                      <input
+                        type="text"
+                        className={styles.textInput}
+                        value={identity.taxId}
+                        onChange={(e) =>
+                          setIdentity((prev) => ({ ...prev, taxId: e.target.value }))
+                        }
+                      />
+                    </div>
+                    <div className={`${styles.fieldGroup} ${styles.fieldSpan2}`}>
+                      <label className={styles.fieldLabel}>Dirección fiscal</label>
+                      <input
+                        type="text"
+                        className={styles.textInput}
+                        value={identity.address}
+                        onChange={(e) =>
+                          setIdentity((prev) => ({ ...prev, address: e.target.value }))
+                        }
+                      />
+                    </div>
 
-                      <span
-                        className={`${styles.legalStatus} ${doc.uploaded ? styles.legalOk : styles.legalMissing}`}
-                      >
-                        {doc.uploaded ? (
-                          <>
-                            <Check size={15} strokeWidth={2.6} /> Plantilla vigente
-                          </>
-                        ) : (
-                          <>
-                            <AlertTriangle size={15} strokeWidth={2.4} /> Plantilla no cargada
-                          </>
-                        )}
-                      </span>
-
-                      <div className={styles.rowActions}>
-                        <button
-                          type="button"
-                          className={styles.previewButton}
-                          onClick={() => setPreviewDoc(doc.name)}
-                        >
-                          <Eye size={15} strokeWidth={2} /> Vista previa
-                        </button>
-                        <label className={styles.uploadSmall}>
-                          <Upload size={14} strokeWidth={2} /> Cargar Plantilla (.docx o .pdf)
-                          <input type="file" accept=".docx,application/pdf" hidden />
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.fieldLabel}>Logo</label>
+                      <div className={styles.logoRow}>
+                        <div className={styles.logoPreview}>
+                          <Building2 size={28} strokeWidth={1.8} />
+                        </div>
+                        <label className={styles.uploadButton}>
+                          <Upload size={16} strokeWidth={2} /> Subir logo
+                          <input type="file" accept="image/*" hidden />
                         </label>
                       </div>
+                      <p className={styles.hint}>
+                        Formatos recomendados: PNG o SVG con fondo transparente.
+                      </p>
                     </div>
-                  ))}
-                </div>
-              </section>
+
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.fieldLabel}>Colores de marca</label>
+                      <div className={styles.colorRow}>
+                        <div className={styles.colorSwatch}>
+                          <input
+                            type="color"
+                            value={identity.primaryColor}
+                            onChange={(e) =>
+                              setIdentity((prev) => ({ ...prev, primaryColor: e.target.value }))
+                            }
+                            aria-label="Color primario"
+                          />
+                        </div>
+                        <span className={styles.colorValue}>{identity.primaryColor}</span>
+                        <div className={styles.colorSwatch}>
+                          <input
+                            type="color"
+                            value={identity.secondaryColor}
+                            onChange={(e) =>
+                              setIdentity((prev) => ({ ...prev, secondaryColor: e.target.value }))
+                            }
+                            aria-label="Color secundario"
+                          />
+                        </div>
+                        <span className={styles.colorValue}>{identity.secondaryColor}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.saveRow}>
+                    <button type="button" className={styles.primaryButton}>
+                      Guardar datos corporativos
+                    </button>
+                  </div>
+                </section>
+
+                <section className={styles["settings-section"]}>
+                  <div className={styles.cardHead}>
+                    <h2 className={styles.cardTitle}>Gestión de Plantillas Legales Maestras</h2>
+                    <p className={styles.cardSub}>
+                      El sistema generará los documentos personalizados automáticamente. Usa las
+                      etiquetas <span className={styles.tag}>[NOMBRE]</span>,{" "}
+                      <span className={styles.tag}>[DNI]</span> y{" "}
+                      <span className={styles.tag}>[FECHA]</span> en tus archivos para que el
+                      sistema los rellene con los datos del paciente.
+                    </p>
+                  </div>
+
+                  <div className={styles.docList}>
+                    {legalTemplates.map((doc) => (
+                      <div
+                        key={doc.name}
+                        className={`${styles.docRow} ${styles["document-card"]}`}
+                      >
+                        <span className={styles.docIcon}>
+                          <FileText size={20} strokeWidth={1.9} />
+                        </span>
+                        <div className={styles.docInfo}>
+                          <div className={styles.docName}>{doc.name}</div>
+                          <div className={styles.docMeta}>{doc.format}</div>
+                        </div>
+
+                        <span
+                          className={`${styles.legalStatus} ${doc.uploaded ? styles.legalOk : styles.legalMissing}`}
+                        >
+                          {doc.uploaded ? (
+                            <>
+                              <Check size={15} strokeWidth={2.6} /> Plantilla vigente
+                            </>
+                          ) : (
+                            <>
+                              <AlertTriangle size={15} strokeWidth={2.4} /> Plantilla no cargada
+                            </>
+                          )}
+                        </span>
+
+                        <div className={styles.rowActions}>
+                          <button
+                            type="button"
+                            className={styles.previewButton}
+                            onClick={() => setPreviewDoc(doc.name)}
+                          >
+                            <Eye size={15} strokeWidth={2} /> Vista previa
+                          </button>
+                          <label className={styles.uploadSmall}>
+                            <Upload size={14} strokeWidth={2} /> Cargar Plantilla (.docx o .pdf)
+                            <input type="file" accept=".docx,application/pdf" hidden />
+                          </label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </>
             )}
 
             {activeTab === "facturacion" && (
