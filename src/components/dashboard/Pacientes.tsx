@@ -186,6 +186,11 @@ const documents = {
 export function Pacientes() {
   const { addTask, toggleTask, removeTask, tasksForPatient, tasksForDate } =
     useTasks();
+  const {
+    addConsultation,
+    updateConsultation,
+    consultationsForPatient,
+  } = useConsultations();
 
   const incomingPatient = (
     useLocation().state as { selectedPatient?: string | null }
@@ -194,9 +199,20 @@ export function Pacientes() {
     incomingPatient ?? null,
   );
   const [activeTab, setActiveTab] = useState<TabId>("datos");
+
+  // Fases de tratamiento dinámicas (compartidas por la ficha y los modales)
+  const [phases, setPhases] = useState<string[]>(treatmentPhases);
   const [phase, setPhase] = useState(treatmentPhases[1]);
+  const addPhase = (name: string) =>
+    setPhases((prev) => (prev.includes(name) ? prev : [...prev, name]));
+  const removePhase = (name: string) => {
+    setPhases((prev) => prev.filter((p) => p !== name));
+    if (phase === name) setPhase("");
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMetricOpen, setIsMetricOpen] = useState(false);
+  const [metricPhase, setMetricPhase] = useState(treatmentPhases[1]);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isFolderOpen, setIsFolderOpen] = useState(false);
@@ -204,6 +220,47 @@ export function Pacientes() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isApptOpen, setIsApptOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+
+  // Diario clínico (con notas internas)
+  const [diaryEntries, setDiaryEntries] =
+    useState<DiaryEntry[]>(initialDiaryEntries);
+  const [entryEnergy, setEntryEnergy] = useState("Media");
+  const [entryInflammation, setEntryInflammation] = useState("Media");
+  const [entryNote, setEntryNote] = useState("");
+  const [entryInternal, setEntryInternal] = useState(false);
+
+  const resetEntryForm = () => {
+    setEntryEnergy("Media");
+    setEntryInflammation("Media");
+    setEntryNote("");
+    setEntryInternal(false);
+  };
+
+  const submitEntry = () => {
+    setDiaryEntries((prev) => [
+      {
+        id: `diary-${Date.now()}`,
+        date: new Date().toLocaleDateString("es-ES", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+        energy: {
+          label: entryEnergy,
+          cls: levelClassByLabel[entryEnergy] ?? styles.levelPlum,
+        },
+        inflammation: {
+          label: entryInflammation,
+          cls: inflammationClassByLabel[entryInflammation] ?? styles.levelPlum,
+        },
+        note: entryNote.trim(),
+        internal: entryInternal,
+      },
+      ...prev,
+    ]);
+    resetEntryForm();
+    setIsEntryOpen(false);
+  };
 
   // Filtro de fecha del panel "Acciones rápidas pendientes"
   const todayISO = toISODate(new Date());
@@ -219,8 +276,57 @@ export function Pacientes() {
   const [taskDue, setTaskDue] = useState(todayISO);
   const [taskPriority, setTaskPriority] = useState<TaskPriority>("Media");
 
+  // Modal "Registrar / Ver consulta" del Historial
+  const [isConsultOpen, setIsConsultOpen] = useState(false);
+  const [detailConsult, setDetailConsult] = useState<Consultation | null>(null);
+  const [consultForm, setConsultForm] = useState({
+    note: "",
+    date: todayISO,
+    time: "10:00",
+    phase: treatmentPhases[1],
+    status: "Pendiente" as ConsultationStatus,
+    withPayment: false,
+    amount: "",
+    method: "Tarjeta" as PaymentMethod,
+  });
+
+  const openConsultForm = () => {
+    setConsultForm({
+      note: "",
+      date: todayISO,
+      time: "10:00",
+      phase: phases[0] ?? "",
+      status: "Pendiente",
+      withPayment: false,
+      amount: "",
+      method: "Tarjeta",
+    });
+    setIsConsultOpen(true);
+  };
+
+  const submitConsult = () => {
+    if (!selectedPatient || !consultForm.note.trim()) return;
+    const amountNum = Number(consultForm.amount);
+    addConsultation({
+      patientName: selectedPatient,
+      note: consultForm.note.trim(),
+      date: consultForm.date,
+      time: consultForm.time,
+      phase: consultForm.phase,
+      status: consultForm.status,
+      payment:
+        consultForm.withPayment && amountNum > 0
+          ? { amount: amountNum, method: consultForm.method }
+          : null,
+    });
+    setIsConsultOpen(false);
+  };
+
   const patient = patientList.find((p) => p.name === selectedPatient) ?? null;
   const patientTasks = selectedPatient ? tasksForPatient(selectedPatient) : [];
+  const patientConsultations = selectedPatient
+    ? consultationsForPatient(selectedPatient)
+    : [];
 
   const openPatient = (name: string) => {
     setSelectedPatient(name);
