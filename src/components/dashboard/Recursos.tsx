@@ -663,7 +663,13 @@ export function Recursos() {
               <button
                 type="button"
                 className={styles.primaryButton}
-                onClick={() => setDetailResource(null)}
+                onClick={() => {
+                  updateResource(detailResource.id, {
+                    category: detailCategory,
+                    audience: detailAudience,
+                  });
+                  setDetailResource(null);
+                }}
               >
                 Guardar cambios
               </button>
