@@ -251,10 +251,21 @@ export function Pacientes() {
 
             {activeTab === "diario" && (
               <div className={styles.panel}>
-                <h3 className={styles.panelTitle}>Diario clínico y síntomas</h3>
-                <p className={styles.panelSub}>
-                  Últimos registros del paciente ordenados por fecha.
-                </p>
+                <div className={styles.panelHead}>
+                  <div>
+                    <h3 className={styles.panelTitle}>Diario clínico y síntomas</h3>
+                    <p className={styles.panelSub}>
+                      Últimos registros del paciente ordenados por fecha.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.primaryButton}
+                    onClick={() => setIsEntryOpen(true)}
+                  >
+                    <Plus size={18} strokeWidth={2.5} /> Nueva Entrada
+                  </button>
+                </div>
                 <table className={styles.table}>
                   <thead>
                     <tr>
