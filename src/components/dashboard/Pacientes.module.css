@@ -1400,6 +1400,20 @@
   align-items: start;
 }
 
+/* Pending actions panel: fixed height with internal scroll */
+.actionsPanel {
+  display: flex;
+  flex-direction: column;
+  max-height: 640px;
+}
+
+.actionsScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
 /* Clickable patient name inside overview tables */
 .linkCell {
   border: none;
