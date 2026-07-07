@@ -143,10 +143,29 @@ export function Recursos() {
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("Todas");
   const [activeRail, setActiveRail] = useState<string>("all");
 
+  // Categorías dinámicas (compartidas por el modal de subida y el sidebar)
+  const [resourceCategories, setResourceCategories] =
+    useState<string[]>(initialCategories);
+  const addCategory = (name: string) =>
+    setResourceCategories((prev) =>
+      prev.includes(name) ? prev : [...prev, name],
+    );
+  const removeCategory = (name: string) => {
+    setResourceCategories((prev) => prev.filter((c) => c !== name));
+    if (activeRail === `cat:${name}`) setActiveRail("all");
+  };
+
   const [isUploadOpen, setUploadOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState("");
   const [assignResource, setAssignResource] = useState<Resource | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<number | null>(null);
   const [detailResource, setDetailResource] = useState<Resource | null>(null);
+  const [detailCategory, setDetailCategory] = useState("");
+
+  const openDetail = (resource: Resource) => {
+    setDetailResource(resource);
+    setDetailCategory(resource.category);
+  };
 
   const toggleFavorite = (id: number) =>
     setResources((prev) =>
@@ -167,7 +186,7 @@ export function Recursos() {
   const matchesRail = (r: Resource) => {
     if (activeRail === "recent") return r.recent;
     if (activeRail === "favorites") return r.favorite;
-    if (activeRail.startsWith("phase:")) return r.phase === activeRail.slice(6);
+    if (activeRail.startsWith("cat:")) return r.category === activeRail.slice(4);
     return true;
   };
 
