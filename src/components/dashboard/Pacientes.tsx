@@ -1316,7 +1316,12 @@ export function Pacientes() {
                   <label className={styles.fieldLabel} htmlFor="entry-energy">
                     Nivel de Energía
                   </label>
-                  <select id="entry-energy" className={styles.select} defaultValue="Media">
+                  <select
+                    id="entry-energy"
+                    className={styles.select}
+                    value={entryEnergy}
+                    onChange={(e) => setEntryEnergy(e.target.value)}
+                  >
                     <option value="Alta">Alta</option>
                     <option value="Media">Media</option>
                     <option value="Baja">Baja</option>
@@ -1330,7 +1335,8 @@ export function Pacientes() {
                   <select
                     id="entry-inflammation"
                     className={styles.select}
-                    defaultValue="Media"
+                    value={entryInflammation}
+                    onChange={(e) => setEntryInflammation(e.target.value)}
                   >
                     <option value="Alta">Alta</option>
                     <option value="Media">Media</option>
@@ -1347,8 +1353,33 @@ export function Pacientes() {
                     className={styles.textarea}
                     rows={4}
                     placeholder="Describe síntomas, adherencia u observaciones relevantes…"
+                    value={entryNote}
+                    onChange={(e) => setEntryNote(e.target.value)}
                   />
                 </div>
+
+                <label className={styles.privacyRow}>
+                  <span className={styles.privacyIconBox}>
+                    {entryInternal ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </span>
+                  <span className={styles.privacyContent}>
+                    <span className={styles.privacyLabel}>
+                      Nota interna (Oculto para el paciente)
+                    </span>
+                    <span className={styles.privacyHint}>
+                      Solo visible para el equipo de la clínica. El paciente no
+                      verá este registro en su portal.
+                    </span>
+                  </span>
+                  <span className={styles.toggleSwitch}>
+                    <input
+                      type="checkbox"
+                      checked={entryInternal}
+                      onChange={(e) => setEntryInternal(e.target.checked)}
+                    />
+                    <span className={styles.toggleTrack} aria-hidden="true" />
+                  </span>
+                </label>
               </div>
             </div>
 
@@ -1360,7 +1391,12 @@ export function Pacientes() {
               >
                 Cancelar
               </button>
-              <button type="button" className={styles.primaryButton}>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitEntry}
+                disabled={!entryNote.trim()}
+              >
                 Guardar
               </button>
             </footer>
