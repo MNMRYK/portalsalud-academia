@@ -152,10 +152,12 @@ const documents = {
 };
 
 export function Pacientes() {
+  const { addTask, toggleTask, removeTask, tasksForPatient, tasksForDate } =
+    useTasks();
+
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("datos");
   const [phase, setPhase] = useState(treatmentPhases[1]);
-  const [tasks, setTasks] = useState(initialTasks);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMetricOpen, setIsMetricOpen] = useState(false);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
@@ -166,24 +168,60 @@ export function Pacientes() {
   const [isApptOpen, setIsApptOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
 
+  // Filtro de fecha del panel "Acciones rápidas pendientes"
+  const todayISO = toISODate(new Date());
+  const [filterDate, setFilterDate] = useState(todayISO);
+  const filterInputRef = useRef<HTMLInputElement>(null);
+  const isToday = filterDate === todayISO;
+  const dayTasks = tasksForDate(filterDate);
+
+  // Modal "Añadir tarea" del Plan de Trabajo
+  const [isTaskOpen, setIsTaskOpen] = useState(false);
+  const [taskDesc, setTaskDesc] = useState("");
+  const [taskDue, setTaskDue] = useState(todayISO);
+  const [taskPriority, setTaskPriority] = useState<TaskPriority>("Media");
+
   const patient = patientList.find((p) => p.name === selectedPatient) ?? null;
+  const patientTasks = selectedPatient ? tasksForPatient(selectedPatient) : [];
 
   const openPatient = (name: string) => {
     setSelectedPatient(name);
     setActiveTab("datos");
   };
 
-  const toggleTask = (id: string) =>
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
-    );
+  const openDatePicker = () => {
+    const input = filterInputRef.current;
+    if (!input) return;
+    if (typeof input.showPicker === "function") input.showPicker();
+    else input.focus();
+  };
+
+  const resetTaskForm = () => {
+    setTaskDesc("");
+    setTaskDue(todayISO);
+    setTaskPriority("Media");
+  };
+
+  const submitTask = () => {
+    if (!selectedPatient || !taskDesc.trim()) return;
+    addTask({
+      patientName: selectedPatient,
+      description: taskDesc.trim(),
+      dueDate: taskDue,
+      priority: taskPriority,
+    });
+    resetTaskForm();
+    setIsTaskOpen(false);
+  };
 
   const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
     { id: "datos", label: "Datos y Evolución", icon: Activity },
     { id: "diario", label: "Diario Clínico", icon: ClipboardList },
+    { id: "plan", label: "Plan de Trabajo", icon: ListChecks },
     { id: "historial", label: "Historial de Consultas", icon: History },
     { id: "documentos", label: "Documentos", icon: FolderLock },
   ];
+
 
   return (
     <div className={styles.page}>
