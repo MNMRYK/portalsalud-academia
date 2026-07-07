@@ -51,6 +51,7 @@ const initialTasks: Task[] = [
     description: "Revisar analítica de sangre y actualizar marcadores hepáticos",
     dueDate: today,
     priority: "Alta",
+    assignee: "clinica",
     isCompleted: false,
   },
   {
@@ -59,6 +60,7 @@ const initialTasks: Task[] = [
     description: "Enviar plan nutricional de mantenimiento por email",
     dueDate: today,
     priority: "Media",
+    assignee: "clinica",
     isCompleted: false,
   },
   {
@@ -67,6 +69,7 @@ const initialTasks: Task[] = [
     description: "Confirmar consentimiento firmado de la fase 2",
     dueDate: today,
     priority: "Baja",
+    assignee: "paciente",
     isCompleted: true,
   },
   {
@@ -75,14 +78,16 @@ const initialTasks: Task[] = [
     description: "Preparar pauta antiinflamatoria para la próxima consulta",
     dueDate: offsetDate(1),
     priority: "Alta",
+    assignee: "clinica",
     isCompleted: false,
   },
   {
     id: "task-5",
     patientName: "Elena Martín",
-    description: "Llamar para recordar la analítica de control",
+    description: "Rellenar el diario de síntomas de esta semana",
     dueDate: offsetDate(2),
     priority: "Media",
+    assignee: "paciente",
     isCompleted: false,
   },
   {
@@ -91,6 +96,7 @@ const initialTasks: Task[] = [
     description: "Registrar peso y adherencia de la semana anterior",
     dueDate: offsetDate(-1),
     priority: "Media",
+    assignee: "paciente",
     isCompleted: true,
   },
   {
@@ -99,6 +105,7 @@ const initialTasks: Task[] = [
     description: "Revisar diario de síntomas de la primera fase",
     dueDate: offsetDate(-2),
     priority: "Baja",
+    assignee: "clinica",
     isCompleted: false,
   },
 ];
