@@ -2,6 +2,8 @@
 .page {
   display: flex;
   min-height: 100vh;
+  max-width: 100%;
+  overflow-x: hidden;
   background-color: #f7f3ee;
   font-family: "Nunito", system-ui, sans-serif;
   color: #3d3540;
@@ -1404,6 +1406,7 @@
 .actionsPanel {
   display: flex;
   flex-direction: column;
+  min-height: 0;
   max-height: 640px;
 }
 
@@ -1412,6 +1415,12 @@
   min-height: 0;
   overflow-y: auto;
   padding-right: 10px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.actionsScroll::-webkit-scrollbar {
+  display: none;
 }
 
 /* Clickable patient name inside overview tables */
