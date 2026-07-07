@@ -688,6 +688,131 @@ export function Pacientes() {
           </div>
         </div>
       )}
+
+      {isProfileOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsProfileOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profile-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="profile-title" className={styles.modalTitle}>
+                  Editar Perfil Clínico
+                </h2>
+                <p className={styles.modalSub}>
+                  Actualiza los datos básicos y estáticos del paciente.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsProfileOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formGrid}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-name">
+                    Nombre completo
+                  </label>
+                  <input
+                    id="profile-name"
+                    type="text"
+                    className={styles.textInputPlain}
+                    defaultValue="Elena Martín"
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-age">
+                    Edad
+                  </label>
+                  <input
+                    id="profile-age"
+                    type="number"
+                    min="0"
+                    className={styles.textInputPlain}
+                    defaultValue={42}
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-sex">
+                    Sexo
+                  </label>
+                  <select
+                    id="profile-sex"
+                    className={styles.selectPlain}
+                    defaultValue="Mujer"
+                  >
+                    <option value="Mujer">Mujer</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-dni">
+                    DNI
+                  </label>
+                  <input
+                    id="profile-dni"
+                    type="text"
+                    className={styles.textInputPlain}
+                    defaultValue="12.345.678-A"
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-goal">
+                    Objetivo principal
+                  </label>
+                  <input
+                    id="profile-goal"
+                    type="text"
+                    className={styles.textInputPlain}
+                    defaultValue="Reducir inflamación"
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="profile-target-weight">
+                    Peso objetivo (kg)
+                  </label>
+                  <input
+                    id="profile-target-weight"
+                    type="number"
+                    step="0.1"
+                    className={styles.textInputPlain}
+                    defaultValue={68}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsProfileOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button type="button" className={styles.primaryButton}>
+                Guardar cambios
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
