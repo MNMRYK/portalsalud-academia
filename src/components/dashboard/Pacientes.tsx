@@ -732,7 +732,10 @@ export function Pacientes() {
                     <button
                       type="button"
                       className={styles.primaryButton}
-                      onClick={() => setIsEntryOpen(true)}
+                      onClick={() => {
+                        resetEntryForm();
+                        setIsEntryOpen(true);
+                      }}
                     >
                       <Plus size={18} strokeWidth={2.5} /> Nueva Entrada
                     </button>
@@ -740,6 +743,7 @@ export function Pacientes() {
                   <table className={styles.table}>
                     <thead>
                       <tr>
+                        <th>Visibilidad</th>
                         <th>Fecha</th>
                         <th>Nivel de energía</th>
                         <th>Inflamación</th>
@@ -748,7 +752,24 @@ export function Pacientes() {
                     </thead>
                     <tbody>
                       {diaryEntries.map((e) => (
-                        <tr key={e.date}>
+                        <tr key={e.id}>
+                          <td>
+                            {e.internal ? (
+                              <span
+                                className={`${styles.visibilityTag} ${styles.visibilityInternal}`}
+                                title="Nota interna · oculta para el paciente"
+                              >
+                                <EyeOff size={15} /> Interna
+                              </span>
+                            ) : (
+                              <span
+                                className={`${styles.visibilityTag} ${styles.visibilityShared}`}
+                                title="Visible para el paciente"
+                              >
+                                <Eye size={15} /> Compartida
+                              </span>
+                            )}
+                          </td>
                           <td className={styles.dateCell}>{e.date}</td>
                           <td>
                             <span className={`${styles.level} ${e.energy.cls}`}>
