@@ -134,7 +134,7 @@ const initialLessons: Lesson[] = [
 export function Academia() {
   const [view, setView] = useState<View>("home");
   const [courses, setCourses] = useState<Course[]>(initialCourses);
-  const [lessons] = useState<Lesson[]>(initialLessons);
+  const [lessons, setLessons] = useState<Lesson[]>(initialLessons);
   const [categories, setCategories] = useState<string[]>([
     "Nutrición",
     "Hormonal",
@@ -147,11 +147,15 @@ export function Academia() {
   // Estado de edición / selección
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
+  const [lessonDefaultCourseId, setLessonDefaultCourseId] = useState<string>("");
 
   const goHome = () => {
     setView("home");
     setEditingCourse(null);
     setSelectedCourse(null);
+    setEditingLesson(null);
+    setLessonDefaultCourseId("");
   };
 
   const openCourseForm = (course: Course | null) => {
@@ -164,8 +168,24 @@ export function Academia() {
     setView("courseDetail");
   };
 
+  const openLessonForm = (lesson: Lesson | null, defaultCourseId = "") => {
+    setEditingLesson(lesson);
+    setLessonDefaultCourseId(defaultCourseId);
+    setView("lessonForm");
+  };
+
+  const backToDetail = () => {
+    setEditingLesson(null);
+    setLessonDefaultCourseId("");
+    setView(selectedCourse ? "courseDetail" : "home");
+  };
+
   const deleteCourse = (id: string) => {
     setCourses((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const deleteLesson = (id: string) => {
+    setLessons((prev) => prev.filter((l) => l.id !== id));
   };
 
   return (
@@ -176,7 +196,8 @@ export function Academia() {
         {view === "home" && (
           <HomeView
             courses={courses}
-            onAddLesson={() => setView("lessonForm")}
+            categories={categories}
+            onAddLesson={() => openLessonForm(null)}
             onCreateCourse={() => openCourseForm(null)}
             onCreateLive={() => setView("liveClassForm")}
             onEditCourse={openCourseForm}
@@ -198,7 +219,17 @@ export function Academia() {
         )}
 
         {view === "lessonForm" && (
-          <LessonFormView courses={courses} onBack={goHome} />
+          <LessonFormView
+            courses={courses}
+            lesson={editingLesson}
+            defaultCourseId={lessonDefaultCourseId}
+            categories={categories}
+            onAddCategory={(name) => setCategories((p) => [...p, name])}
+            onRemoveCategory={(name) =>
+              setCategories((p) => p.filter((c) => c !== name))
+            }
+            onBack={backToDetail}
+          />
         )}
 
         {view === "liveClassForm" && <LiveClassFormView onBack={goHome} />}
@@ -208,12 +239,16 @@ export function Academia() {
             course={selectedCourse}
             lessons={lessons.filter((l) => l.courseId === selectedCourse.id)}
             onBack={goHome}
+            onAddLesson={() => openLessonForm(null, selectedCourse.id)}
+            onEditLesson={(lesson) => openLessonForm(lesson)}
+            onDeleteLesson={deleteLesson}
           />
         )}
       </main>
     </div>
   );
 }
+
 
 /* ============================================================
    Vista Principal (home)
