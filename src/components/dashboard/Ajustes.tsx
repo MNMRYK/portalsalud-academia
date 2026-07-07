@@ -414,7 +414,7 @@ export function Ajustes() {
                               className={styles.previewButton}
                               onClick={() => setHistoryUser(log.user)}
                             >
-                              <History size={15} strokeWidth={2} /> Ver historial del usuario
+                              <History size={15} strokeWidth={2} /> Ver actividad del miembro
                             </button>
                           </td>
                         </tr>
