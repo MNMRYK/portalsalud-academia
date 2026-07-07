@@ -26,10 +26,17 @@ import {
   Flag,
   LayoutDashboard,
   ChevronLeft,
+  Eye,
+  EyeOff,
+  CreditCard,
+  Wallet,
+  Banknote,
+  ArrowRightLeft,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { AddPatientModal } from "./AddPatientModal";
+import { CategoryDropdown } from "./academia/CategoryDropdown";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -41,6 +48,12 @@ import {
   toISODate,
   type TaskPriority,
 } from "@/context/TasksContext";
+import {
+  useConsultations,
+  type Consultation,
+  type ConsultationStatus,
+  type PaymentMethod,
+} from "@/context/ConsultationsContext";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
