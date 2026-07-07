@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/popover";
 import { CategoryDropdown } from "./academia/CategoryDropdown";
 import { RichTextEditor } from "./academia/RichTextEditor";
+import { useUser } from "../../context/UserContext";
+import { AcademiaStudent, type StudentSection } from "./AcademiaStudent";
 import styles from "./Dashboard.module.css";
 import academia from "./Academia.module.css";
 
