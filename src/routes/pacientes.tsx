@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Pacientes } from "@/components/dashboard/Pacientes";
+import { AdminOnly } from "@/components/dashboard/AdminOnly";
 
 export const Route = createFileRoute("/pacientes")({
   head: () => ({
@@ -12,5 +13,9 @@ export const Route = createFileRoute("/pacientes")({
       },
     ],
   }),
-  component: Pacientes,
+  component: () => (
+    <AdminOnly>
+      <Pacientes />
+    </AdminOnly>
+  ),
 });
