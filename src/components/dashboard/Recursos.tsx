@@ -616,7 +616,7 @@ export function Recursos() {
                 <span className={styles.toggleSwitch}>
                   <input
                     type="checkbox"
-                    checked={detailResource.sharedWithPatient}
+                    checked={resources.find((r) => r.id === detailResource.id)?.sharedWithPatient ?? false}
                     onChange={(e) =>
                       updateResource(detailResource.id, {
                         sharedWithPatient: e.target.checked,
