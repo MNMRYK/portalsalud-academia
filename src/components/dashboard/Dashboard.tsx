@@ -76,8 +76,15 @@ const patients = [
 ];
 
 export function Dashboard() {
+  const { isAdmin } = useUser();
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // El paciente ve su portal personal en lugar del panel de administración.
+  if (!isAdmin) {
+    return <PortalDashboard />;
+  }
+
 
   const handleQuickAction = (id: string) => {
     if (id === "paciente") {
