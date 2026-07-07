@@ -10,30 +10,54 @@ import {
   Download,
   Folder,
   X,
-  Info,
-  Shield,
-  GraduationCap,
-  Mail,
-  User,
   Pencil,
   FolderPlus,
   Trash2,
   UploadCloud,
   AlertTriangle,
-
+  Users,
+  CalendarClock,
+  BellRing,
+  History,
+  CalendarCheck,
+  LayoutDashboard,
+  ChevronLeft,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { AddPatientModal } from "./AddPatientModal";
 import styles from "./Pacientes.module.css";
 
-type TabId = "datos" | "diario" | "documentos";
+type TabId = "datos" | "diario" | "documentos" | "historial";
 
 const patientList = [
   { name: "Elena Martín", meta: "Fase 2 · Activo", initials: "EM", avClass: styles.avPlum },
   { name: "Lucía Fernández", meta: "Fase 1 · Activo", initials: "LF", avClass: styles.avTerracota },
   { name: "Marcos Iglesias", meta: "Mantenimiento", initials: "MI", avClass: styles.avSage },
   { name: "Javier Morán", meta: "Seguimiento", initials: "JM", avClass: styles.avLilac },
+];
+
+const kpis = [
+  { label: "Total pacientes", value: "128", icon: Users, cls: styles.kpiTerracota },
+  { label: "En seguimiento", value: "94", icon: Activity, cls: styles.kpiPlum },
+  { label: "Próximas citas", value: "12", icon: CalendarClock, cls: styles.kpiSage },
+  { label: "Alertas pendientes", value: "5", icon: BellRing, cls: styles.kpiLilac },
+];
+
+const upcomingAppointments = [
+  { date: "8 Jul 2026", time: "09:30", patient: "Elena Martín", type: "Revisión de fase" },
+  { date: "8 Jul 2026", time: "11:00", patient: "Lucía Fernández", type: "Primera consulta" },
+  { date: "9 Jul 2026", time: "10:15", patient: "Marcos Iglesias", type: "Seguimiento" },
+  { date: "9 Jul 2026", time: "16:45", patient: "Javier Morán", type: "Ajuste de pauta" },
+  { date: "10 Jul 2026", time: "12:00", patient: "Elena Martín", type: "Analítica de control" },
+];
+
+const initialTasks = [
+  { id: "t1", label: "Revisar analítica de Lucía Fernández", done: false },
+  { id: "t2", label: "Enviar plan nutricional a Marcos Iglesias", done: false },
+  { id: "t3", label: "Confirmar cita de seguimiento con Javier Morán", done: true },
+  { id: "t4", label: "Actualizar consentimiento firmado de Elena Martín", done: false },
+  { id: "t5", label: "Preparar pauta de mantenimiento", done: false },
 ];
 
 const treatmentPhases = [
@@ -72,6 +96,35 @@ const diaryEntries = [
   },
 ];
 
+const consultationHistory = [
+  {
+    date: "5 Jul 2026",
+    note: "Revisión de fase 2. Reducción visible de inflamación y mejor descanso.",
+    status: "Completada" as const,
+  },
+  {
+    date: "20 Jun 2026",
+    note: "Ajuste de pauta antiinflamatoria y refuerzo de hidratación.",
+    status: "Completada" as const,
+  },
+  {
+    date: "12 Jul 2026",
+    note: "Analítica de control programada para valorar marcadores hepáticos.",
+    status: "Pendiente" as const,
+  },
+  {
+    date: "3 Jun 2026",
+    note: "Consulta anulada por la paciente. Reagendada para la semana siguiente.",
+    status: "Cancelada" as const,
+  },
+];
+
+const consultStatusClass: Record<string, string> = {
+  Completada: styles.statusCompleted,
+  Pendiente: styles.statusPending,
+  Cancelada: styles.statusCancelled,
+};
+
 const documents = {
   Dietas: [
     { name: "Plan nutricional - Fase 2.pdf", meta: "PDF · 1.2 MB · 5 Jul 2026" },
@@ -83,9 +136,10 @@ const documents = {
 };
 
 export function Pacientes() {
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("datos");
   const [phase, setPhase] = useState(treatmentPhases[1]);
-  const [selected, setSelected] = useState(patientList[0].name);
+  const [tasks, setTasks] = useState(initialTasks);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMetricOpen, setIsMetricOpen] = useState(false);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
@@ -93,11 +147,25 @@ export function Pacientes() {
   const [isFolderOpen, setIsFolderOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isApptOpen, setIsApptOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+
+  const patient = patientList.find((p) => p.name === selectedPatient) ?? null;
+
+  const openPatient = (name: string) => {
+    setSelectedPatient(name);
+    setActiveTab("datos");
+  };
+
+  const toggleTask = (id: string) =>
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
+    );
 
   const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
     { id: "datos", label: "Datos y Evolución", icon: Activity },
     { id: "diario", label: "Diario Clínico", icon: ClipboardList },
+    { id: "historial", label: "Historial de Consultas", icon: History },
     { id: "documentos", label: "Documentos", icon: FolderLock },
   ];
 
@@ -136,15 +204,32 @@ export function Pacientes() {
 
         <div className={styles.layout}>
           <aside className={styles.rail}>
+            <button
+              type="button"
+              className={`${styles.railItem} ${styles.railOverview} ${
+                selectedPatient === null ? styles.railItemActive : ""
+              }`}
+              onClick={() => setSelectedPatient(null)}
+            >
+              <span className={`${styles.railAvatar} ${styles.railAvatarNeutral}`}>
+                <LayoutDashboard size={18} />
+              </span>
+              <span>
+                <span className={styles.railName}>Vista general</span>
+                <br />
+                <span className={styles.railMeta}>Panel de la clínica</span>
+              </span>
+            </button>
+
             <span className={styles.railTitle}>Pacientes</span>
             {patientList.map((p) => (
               <button
                 key={p.name}
                 type="button"
                 className={`${styles.railItem} ${
-                  selected === p.name ? styles.railItemActive : ""
+                  selectedPatient === p.name ? styles.railItemActive : ""
                 }`}
-                onClick={() => setSelected(p.name)}
+                onClick={() => openPatient(p.name)}
               >
                 <span className={`${styles.railAvatar} ${p.avClass}`}>{p.initials}</span>
                 <span>
@@ -156,242 +241,471 @@ export function Pacientes() {
             ))}
           </aside>
 
-          <section className={styles.file}>
-            <div className={styles.fileHeader}>
-              <span className={`${styles.fileAvatar} ${styles.avPlum}`}>EM</span>
-              <div className={styles.fileHeaderInfo}>
-                <h2 className={styles.fileName}>Elena Martín</h2>
-                <div className={styles.fileFacts}>
-                  <div className={styles.fileFact}>
-                    <span className={styles.fileFactLabel}>Edad</span>
-                    <span className={styles.fileFactValue}>42 años</span>
+          {selectedPatient === null ? (
+            <section key="overview" className={`${styles.stage} ${styles.viewFade}`}>
+              <div className={styles.kpiGrid}>
+                {kpis.map(({ label, value, icon: Icon, cls }) => (
+                  <div key={label} className={styles.kpiCard}>
+                    <span className={`${styles.kpiIcon} ${cls}`}>
+                      <Icon size={20} />
+                    </span>
+                    <span className={styles.kpiValue}>{value}</span>
+                    <span className={styles.kpiLabel}>{label}</span>
                   </div>
-                  <div className={styles.fileFact}>
-                    <span className={styles.fileFactLabel}>Objetivo principal</span>
-                    <span className={styles.fileFactValue}>Reducir inflamación</span>
+                ))}
+              </div>
+
+              <div className={styles.workGrid}>
+                <div className={styles.panel}>
+                  <div className={styles.panelHead}>
+                    <div>
+                      <h3 className={styles.panelTitle}>Próximas citas</h3>
+                      <p className={styles.panelSub}>
+                        Agenda de consultas programadas para los próximos días.
+                      </p>
+                    </div>
                   </div>
-                  <div className={styles.fileFact}>
-                    <span className={styles.fileFactLabel}>DNI</span>
-                    <span className={styles.fileFactValue}>12.345.678-A</span>
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Paciente</th>
+                        <th>Tipo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {upcomingAppointments.map((a, i) => (
+                        <tr key={`${a.patient}-${i}`}>
+                          <td className={styles.dateCell}>{a.date}</td>
+                          <td>{a.time}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className={styles.linkCell}
+                              onClick={() => openPatient(a.patient)}
+                            >
+                              {a.patient}
+                            </button>
+                          </td>
+                          <td className={styles.noteCell}>{a.type}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className={styles.panel}>
+                  <div className={styles.panelHead}>
+                    <div>
+                      <h3 className={styles.panelTitle}>Acciones rápidas pendientes</h3>
+                      <p className={styles.panelSub}>Marca las tareas completadas.</p>
+                    </div>
                   </div>
+                  <ul className={styles.taskList}>
+                    {tasks.map((t) => (
+                      <li key={t.id}>
+                        <label
+                          className={`${styles.taskItem} ${
+                            t.done ? styles.taskItemDone : ""
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            className={styles.taskCheck}
+                            checked={t.done}
+                            onChange={() => toggleTask(t.id)}
+                          />
+                          <span className={styles.taskLabel}>{t.label}</span>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
+            </section>
+          ) : (
+            <section
+              key={selectedPatient}
+              className={`${styles.file} ${styles.viewFade}`}
+            >
               <button
                 type="button"
-                className={styles.outlineButton}
-                onClick={() => setIsProfileOpen(true)}
+                className={styles.backLink}
+                onClick={() => setSelectedPatient(null)}
               >
-                <Pencil size={16} /> Editar datos
+                <ChevronLeft size={16} /> Volver a la vista general
               </button>
-            </div>
 
-            <nav className={styles.tabs}>
-              {tabs.map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  type="button"
-                  className={`${styles.tab} ${activeTab === id ? styles.tabActive : ""}`}
-                  onClick={() => setActiveTab(id)}
-                >
-                  <Icon size={16} /> {label}
-                </button>
-              ))}
-            </nav>
-
-            {activeTab === "datos" && (
-              <div className={styles.panel}>
-                <div className={styles.panelHead}>
-                  <div>
-                    <h3 className={styles.panelTitle}>Resumen clínico</h3>
-                    <p className={styles.panelSub}>
-                      Datos generales y evolución del tratamiento.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className={styles.outlineButton}
-                    onClick={() => setIsMetricOpen(true)}
-                  >
-                    <Plus size={16} strokeWidth={2.5} /> Añadir Métrica
-                  </button>
-                </div>
-
-                <div className={styles.summaryGrid}>
-                  <div className={styles.summaryCard}>
-                    <span className={styles.summaryLabel}>Peso actual</span>
-                    <div className={styles.summaryValue}>71 kg</div>
-                  </div>
-                  <div className={styles.summaryCard}>
-                    <span className={styles.summaryLabel}>Objetivo</span>
-                    <div className={styles.summaryValue}>68 kg</div>
-                  </div>
-                  <div className={styles.summaryCard}>
-                    <span className={styles.summaryLabel}>Adherencia</span>
-                    <div className={styles.summaryValue}>86%</div>
-                  </div>
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="phase">
-                    Fase actual del tratamiento
-                  </label>
-                  <select
-                    id="phase"
-                    className={styles.select}
-                    value={phase}
-                    onChange={(e) => setPhase(e.target.value)}
-                  >
-                    {treatmentPhases.map((ph) => (
-                      <option key={ph} value={ph}>
-                        {ph}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={styles.chart}>
-                  <div className={styles.chartHead}>
-                    <span className={styles.chartMetric}>Evolución de peso</span>
-                    <span className={styles.chartDelta}>-7 kg en 5 meses</span>
-                  </div>
-                  <div className={styles.bars}>
-                    {weightData.map((d) => (
-                      <div key={d.label} className={styles.barCol}>
-                        <span className={styles.barValue}>{d.value}</span>
-                        <div className={styles.bar} style={{ height: `${d.height}%` }} />
-                        <span className={styles.barLabel}>{d.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "diario" && (
-              <div className={styles.panel}>
-                <div className={styles.panelHead}>
-                  <div>
-                    <h3 className={styles.panelTitle}>Diario clínico y síntomas</h3>
-                    <p className={styles.panelSub}>
-                      Últimos registros del paciente ordenados por fecha.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className={styles.primaryButton}
-                    onClick={() => setIsEntryOpen(true)}
-                  >
-                    <Plus size={18} strokeWidth={2.5} /> Nueva Entrada
-                  </button>
-                </div>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Fecha</th>
-                      <th>Nivel de energía</th>
-                      <th>Inflamación</th>
-                      <th>Notas</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {diaryEntries.map((e) => (
-                      <tr key={e.date}>
-                        <td className={styles.dateCell}>{e.date}</td>
-                        <td>
-                          <span className={`${styles.level} ${e.energy.cls}`}>
-                            {e.energy.label}
-                          </span>
-                        </td>
-                        <td>
-                          <span className={`${styles.level} ${e.inflammation.cls}`}>
-                            {e.inflammation.label}
-                          </span>
-                        </td>
-                        <td className={styles.noteCell}>{e.note}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {activeTab === "documentos" && (
-              <div className={styles.panel}>
-                <div className={styles.docHead}>
-                  <div>
-                    <h3 className={styles.panelTitle}>Gestor de documentos seguros</h3>
-                    <p className={styles.panelSub}>
-                      Archivos privados del paciente organizados por carpeta.
-                    </p>
-                  </div>
-                  <div className={styles.docHeadActions}>
-                    <button
-                      type="button"
-                      className={styles.secondaryButton}
-                      onClick={() => setIsFolderOpen(true)}
-                    >
-                      <FolderPlus size={16} /> Nueva Carpeta
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.primaryButton}
-                      onClick={() => setIsUploadOpen(true)}
-                    >
-                      <Upload size={16} /> Subir documento
-                    </button>
-                  </div>
-                </div>
-
-                {Object.entries(documents).map(([folder, files]) => (
-                  <div key={folder} className={styles.folder}>
-                    <div className={styles.folderTitle}>
-                      <Folder size={18} className={styles.folderIcon} />
-                      <span className={styles.folderName}>{folder}</span>
-                      <button
-                        type="button"
-                        className={styles.deleteAction}
-                        aria-label={`Eliminar carpeta ${folder}`}
-                      >
-                        <Trash2 size={16} />
-                      </button>
+              <div className={styles.fileHeader}>
+                <span className={`${styles.fileAvatar} ${patient?.avClass ?? styles.avPlum}`}>
+                  {patient?.initials}
+                </span>
+                <div className={styles.fileHeaderInfo}>
+                  <h2 className={styles.fileName}>{patient?.name}</h2>
+                  <div className={styles.fileFacts}>
+                    <div className={styles.fileFact}>
+                      <span className={styles.fileFactLabel}>Edad</span>
+                      <span className={styles.fileFactValue}>42 años</span>
                     </div>
-                    <div className={styles.docList}>
-                      {files.map((f) => (
-                        <div key={f.name} className={styles.docItem}>
-                          <span className={styles.docIcon}>
-                            <FileText size={20} />
-                          </span>
-                          <div className={styles.docInfo}>
-                            <div className={styles.docName}>{f.name}</div>
-                            <div className={styles.docMeta}>{f.meta}</div>
-                          </div>
-                          <button
-                            type="button"
-                            className={styles.docAction}
-                            aria-label={`Descargar ${f.name}`}
-                          >
-                            <Download size={18} />
-                          </button>
-                          <button
-                            type="button"
-                            className={styles.deleteAction}
-                            aria-label={`Eliminar ${f.name}`}
-                          >
-                            <Trash2 size={18} />
-                          </button>
+                    <div className={styles.fileFact}>
+                      <span className={styles.fileFactLabel}>Objetivo principal</span>
+                      <span className={styles.fileFactValue}>Reducir inflamación</span>
+                    </div>
+                    <div className={styles.fileFact}>
+                      <span className={styles.fileFactLabel}>DNI</span>
+                      <span className={styles.fileFactValue}>12.345.678-A</span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className={styles.outlineButton}
+                  onClick={() => setIsProfileOpen(true)}
+                >
+                  <Pencil size={16} /> Editar datos
+                </button>
+              </div>
+
+              <div className={styles.nextAppt}>
+                <span className={styles.nextApptIcon}>
+                  <CalendarCheck size={22} />
+                </span>
+                <div className={styles.nextApptInfo}>
+                  <span className={styles.nextApptLabel}>Próxima cita programada</span>
+                  <span className={styles.nextApptValue}>
+                    12 Jul 2026 · 12:00 — Analítica de control
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className={styles.nextApptEdit}
+                  onClick={() => setIsApptOpen(true)}
+                >
+                  <Pencil size={15} /> Editar
+                </button>
+              </div>
+
+              <nav className={styles.tabs}>
+                {tabs.map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`${styles.tab} ${activeTab === id ? styles.tabActive : ""}`}
+                    onClick={() => setActiveTab(id)}
+                  >
+                    <Icon size={16} /> {label}
+                  </button>
+                ))}
+              </nav>
+
+              {activeTab === "datos" && (
+                <div className={styles.panel}>
+                  <div className={styles.panelHead}>
+                    <div>
+                      <h3 className={styles.panelTitle}>Resumen clínico</h3>
+                      <p className={styles.panelSub}>
+                        Datos generales y evolución del tratamiento.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.outlineButton}
+                      onClick={() => setIsMetricOpen(true)}
+                    >
+                      <Plus size={16} strokeWidth={2.5} /> Añadir Métrica
+                    </button>
+                  </div>
+
+                  <div className={styles.summaryGrid}>
+                    <div className={styles.summaryCard}>
+                      <span className={styles.summaryLabel}>Peso actual</span>
+                      <div className={styles.summaryValue}>71 kg</div>
+                    </div>
+                    <div className={styles.summaryCard}>
+                      <span className={styles.summaryLabel}>Objetivo</span>
+                      <div className={styles.summaryValue}>68 kg</div>
+                    </div>
+                    <div className={styles.summaryCard}>
+                      <span className={styles.summaryLabel}>Adherencia</span>
+                      <div className={styles.summaryValue}>86%</div>
+                    </div>
+                  </div>
+
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="phase">
+                      Fase actual del tratamiento
+                    </label>
+                    <select
+                      id="phase"
+                      className={styles.select}
+                      value={phase}
+                      onChange={(e) => setPhase(e.target.value)}
+                    >
+                      {treatmentPhases.map((ph) => (
+                        <option key={ph} value={ph}>
+                          {ph}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className={styles.chart}>
+                    <div className={styles.chartHead}>
+                      <span className={styles.chartMetric}>Evolución de peso</span>
+                      <span className={styles.chartDelta}>-7 kg en 5 meses</span>
+                    </div>
+                    <div className={styles.bars}>
+                      {weightData.map((d) => (
+                        <div key={d.label} className={styles.barCol}>
+                          <span className={styles.barValue}>{d.value}</span>
+                          <div className={styles.bar} style={{ height: `${d.height}%` }} />
+                          <span className={styles.barLabel}>{d.label}</span>
                         </div>
                       ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </section>
+                </div>
+              )}
+
+              {activeTab === "diario" && (
+                <div className={styles.panel}>
+                  <div className={styles.panelHead}>
+                    <div>
+                      <h3 className={styles.panelTitle}>Diario clínico y síntomas</h3>
+                      <p className={styles.panelSub}>
+                        Últimos registros del paciente ordenados por fecha.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={() => setIsEntryOpen(true)}
+                    >
+                      <Plus size={18} strokeWidth={2.5} /> Nueva Entrada
+                    </button>
+                  </div>
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>Fecha</th>
+                        <th>Nivel de energía</th>
+                        <th>Inflamación</th>
+                        <th>Notas</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {diaryEntries.map((e) => (
+                        <tr key={e.date}>
+                          <td className={styles.dateCell}>{e.date}</td>
+                          <td>
+                            <span className={`${styles.level} ${e.energy.cls}`}>
+                              {e.energy.label}
+                            </span>
+                          </td>
+                          <td>
+                            <span className={`${styles.level} ${e.inflammation.cls}`}>
+                              {e.inflammation.label}
+                            </span>
+                          </td>
+                          <td className={styles.noteCell}>{e.note}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {activeTab === "historial" && (
+                <div className={styles.panel}>
+                  <div className={styles.panelHead}>
+                    <div>
+                      <h3 className={styles.panelTitle}>Historial de consultas</h3>
+                      <p className={styles.panelSub}>
+                        Registro cronológico de las consultas del paciente.
+                      </p>
+                    </div>
+                  </div>
+                  <ul className={styles.timeline}>
+                    {consultationHistory.map((c, i) => (
+                      <li key={`${c.date}-${i}`} className={styles.timelineItem}>
+                        <span className={styles.timelineDot} />
+                        <div className={styles.timelineContent}>
+                          <div className={styles.timelineTop}>
+                            <span className={styles.timelineDate}>{c.date}</span>
+                            <span
+                              className={`${styles.consultStatus} ${consultStatusClass[c.status]}`}
+                            >
+                              {c.status}
+                            </span>
+                          </div>
+                          <p className={styles.timelineNote}>{c.note}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {activeTab === "documentos" && (
+                <div className={styles.panel}>
+                  <div className={styles.docHead}>
+                    <div>
+                      <h3 className={styles.panelTitle}>Gestor de documentos seguros</h3>
+                      <p className={styles.panelSub}>
+                        Archivos privados del paciente organizados por carpeta.
+                      </p>
+                    </div>
+                    <div className={styles.docHeadActions}>
+                      <button
+                        type="button"
+                        className={styles.secondaryButton}
+                        onClick={() => setIsFolderOpen(true)}
+                      >
+                        <FolderPlus size={16} /> Nueva Carpeta
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.primaryButton}
+                        onClick={() => setIsUploadOpen(true)}
+                      >
+                        <Upload size={16} /> Subir documento
+                      </button>
+                    </div>
+                  </div>
+
+                  {Object.entries(documents).map(([folder, files]) => (
+                    <div key={folder} className={styles.folder}>
+                      <div className={styles.folderTitle}>
+                        <Folder size={18} className={styles.folderIcon} />
+                        <span className={styles.folderName}>{folder}</span>
+                        <button
+                          type="button"
+                          className={styles.deleteAction}
+                          aria-label={`Eliminar carpeta ${folder}`}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                      <div className={styles.docList}>
+                        {files.map((f) => (
+                          <div key={f.name} className={styles.docItem}>
+                            <span className={styles.docIcon}>
+                              <FileText size={20} />
+                            </span>
+                            <div className={styles.docInfo}>
+                              <div className={styles.docName}>{f.name}</div>
+                              <div className={styles.docMeta}>{f.meta}</div>
+                            </div>
+                            <button
+                              type="button"
+                              className={styles.docAction}
+                              aria-label={`Descargar ${f.name}`}
+                            >
+                              <Download size={18} />
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.deleteAction}
+                              aria-label={`Eliminar ${f.name}`}
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
         </div>
       </main>
 
       <AddPatientModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
+      {isApptOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsApptOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="appt-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="appt-title" className={styles.modalTitle}>
+                  Editar cita programada
+                </h2>
+                <p className={styles.modalSub}>
+                  Actualiza la fecha, hora y tipo de la próxima consulta.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsApptOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formGrid}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="appt-date">
+                    Fecha
+                  </label>
+                  <input
+                    id="appt-date"
+                    type="date"
+                    className={styles.textInputPlain}
+                    defaultValue="2026-07-12"
+                  />
+                </div>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="appt-time">
+                    Hora
+                  </label>
+                  <input
+                    id="appt-time"
+                    type="time"
+                    className={styles.textInputPlain}
+                    defaultValue="12:00"
+                  />
+                </div>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="appt-type">
+                    Tipo de consulta
+                  </label>
+                  <input
+                    id="appt-type"
+                    type="text"
+                    className={styles.textInputPlain}
+                    defaultValue="Analítica de control"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsApptOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button type="button" className={styles.primaryButton}>
+                Guardar cita
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
 
       {isMetricOpen && (
         <div
@@ -620,7 +934,7 @@ export function Pacientes() {
                     id="profile-name"
                     type="text"
                     className={styles.textInputPlain}
-                    defaultValue="Elena Martín"
+                    defaultValue={patient?.name}
                   />
                 </div>
 
