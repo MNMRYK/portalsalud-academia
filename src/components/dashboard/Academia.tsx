@@ -129,7 +129,7 @@ const initialLessons: Lesson[] = [
   { id: "l6", courseId: "c3", title: "Eje intestino-cerebro", duration: "14 min" },
 ];
 
-const platforms = ["Vimeo", "YouTube", "Bunny.net"];
+
 
 export function Academia() {
   const [view, setView] = useState<View>("home");
