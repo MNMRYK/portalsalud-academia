@@ -1273,3 +1273,402 @@
 .avLilac {
   background: linear-gradient(140deg, #d8c8df, #b79dc2);
 }
+
+/* ============================================================
+   Dual-state dashboard: overview + patient view
+   ============================================================ */
+
+/* State transition (fade + subtle rise) */
+.viewFade {
+  animation: viewFade 0.28s ease;
+}
+
+@keyframes viewFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stage wrapper for the general view */
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+/* Rail: overview shortcut + neutral avatar */
+.railOverview {
+  margin-bottom: 4px;
+}
+
+.railAvatarNeutral {
+  background: linear-gradient(140deg, #efe6dc, #e3d6c6);
+  color: #8c7a63;
+}
+
+/* Back link (patient view -> overview) */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 6px 4px;
+  border: none;
+  background: transparent;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.16s ease, transform 0.16s ease;
+}
+
+.backLink:hover {
+  color: #6f4a6a;
+  transform: translateX(-2px);
+}
+
+/* KPI cards (Academia-style) */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.kpiCard {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.kpiCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px -18px rgba(61, 53, 64, 0.45);
+  border-color: #ddd2c2;
+}
+
+.kpiIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+}
+
+.kpiTerracota {
+  background: linear-gradient(140deg, #e0987f, #d47f65);
+}
+.kpiPlum {
+  background: linear-gradient(140deg, #9d719a, #875c80);
+}
+.kpiSage {
+  background: linear-gradient(140deg, #b3c9b0, #869e83);
+}
+.kpiLilac {
+  background: linear-gradient(140deg, #d8c8df, #b79dc2);
+}
+
+.kpiValue {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #2f2933;
+}
+
+.kpiLabel {
+  font-size: 0.82rem;
+  color: #8c8290;
+}
+
+/* Work body: 70% appointments / 30% pending actions */
+.workGrid {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Clickable patient name inside overview tables */
+.linkCell {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #875c80;
+  cursor: pointer;
+  transition: color 0.16s ease;
+}
+
+.linkCell:hover {
+  color: #6f4a6a;
+  text-decoration: underline;
+}
+
+/* Pending actions list with checkboxes */
+.taskList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.taskItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #f0eae0;
+  border-radius: 12px;
+  background-color: #faf7f2;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.taskItem:hover {
+  border-color: #f0d3c6;
+  background-color: #fbeee7;
+}
+
+.taskCheck {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d8c0d3;
+  border-radius: 6px;
+  background-color: #ffffff;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 1px;
+  position: relative;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.taskCheck:checked {
+  background-color: #d47f65;
+  border-color: #d47f65;
+}
+
+.taskCheck:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.taskLabel {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #3d3540;
+  line-height: 1.45;
+}
+
+.taskItemDone .taskLabel {
+  color: #a89ca6;
+  text-decoration: line-through;
+}
+
+/* Next appointment highlight block (patient header) */
+.nextAppt {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px solid #f0d3c6;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fbeee7, #f7f0f5);
+}
+
+.nextApptIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #e0987f, #d47f65);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.nextApptInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.nextApptLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b25c40;
+}
+
+.nextApptValue {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #2f2933;
+}
+
+.nextApptEdit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d8c0d3;
+  border-radius: 11px;
+  background-color: #ffffff;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.nextApptEdit:hover {
+  background-color: #f7f0f5;
+  border-color: #c5a6bf;
+  transform: translateY(-1px);
+}
+
+/* Consultation history timeline */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background-color: #f0eae0;
+}
+
+.timelineItem {
+  position: relative;
+  display: flex;
+  gap: 18px;
+  padding-left: 28px;
+  padding-bottom: 22px;
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+}
+
+.timelineDot {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 3px solid #d47f65;
+}
+
+.timelineContent {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #f0eae0;
+  border-radius: 12px;
+  background-color: #faf7f2;
+  padding: 14px 18px;
+}
+
+.timelineTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.timelineDate {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2f2933;
+}
+
+.timelineNote {
+  font-size: 0.86rem;
+  color: #6b6270;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Consultation status badges */
+.consultStatus {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.statusCompleted {
+  background-color: #eef3ed;
+  color: #5a7a56;
+}
+
+.statusPending {
+  background-color: #f3eef2;
+  color: #7a5575;
+}
+
+.statusCancelled {
+  background-color: #fbeaea;
+  color: #c0564a;
+}
+
+@media (max-width: 1024px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .workGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+  .nextAppt {
+    flex-wrap: wrap;
+  }
+}
