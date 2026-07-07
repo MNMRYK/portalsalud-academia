@@ -220,7 +220,10 @@ export function Recursos() {
             <button
               type="button"
               className={styles.primaryButton}
-              onClick={() => setUploadOpen(true)}
+              onClick={() => {
+                setUploadCategory("");
+                setUploadOpen(true);
+              }}
             >
               <Plus size={18} strokeWidth={2.5} /> Subir Recurso Maestro
             </button>
