@@ -1,10 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Academia } from "@/components/dashboard/Academia";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/academia")({
-  component: AcademiaPage,
+  component: () => <Outlet />,
 });
-
-function AcademiaPage() {
-  return <Academia />;
-}
