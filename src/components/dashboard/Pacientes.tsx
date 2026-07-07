@@ -490,6 +490,178 @@ export function Pacientes() {
           </div>
         </div>
       )}
+
+      {isMetricOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsMetricOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="metric-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="metric-title" className={styles.modalTitle}>
+                  Nuevo registro de evolución
+                </h2>
+                <p className={styles.modalSub}>
+                  Registra una nueva métrica para el seguimiento del paciente.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsMetricOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formFields}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="metric-date">
+                    Fecha
+                  </label>
+                  <input
+                    id="metric-date"
+                    type="date"
+                    className={styles.textInputPlain}
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="metric-weight">
+                    Peso (kg)
+                  </label>
+                  <input
+                    id="metric-weight"
+                    type="number"
+                    step="0.1"
+                    className={styles.textInputPlain}
+                    placeholder="Ej: 71.5"
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="metric-adherence">
+                    Adherencia al plan (%)
+                  </label>
+                  <input
+                    id="metric-adherence"
+                    type="number"
+                    min="0"
+                    max="100"
+                    className={styles.textInputPlain}
+                    placeholder="Ej: 86"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsMetricOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button type="button" className={styles.primaryButton}>
+                Guardar
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {isEntryOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsEntryOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="entry-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="entry-title" className={styles.modalTitle}>
+                  Registrar síntoma
+                </h2>
+                <p className={styles.modalSub}>
+                  Añade una nueva entrada al diario clínico del paciente.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsEntryOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formFields}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="entry-energy">
+                    Nivel de Energía
+                  </label>
+                  <select id="entry-energy" className={styles.select} defaultValue="Media">
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="entry-inflammation">
+                    Inflamación
+                  </label>
+                  <select
+                    id="entry-inflammation"
+                    className={styles.select}
+                    defaultValue="Media"
+                  >
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="entry-notes">
+                    Notas adicionales
+                  </label>
+                  <textarea
+                    id="entry-notes"
+                    className={styles.textarea}
+                    rows={4}
+                    placeholder="Describe síntomas, adherencia u observaciones relevantes…"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsEntryOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button type="button" className={styles.primaryButton}>
+                Guardar
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
