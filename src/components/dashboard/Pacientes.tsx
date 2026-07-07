@@ -831,17 +831,30 @@ export function Pacientes() {
               </div>
             </div>
 
-            <footer className={styles.modalFooter}>
+            <footer className={styles.modalFooterSplit}>
               <button
                 type="button"
-                className={styles.ghostButton}
-                onClick={() => setIsProfileOpen(false)}
+                className={styles.dangerGhostButton}
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  setDeleteConfirm("");
+                  setIsDeleteOpen(true);
+                }}
               >
-                Cancelar
+                <Trash2 size={16} /> Eliminar paciente
               </button>
-              <button type="button" className={styles.primaryButton}>
-                Guardar cambios
-              </button>
+              <div className={styles.footerRight}>
+                <button
+                  type="button"
+                  className={styles.ghostButton}
+                  onClick={() => setIsProfileOpen(false)}
+                >
+                  Cancelar
+                </button>
+                <button type="button" className={styles.primaryButton}>
+                  Guardar cambios
+                </button>
+              </div>
             </footer>
           </div>
         </div>
