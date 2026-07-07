@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LegalTemplatesProvider } from "../context/LegalTemplatesContext";
+import { TasksProvider } from "../context/TasksContext";
 
 function NotFoundComponent() {
   return (
