@@ -9,6 +9,12 @@ import {
   Upload,
   Download,
   Folder,
+  X,
+  Info,
+  Shield,
+  GraduationCap,
+  Mail,
+  User,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import styles from "./Pacientes.module.css";
