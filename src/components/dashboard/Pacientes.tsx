@@ -15,6 +15,7 @@ import {
   GraduationCap,
   Mail,
   User,
+  Pencil,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import styles from "./Pacientes.module.css";
