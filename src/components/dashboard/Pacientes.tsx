@@ -208,6 +208,7 @@ export function Pacientes() {
   const {
     addConsultation,
     updateConsultation,
+    removeConsultation,
     consultationsForPatient,
   } = useConsultations();
 
