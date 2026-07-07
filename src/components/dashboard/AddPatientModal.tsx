@@ -179,30 +179,50 @@ export function AddPatientModal({ open, onClose }: AddPatientModalProps) {
               </div>
             </div>
 
-            <div className={styles.checkList}>
-              {masterDocuments.map((doc) => {
-                const checked = selectedDocs.includes(doc.id);
-                return (
-                  <label
-                    key={doc.id}
-                    className={`${styles.checkRow} ${
-                      checked ? styles.checkRowActive : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      className={styles.checkbox}
-                      checked={checked}
-                      onChange={() => toggleDoc(doc.id)}
-                    />
-                    <span className={styles.checkContent}>
-                      <span className={styles.checkLabel}>{doc.label}</span>
-                      <span className={styles.checkDesc}>{doc.desc}</span>
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
+            {templates.length === 0 ? (
+              <p className={styles.emptyDocs}>
+                No hay plantillas legales configuradas. Añádelas en Ajustes ·
+                Plantillas Legales.
+              </p>
+            ) : (
+              <div className={styles.checkList}>
+                {templates.map((doc) => {
+                  const checked = doc.required || optionalDocs.includes(doc.id);
+                  return (
+                    <label
+                      key={doc.id}
+                      className={`${styles.checkRow} ${
+                        checked ? styles.checkRowActive : ""
+                      } ${doc.required ? styles.checkRowLocked : ""}`}
+                    >
+                      <input
+                        type="checkbox"
+                        className={styles.checkbox}
+                        checked={checked}
+                        disabled={doc.required}
+                        onChange={() => toggleDoc(doc.id)}
+                      />
+                      <span className={styles.checkContent}>
+                        <span className={styles.checkLabel}>{doc.name}</span>
+                        <span className={styles.checkDesc}>
+                          {doc.category} · {doc.format}
+                        </span>
+                      </span>
+                      {doc.required ? (
+                        <span className={styles.checkBadge}>
+                          <Lock size={12} strokeWidth={2.4} /> Obligatorio
+                        </span>
+                      ) : (
+                        <span className={styles.checkBadgeOptional}>
+                          Opcional
+                        </span>
+                      )}
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+
 
             <div className={styles.signBlock}>
               <span className={styles.signHeading}>Modo de firma</span>
