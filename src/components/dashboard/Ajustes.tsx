@@ -106,8 +106,6 @@ export function Ajustes() {
     legalName: "Nutralia Centro de Nutrición S.L.",
     taxId: "B-12345678",
     address: "Calle de la Salud 42, 28001 Madrid",
-    primaryColor: "#d47f65",
-    secondaryColor: "#875c80",
   });
 
   const toggleAccess = (index: number, key: "portal" | "academia") => {
@@ -215,33 +213,6 @@ export function Ajustes() {
                       </p>
                     </div>
 
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel}>Colores de marca</label>
-                      <div className={styles.colorRow}>
-                        <div className={styles.colorSwatch}>
-                          <input
-                            type="color"
-                            value={identity.primaryColor}
-                            onChange={(e) =>
-                              setIdentity((prev) => ({ ...prev, primaryColor: e.target.value }))
-                            }
-                            aria-label="Color primario"
-                          />
-                        </div>
-                        <span className={styles.colorValue}>{identity.primaryColor}</span>
-                        <div className={styles.colorSwatch}>
-                          <input
-                            type="color"
-                            value={identity.secondaryColor}
-                            onChange={(e) =>
-                              setIdentity((prev) => ({ ...prev, secondaryColor: e.target.value }))
-                            }
-                            aria-label="Color secundario"
-                          />
-                        </div>
-                        <span className={styles.colorValue}>{identity.secondaryColor}</span>
-                      </div>
-                    </div>
                   </div>
 
                   <div className={styles.saveRow}>
