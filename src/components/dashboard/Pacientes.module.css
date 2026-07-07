@@ -1438,10 +1438,10 @@
   color: #8c8290;
 }
 
-/* Work body: 70% appointments / 30% pending actions */
+/* Work body: appointments / pending actions */
 .workGrid {
   display: grid;
-  grid-template-columns: 7fr 3fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 24px;
   align-items: start;
   min-width: 0;
