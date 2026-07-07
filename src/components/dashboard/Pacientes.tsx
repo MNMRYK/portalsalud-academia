@@ -320,6 +320,152 @@ export function Pacientes() {
           </section>
         </div>
       </main>
+
+      {isModalOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
+          <div
+            className={styles.modal}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <header className={styles.modalHeader}>
+              <div>
+                <h2 id="modal-title" className={styles.modalTitle}>
+                  Dar de alta nuevo paciente
+                </h2>
+                <p className={styles.modalSub}>
+                  Invita a tu paciente a completar su ficha médica.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setIsModalOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              <div className={styles.helpBox}>
+                <Info size={18} className={styles.helpIcon} />
+                <p className={styles.helpText}>
+                  Solo necesitas lo básico. El sistema enviará un email
+                  automático al paciente para que complete su ficha médica y
+                  cree su contraseña de acceso.
+                </p>
+              </div>
+
+              <div className={styles.formFields}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="patient-name">
+                    Nombre completo
+                  </label>
+                  <div className={styles.inputWrap}>
+                    <User size={18} className={styles.inputIcon} />
+                    <input
+                      id="patient-name"
+                      type="text"
+                      className={styles.textInput}
+                      placeholder="Ej: María López García"
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="patient-email">
+                    Correo electrónico
+                  </label>
+                  <div className={styles.inputWrap}>
+                    <Mail size={18} className={styles.inputIcon} />
+                    <input
+                      id="patient-email"
+                      type="email"
+                      className={styles.textInput}
+                      placeholder="maria@email.com"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.permissionsBox}>
+                <h3 className={styles.permissionsTitle}>Permisos y Accesos</h3>
+
+                <label className={styles.toggleRow}>
+                  <span className={styles.toggleIconBox}>
+                    <Shield size={18} />
+                  </span>
+                  <span className={styles.toggleContent}>
+                    <span className={styles.toggleLabel}>
+                      Activar Portal de Salud
+                    </span>
+                    <span className={styles.toggleHint}>
+                      Da acceso al área clínica, documentos seguros y evolución.
+                    </span>
+                  </span>
+                  <span className={styles.toggleSwitch}>
+                    <input
+                      type="checkbox"
+                      checked={portalEnabled}
+                      onChange={(e) => setPortalEnabled(e.target.checked)}
+                    />
+                    <span className={styles.toggleTrack} aria-hidden="true" />
+                  </span>
+                </label>
+
+                <label className={styles.toggleRow}>
+                  <span className={styles.toggleIconBox}>
+                    <GraduationCap size={18} />
+                  </span>
+                  <span className={styles.toggleContent}>
+                    <span className={styles.toggleLabel}>Activar Academia</span>
+                    <span className={styles.toggleHint}>
+                      Si se mantiene inactivo, el paciente verá la Academia
+                      bloqueada con un candado (Upsell automático). Si la
+                      compra online, se desbloqueará sola.
+                    </span>
+                  </span>
+                  <span className={styles.toggleSwitch}>
+                    <input
+                      type="checkbox"
+                      checked={academyEnabled}
+                      onChange={(e) => setAcademyEnabled(e.target.checked)}
+                    />
+                    <span className={styles.toggleTrack} aria-hidden="true" />
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <footer className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button type="button" className={styles.primaryButton}>
+                <Mail size={18} strokeWidth={2.5} /> Enviar Invitación
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
