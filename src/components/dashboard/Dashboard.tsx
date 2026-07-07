@@ -137,7 +137,16 @@ export function Dashboard() {
         <section className={styles.panel}>
           <div className={styles.panelHead}>
             <h2 className={styles.sectionTitle}>Evolución reciente</h2>
-            <button type="button" className={styles.linkButton}>
+            <button
+              type="button"
+              className={styles.linkButton}
+              onClick={() =>
+                navigate({
+                  to: "/pacientes",
+                  state: { selectedPatient: null } as never,
+                })
+              }
+            >
               Ver todos los pacientes
             </button>
           </div>
