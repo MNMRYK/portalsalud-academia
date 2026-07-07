@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   LayoutDashboard,
   GraduationCap,
@@ -7,19 +6,18 @@ import {
   Settings,
   Leaf,
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import styles from "./Sidebar.module.css";
 
 const navItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "academia", label: "Módulo Academia", icon: GraduationCap },
-  { id: "pacientes", label: "Gestión de Pacientes", icon: Users },
-  { id: "recursos", label: "Gestor de Recursos", icon: FolderOpen },
-  { id: "ajustes", label: "Ajustes y Roles", icon: Settings },
-];
+  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/academia", label: "Módulo Academia", icon: GraduationCap },
+  { to: "/pacientes", label: "Gestión de Pacientes", icon: Users },
+  { to: "/recursos", label: "Gestor de Recursos", icon: FolderOpen },
+  { to: "/ajustes", label: "Ajustes y Roles", icon: Settings },
+] as const;
 
 export function Sidebar() {
-  const [active, setActive] = useState("dashboard");
-
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brand}>
@@ -34,16 +32,17 @@ export function Sidebar() {
 
       <span className={styles.navGroupLabel}>Espacio de trabajo</span>
       <nav className={styles.nav}>
-        {navItems.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => setActive(id)}
-            className={`${styles.navItem} ${active === id ? styles.navItemActive : ""}`}
+        {navItems.map(({ to, label, icon: Icon }) => (
+          <Link
+            key={to}
+            to={to}
+            className={styles.navItem}
+            activeProps={{ className: `${styles.navItem} ${styles.navItemActive}` }}
+            activeOptions={{ exact: to === "/" }}
           >
             <Icon size={19} className={styles.navIcon} strokeWidth={2} />
             {label}
-          </button>
+          </Link>
         ))}
       </nav>
 
