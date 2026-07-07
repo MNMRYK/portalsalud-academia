@@ -363,13 +363,37 @@ function HomeView({
 
       <div className={styles.panelHead}>
         <h2 className={styles.sectionTitle}>Cursos de la academia</h2>
-        <button type="button" className={styles.linkButton}>
-          Ver todos los cursos
-        </button>
+        <div className={academia.sectionFilters}>
+          <select
+            className={academia.filterSelect}
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as "all" | "published" | "draft")
+            }
+            aria-label="Filtrar por estado"
+          >
+            <option value="all">Todos</option>
+            <option value="published">Publicados</option>
+            <option value="draft">Borradores</option>
+          </select>
+          <select
+            className={academia.filterSelect}
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            aria-label="Filtrar por categoría"
+          >
+            <option value="all">Todas</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <section className={academia.courseGrid}>
-        {courses.map((c) => (
+        {filteredCourses.map((c) => (
           <article
             key={c.id}
             className={academia.courseCard}
@@ -390,46 +414,50 @@ function HomeView({
                   <Clock size={14} /> {c.duration}
                 </span>
               </div>
-              <div className={academia.progressWrap}>
+              <div className={academia.courseFooter}>
                 <div className={academia.progressBar}>
                   <div
                     className={academia.progressFill}
                     style={{ width: `${c.progress}%` }}
                   />
                 </div>
-                <span className={academia.progressLabel}>
-                  {c.published ? `${c.progress}% publicado` : "Borrador · sin publicar"}
-                </span>
+                <div className={academia.courseFooterRow}>
+                  <span className={academia.progressLabel}>
+                    {c.published
+                      ? `${c.progress}% publicado`
+                      : "Borrador · sin publicar"}
+                  </span>
+                  <div className={academia.cardActions}>
+                    <button
+                      type="button"
+                      className={academia.cardActionBtn}
+                      aria-label={`Editar ${c.title}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEditCourse(c);
+                      }}
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      className={`${academia.cardActionBtn} ${academia.cardActionDanger}`}
+                      aria-label={`Eliminar ${c.title}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteCourse(c.id);
+                      }}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className={academia.cardActions}>
-              <button
-                type="button"
-                className={academia.cardActionBtn}
-                aria-label={`Editar ${c.title}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEditCourse(c);
-                }}
-              >
-                <Pencil size={15} />
-              </button>
-              <button
-                type="button"
-                className={`${academia.cardActionBtn} ${academia.cardActionDanger}`}
-                aria-label={`Eliminar ${c.title}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteCourse(c.id);
-                }}
-              >
-                <Trash2 size={15} />
-              </button>
             </div>
           </article>
         ))}
       </section>
+
     </>
   );
 }
