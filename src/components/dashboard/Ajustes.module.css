@@ -388,17 +388,20 @@
 }
 
 .toggleLabel {
+  display: block;
   font-weight: 700;
   font-size: 0.9rem;
   color: #2f2933;
 }
 
 .toggleHint {
+  display: block;
   font-size: 0.78rem;
   line-height: 1.45;
   color: #8c8290;
   margin-top: 2px;
 }
+
 
 .toggleSwitch {
   position: relative;
