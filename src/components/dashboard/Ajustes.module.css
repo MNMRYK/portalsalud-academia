@@ -903,3 +903,91 @@
   border-color: #cdbad6;
   color: #875c80;
 }
+
+/* Legal template tags */
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 6px;
+  background-color: #f3eef2;
+  color: #875c80;
+  font-weight: 700;
+  font-size: 0.82em;
+  letter-spacing: 0.02em;
+}
+
+/* Legal template status */
+.legalStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.legalOk {
+  color: #6e9169;
+}
+
+.legalMissing {
+  color: #c58a3a;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.previewButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid #e3d9ea;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #6b6270;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.previewButton:hover {
+  background-color: #faf7f2;
+  border-color: #cdbad6;
+  color: #875c80;
+}
+
+/* Preview modal sheet */
+.previewSheet {
+  border: 1px solid #f0eae0;
+  border-radius: 14px;
+  background-color: #faf7f2;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.previewLine {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #3d3540;
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .docRow {
+    flex-wrap: wrap;
+  }
+  .rowActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
