@@ -61,13 +61,20 @@ const upcomingAppointments = [
   { date: "10 Jul 2026", time: "12:00", patient: "Elena Martín", type: "Analítica de control" },
 ];
 
-const initialTasks = [
-  { id: "t1", label: "Revisar analítica de Lucía Fernández", done: false },
-  { id: "t2", label: "Enviar plan nutricional a Marcos Iglesias", done: false },
-  { id: "t3", label: "Confirmar cita de seguimiento con Javier Morán", done: true },
-  { id: "t4", label: "Actualizar consentimiento firmado de Elena Martín", done: false },
-  { id: "t5", label: "Preparar pauta de mantenimiento", done: false },
-];
+const priorityClass: Record<TaskPriority, string> = {
+  Alta: styles.priorityHigh,
+  Media: styles.priorityMedium,
+  Baja: styles.priorityLow,
+};
+
+const formatLongDate = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+};
 
 const treatmentPhases = [
   "Fase 1: Détox hepático",
