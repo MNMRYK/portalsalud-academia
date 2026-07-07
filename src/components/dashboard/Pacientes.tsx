@@ -32,6 +32,8 @@ import {
   Wallet,
   Banknote,
   ArrowRightLeft,
+  Briefcase,
+  User,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
@@ -47,6 +49,7 @@ import {
   useTasks,
   toISODate,
   type TaskPriority,
+  type TaskAssignee,
 } from "@/context/TasksContext";
 import {
   useConsultations,
@@ -85,6 +88,22 @@ const priorityClass: Record<TaskPriority, string> = {
   Alta: styles.priorityHigh,
   Media: styles.priorityMedium,
   Baja: styles.priorityLow,
+};
+
+const assigneeMeta: Record<
+  TaskAssignee,
+  { icon: typeof Briefcase; label: string; iconClass: string }
+> = {
+  clinica: {
+    icon: Briefcase,
+    label: "Para la clínica",
+    iconClass: styles.assigneeClinic,
+  },
+  paciente: {
+    icon: User,
+    label: "Para el paciente",
+    iconClass: styles.assigneePatient,
+  },
 };
 
 const formatLongDate = (iso: string) => {
@@ -189,6 +208,7 @@ export function Pacientes() {
   const {
     addConsultation,
     updateConsultation,
+    removeConsultation,
     consultationsForPatient,
   } = useConsultations();
 
@@ -268,16 +288,21 @@ export function Pacientes() {
   const [isDateOpen, setIsDateOpen] = useState(false);
   const filterDate = toISODate(selectedDate);
   const isToday = filterDate === todayISO;
-  const dayTasks = tasksForDate(filterDate);
+  // El panel general solo muestra las tareas asignadas a la clínica.
+  const dayTasks = tasksForDate(filterDate).filter(
+    (t) => t.assignee === "clinica",
+  );
 
   // Modal "Añadir tarea" del Plan de Trabajo
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [taskDesc, setTaskDesc] = useState("");
   const [taskDue, setTaskDue] = useState(todayISO);
   const [taskPriority, setTaskPriority] = useState<TaskPriority>("Media");
+  const [taskAssignee, setTaskAssignee] = useState<TaskAssignee>("clinica");
 
   // Modal "Registrar / Ver consulta" del Historial
   const [isConsultOpen, setIsConsultOpen] = useState(false);
+  const [editingConsultId, setEditingConsultId] = useState<string | null>(null);
   const [detailConsult, setDetailConsult] = useState<Consultation | null>(null);
   const [consultForm, setConsultForm] = useState({
     note: "",
@@ -291,6 +316,7 @@ export function Pacientes() {
   });
 
   const openConsultForm = () => {
+    setEditingConsultId(null);
     setConsultForm({
       note: "",
       date: todayISO,
@@ -304,22 +330,50 @@ export function Pacientes() {
     setIsConsultOpen(true);
   };
 
+  const openEditConsult = (c: Consultation) => {
+    setEditingConsultId(c.id);
+    setConsultForm({
+      note: c.note,
+      date: c.date,
+      time: c.time,
+      phase: c.phase,
+      status: c.status,
+      withPayment: c.payment !== null,
+      amount: c.payment ? String(c.payment.amount) : "",
+      method: c.payment?.method ?? "Tarjeta",
+    });
+    setIsConsultOpen(true);
+  };
+
   const submitConsult = () => {
     if (!selectedPatient || !consultForm.note.trim()) return;
     const amountNum = Number(consultForm.amount);
-    addConsultation({
-      patientName: selectedPatient,
-      note: consultForm.note.trim(),
-      date: consultForm.date,
-      time: consultForm.time,
-      phase: consultForm.phase,
-      status: consultForm.status,
-      payment:
-        consultForm.withPayment && amountNum > 0
-          ? { amount: amountNum, method: consultForm.method }
-          : null,
-    });
+    const payment =
+      consultForm.withPayment && amountNum > 0
+        ? { amount: amountNum, method: consultForm.method }
+        : null;
+    if (editingConsultId) {
+      updateConsultation(editingConsultId, {
+        note: consultForm.note.trim(),
+        date: consultForm.date,
+        time: consultForm.time,
+        phase: consultForm.phase,
+        status: consultForm.status,
+        payment,
+      });
+    } else {
+      addConsultation({
+        patientName: selectedPatient,
+        note: consultForm.note.trim(),
+        date: consultForm.date,
+        time: consultForm.time,
+        phase: consultForm.phase,
+        status: consultForm.status,
+        payment,
+      });
+    }
     setIsConsultOpen(false);
+    setEditingConsultId(null);
   };
 
   const patient = patientList.find((p) => p.name === selectedPatient) ?? null;
@@ -339,6 +393,7 @@ export function Pacientes() {
     setTaskDesc("");
     setTaskDue(todayISO);
     setTaskPriority("Media");
+    setTaskAssignee("clinica");
   };
 
   const submitTask = () => {
@@ -348,6 +403,7 @@ export function Pacientes() {
       description: taskDesc.trim(),
       dueDate: taskDue,
       priority: taskPriority,
+      assignee: taskAssignee,
     });
     resetTaskForm();
     setIsTaskOpen(false);
@@ -550,6 +606,12 @@ export function Pacientes() {
                                 t.isCompleted ? styles.taskItemDone : ""
                               }`}
                             >
+                              <span
+                                className={`${styles.taskAssigneeIcon} ${styles.assigneeClinic}`}
+                                title="Tarea para la clínica"
+                              >
+                                <Briefcase size={16} />
+                              </span>
                               <input
                                 type="checkbox"
                                 className={styles.taskCheck}
@@ -822,16 +884,29 @@ export function Pacientes() {
                         <li key={t.id}>
                           <div
                             className={`${styles.taskItem} ${
-                              t.isCompleted ? styles.taskItemDone : ""
-                            }`}
+                              t.assignee === "paciente"
+                                ? styles.taskItemPatient
+                                : ""
+                            } ${t.isCompleted ? styles.taskItemDone : ""}`}
                           >
-                            <input
-                              type="checkbox"
-                              className={styles.taskCheck}
-                              checked={t.isCompleted}
-                              onChange={() => toggleTask(t.id)}
-                              aria-label={`Marcar tarea: ${t.description}`}
-                            />
+                            <span
+                              className={`${styles.taskAssigneeIcon} ${assigneeMeta[t.assignee].iconClass}`}
+                              title={assigneeMeta[t.assignee].label}
+                            >
+                              {(() => {
+                                const Icon = assigneeMeta[t.assignee].icon;
+                                return <Icon size={16} />;
+                              })()}
+                            </span>
+                            {t.assignee === "clinica" && (
+                              <input
+                                type="checkbox"
+                                className={styles.taskCheck}
+                                checked={t.isCompleted}
+                                onChange={() => toggleTask(t.id)}
+                                aria-label={`Marcar tarea: ${t.description}`}
+                              />
+                            )}
                             <span className={styles.taskBody}>
                               <span className={styles.taskLabel}>
                                 {t.description}
@@ -849,6 +924,17 @@ export function Pacientes() {
                                 </span>
                               </span>
                             </span>
+                            {t.assignee === "paciente" && (
+                              <span
+                                className={`${styles.taskStatusBadge} ${
+                                  t.isCompleted
+                                    ? styles.taskStatusDone
+                                    : styles.taskStatusPending
+                                }`}
+                              >
+                                {t.isCompleted ? "Completado" : "Pendiente"}
+                              </span>
+                            )}
                             <button
                               type="button"
                               className={styles.deleteAction}
@@ -915,6 +1001,24 @@ export function Pacientes() {
                               </span>
                             )}
                           </button>
+                          <div className={styles.timelineActions}>
+                            <button
+                              type="button"
+                              className={styles.timelineIconBtn}
+                              onClick={() => openEditConsult(c)}
+                              aria-label={`Editar consulta del ${formatLongDate(c.date)}`}
+                            >
+                              <Pencil size={15} />
+                            </button>
+                            <button
+                              type="button"
+                              className={`${styles.timelineIconBtn} ${styles.timelineIconDanger}`}
+                              onClick={() => removeConsultation(c.id)}
+                              aria-label={`Eliminar consulta del ${formatLongDate(c.date)}`}
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -1043,6 +1147,37 @@ export function Pacientes() {
                     onChange={(e) => setTaskDesc(e.target.value)}
                   />
                 </div>
+
+                <div className={styles.fieldGroup}>
+                  <span className={styles.fieldLabel}>Asignar a</span>
+                  <div className={styles.assigneeOptions} role="radiogroup">
+                    {(["clinica", "paciente"] as TaskAssignee[]).map((opt) => {
+                      const Icon = assigneeMeta[opt].icon;
+                      return (
+                        <label
+                          key={opt}
+                          className={`${styles.assigneeOption} ${
+                            taskAssignee === opt
+                              ? styles.assigneeOptionActive
+                              : ""
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="task-assignee"
+                            value={opt}
+                            checked={taskAssignee === opt}
+                            onChange={() => setTaskAssignee(opt)}
+                          />
+                          <Icon size={16} />
+                          {assigneeMeta[opt].label}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+
 
                 <div className={styles.formGrid}>
                   <div className={styles.fieldGroup}>
@@ -1769,10 +1904,12 @@ export function Pacientes() {
             <header className={styles.modalHeader}>
               <div>
                 <h2 id="consult-title" className={styles.modalTitle}>
-                  Registrar consulta
+                  {editingConsultId ? "Editar consulta" : "Registrar consulta"}
                 </h2>
                 <p className={styles.modalSub}>
-                  Nueva consulta en el historial de {patient?.name}.
+                  {editingConsultId
+                    ? `Actualiza los datos de esta consulta de ${patient?.name}.`
+                    : `Nueva consulta en el historial de ${patient?.name}.`}
                 </p>
               </div>
               <button
@@ -1969,7 +2106,7 @@ export function Pacientes() {
                 onClick={submitConsult}
                 disabled={!consultForm.note.trim()}
               >
-                Guardar consulta
+                {editingConsultId ? "Guardar cambios" : "Guardar consulta"}
               </button>
             </footer>
           </div>

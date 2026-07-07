@@ -120,6 +120,7 @@ interface ConsultationsContextValue {
   consultations: Consultation[];
   addConsultation: (input: NewConsultationInput) => void;
   updateConsultation: (id: string, patch: Partial<Consultation>) => void;
+  removeConsultation: (id: string) => void;
   consultationsForPatient: (patientName: string) => Consultation[];
   invoicesForPatient: (patientName: string) => DerivedInvoice[];
   patientsWithPayments: () => string[];
@@ -148,6 +149,10 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
     setConsultations((prev) =>
       prev.map((c) => (c.id === id ? { ...c, ...patch } : c)),
     );
+  };
+
+  const removeConsultation = (id: string) => {
+    setConsultations((prev) => prev.filter((c) => c.id !== id));
   };
 
   const consultationsForPatient = (patientName: string) =>
@@ -188,6 +193,7 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
         consultations,
         addConsultation,
         updateConsultation,
+        removeConsultation,
         consultationsForPatient,
         invoicesForPatient,
         patientsWithPayments,
