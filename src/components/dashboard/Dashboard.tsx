@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Search,
   Plus,
@@ -9,22 +10,26 @@ import {
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
+import { AddPatientModal } from "./AddPatientModal";
 import styles from "./Dashboard.module.css";
 
 const quickActions = [
   {
+    id: "leccion",
     title: "Añadir Lección a la Academia",
     desc: "Sube un nuevo vídeo o material formativo a tus cursos.",
     icon: BookOpen,
     iconClass: styles.iconTerracota,
   },
   {
+    id: "paciente",
     title: "Nueva Ficha de Paciente",
     desc: "Registra un paciente y comienza su historial clínico.",
     icon: UserPlus,
     iconClass: styles.iconPlum,
   },
   {
+    id: "clase",
     title: "Crear Clase en Directo",
     desc: "Programa una sesión en vivo para tu comunidad.",
     icon: Video,
@@ -68,6 +73,8 @@ const patients = [
 ];
 
 export function Dashboard() {
+  const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
+
   return (
     <div className={styles.page}>
       <Sidebar />
@@ -96,8 +103,17 @@ export function Dashboard() {
 
         <h2 className={styles.sectionTitle}>Acciones rápidas</h2>
         <section className={styles.quickGrid}>
-          {quickActions.map(({ title, desc, icon: Icon, iconClass }) => (
-            <button key={title} type="button" className={styles.quickCard}>
+          {quickActions.map(({ id, title, desc, icon: Icon, iconClass }) => (
+            <button
+              key={title}
+              type="button"
+              className={styles.quickCard}
+              onClick={
+                id === "paciente"
+                  ? () => setIsPatientModalOpen(true)
+                  : undefined
+              }
+            >
               <span className={`${styles.quickIcon} ${iconClass}`}>
                 <Icon size={22} strokeWidth={2} />
               </span>
@@ -160,6 +176,11 @@ export function Dashboard() {
           </table>
         </section>
       </main>
+
+      <AddPatientModal
+        open={isPatientModalOpen}
+        onClose={() => setIsPatientModalOpen(false)}
+      />
     </div>
   );
 }
