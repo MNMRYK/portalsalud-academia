@@ -8,7 +8,9 @@ import {
   User,
   FileSignature,
   UploadCloud,
+  Lock,
 } from "lucide-react";
+import { useLegalTemplates } from "../../context/LegalTemplatesContext";
 import styles from "./AddPatientModal.module.css";
 
 interface AddPatientModalProps {
@@ -18,42 +20,23 @@ interface AddPatientModalProps {
 
 type SignMode = "email" | "presencial";
 
-const masterDocuments = [
-  {
-    id: "consentimiento",
-    label: "Consentimiento informado",
-    desc: "Autorización para el tratamiento nutricional y clínico.",
-  },
-  {
-    id: "rgpd",
-    label: "Cláusula RGPD",
-    desc: "Protección de datos personales y política de privacidad.",
-  },
-  {
-    id: "contrato",
-    label: "Contrato de servicios",
-    desc: "Condiciones económicas y alcance del acompañamiento.",
-  },
-];
-
 export function AddPatientModal({ open, onClose }: AddPatientModalProps) {
+  const { templates } = useLegalTemplates();
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [portalEnabled, setPortalEnabled] = useState(true);
   const [academyEnabled, setAcademyEnabled] = useState(false);
-  const [selectedDocs, setSelectedDocs] = useState<string[]>([
-    "consentimiento",
-    "rgpd",
-  ]);
+  const [optionalDocs, setOptionalDocs] = useState<string[]>([]);
   const [signMode, setSignMode] = useState<SignMode>("email");
   const [signedFile, setSignedFile] = useState<string | null>(null);
 
   if (!open) return null;
 
   const toggleDoc = (id: string) => {
-    setSelectedDocs((prev) =>
+    setOptionalDocs((prev) =>
       prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id]
     );
   };
+
 
   return (
     <div
