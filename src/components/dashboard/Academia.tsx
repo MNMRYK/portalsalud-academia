@@ -671,13 +671,56 @@ function LessonFormView({
 /* ============================================================
    Vista: Crear Clase en Directo
    ============================================================ */
+const mockPatients = [
+  "Laura Giménez",
+  "Marcos Ruiz",
+  "Ana Belén Torres",
+  "Javier Molina",
+  "Carla Sanz",
+  "Pablo Herrera",
+  "Nuria Castaño",
+];
+
 function LiveClassFormView({ onBack }: { onBack: () => void }) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState("");
   const [roomUrl, setRoomUrl] = useState("");
   const [agenda, setAgenda] = useState("");
-  const [notify, setNotify] = useState(true);
+  const [notifyMode, setNotifyMode] = useState<"all" | "advanced">("all");
+
+  // Destinatarios avanzados
+  const [recipients, setRecipients] = useState<string[]>([]);
+  const [patientPick, setPatientPick] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+
+  const addRecipient = (value: string) => {
+    const clean = value.trim();
+    if (clean && !recipients.includes(clean)) {
+      setRecipients((prev) => [...prev, clean]);
+    }
+  };
+
+  const addPatient = (name: string) => {
+    if (!name) return;
+    addRecipient(name);
+    setPatientPick("");
+  };
+
+  const addEmail = () => {
+    addRecipient(emailInput);
+    setEmailInput("");
+  };
+
+  const handleEmailKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addEmail();
+    }
+  };
+
+  const availablePatients = mockPatients.filter((p) => !recipients.includes(p));
+
 
   return (
     <>
