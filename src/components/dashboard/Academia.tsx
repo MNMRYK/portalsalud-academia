@@ -18,6 +18,7 @@ import {
   CalendarIcon,
   Save,
   CheckCircle2,
+  X,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { Switch } from "@/components/ui/switch";
