@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   Search,
   Plus,
@@ -29,6 +29,12 @@ import {
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { AddPatientModal } from "./AddPatientModal";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   useTasks,
   toISODate,
@@ -170,8 +176,9 @@ export function Pacientes() {
 
   // Filtro de fecha del panel "Acciones rápidas pendientes"
   const todayISO = toISODate(new Date());
-  const [filterDate, setFilterDate] = useState(todayISO);
-  const filterInputRef = useRef<HTMLInputElement>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [isDateOpen, setIsDateOpen] = useState(false);
+  const filterDate = toISODate(selectedDate);
   const isToday = filterDate === todayISO;
   const dayTasks = tasksForDate(filterDate);
 
@@ -189,12 +196,7 @@ export function Pacientes() {
     setActiveTab("datos");
   };
 
-  const openDatePicker = () => {
-    const input = filterInputRef.current;
-    if (!input) return;
-    if (typeof input.showPicker === "function") input.showPicker();
-    else input.focus();
-  };
+
 
   const resetTaskForm = () => {
     setTaskDesc("");
@@ -360,25 +362,33 @@ export function Pacientes() {
                       </p>
                     </div>
                     <div className={styles.dateFilter}>
-                      <button
-                        type="button"
-                        className={styles.datePickerTrigger}
-                        onClick={openDatePicker}
-                        aria-label="Filtrar tareas por fecha"
-                      >
-                        <CalendarDays size={16} />
-                        {isToday ? "Hoy" : formatLongDate(filterDate)}
-                      </button>
-                      <input
-                        ref={filterInputRef}
-                        type="date"
-                        className={styles.dateFilterInput}
-                        value={filterDate}
-                        onChange={(e) =>
-                          setFilterDate(e.target.value || todayISO)
-                        }
-                        aria-label="Selector de fecha"
-                      />
+                      <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
+                        <PopoverTrigger asChild>
+                          <button
+                            type="button"
+                            className={styles.datePickerTrigger}
+                            aria-label="Filtrar tareas por fecha"
+                          >
+                            <CalendarDays size={16} />
+                            {isToday ? "Hoy" : formatLongDate(filterDate)}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-auto p-0 z-50 pointer-events-auto"
+                          align="end"
+                        >
+                          <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={(date) => {
+                              if (date) setSelectedDate(date);
+                              setIsDateOpen(false);
+                            }}
+                            initialFocus
+                            className="pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
 
