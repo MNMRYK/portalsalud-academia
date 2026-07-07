@@ -1,0 +1,630 @@
+/* Layout reuses .page / .main / .header patterns from Dashboard */
+.page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f7f3ee;
+  font-family: "Nunito", system-ui, sans-serif;
+  color: #3d3540;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px 40px 48px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.7rem;
+  color: #2f2933;
+  margin: 0;
+}
+
+.titleSub {
+  font-size: 0.92rem;
+  color: #8c8290;
+  margin: 4px 0 0;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 12px;
+  padding: 0 14px;
+  height: 46px;
+  width: 300px;
+  max-width: 42vw;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.search:focus-within {
+  border-color: #cdbad6;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
+.searchIcon {
+  color: #b3a898;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.92rem;
+  color: #3d3540;
+}
+
+.searchInput::placeholder {
+  color: #b3a898;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #e0987f, #d47f65);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 10px 22px -12px rgba(212, 127, 101, 0.85);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px -14px rgba(212, 127, 101, 0.9);
+}
+
+/* Two column layout */
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Patient list rail */
+.rail {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.railTitle {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b3a898;
+  padding: 8px 10px 4px;
+}
+
+.railItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: "Nunito", sans-serif;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.railItem:hover {
+  background-color: #faf7f2;
+}
+
+.railItemActive {
+  background-color: #fbeee7;
+  border-color: #f0d3c6;
+}
+
+.railAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+}
+
+.railName {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2f2933;
+}
+
+.railMeta {
+  font-size: 0.76rem;
+  color: #9a8fa0;
+}
+
+/* Clinical file panel */
+.file {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.fileHeader {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 26px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.fileAvatar {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.fileName {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #2f2933;
+  margin: 0;
+}
+
+.fileFacts {
+  display: flex;
+  gap: 22px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.fileFact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fileFactLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b3a898;
+}
+
+.fileFactValue {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #3d3540;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 6px;
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  padding: 6px;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #8c8290;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.86rem;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.tab:hover {
+  color: #3d3540;
+}
+
+.tabActive {
+  background: linear-gradient(140deg, #9d719a, #875c80);
+  color: #ffffff;
+}
+
+/* Panels */
+.panel {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 26px;
+}
+
+.panelTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #2f2933;
+  margin: 0 0 6px;
+}
+
+.panelSub {
+  font-size: 0.85rem;
+  color: #8c8290;
+  margin: 0 0 20px;
+}
+
+/* Datos y evolución */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.summaryCard {
+  background-color: #faf7f2;
+  border: 1px solid #f0eae0;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.summaryLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b3a898;
+}
+
+.summaryValue {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #2f2933;
+  margin-top: 6px;
+}
+
+.fieldGroup {
+  margin-bottom: 26px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #6b6270;
+  margin-bottom: 8px;
+}
+
+.select {
+  width: 100%;
+  max-width: 460px;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid #e3d9ea;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #3d3540;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23875c80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #cdbad6;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
+/* Evolution chart (pure CSS bars) */
+.chart {
+  border: 1px solid #f0eae0;
+  border-radius: 14px;
+  padding: 22px 22px 14px;
+  background-color: #faf7f2;
+}
+
+.chartHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chartMetric {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #2f2933;
+}
+
+.chartDelta {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5a7a56;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  height: 150px;
+}
+
+.barCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar {
+  width: 100%;
+  max-width: 42px;
+  border-radius: 8px 8px 4px 4px;
+  background: linear-gradient(180deg, #b79dc2, #875c80);
+}
+
+.barLabel {
+  font-size: 0.72rem;
+  color: #9a8fa0;
+  font-weight: 600;
+}
+
+.barValue {
+  font-size: 0.72rem;
+  color: #6b6270;
+  font-weight: 700;
+}
+
+/* Diario clínico table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead th {
+  text-align: left;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b3a898;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0eae0;
+}
+
+.table tbody td {
+  padding: 18px 14px;
+  border-bottom: 1px solid #f5f0e8;
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: #faf7f2;
+}
+
+.dateCell {
+  font-weight: 700;
+  color: #2f2933;
+  white-space: nowrap;
+}
+
+.level {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.levelSage {
+  background-color: #eef3ed;
+  color: #5a7a56;
+}
+.levelTerracota {
+  background-color: #fbeee7;
+  color: #b25c40;
+}
+.levelPlum {
+  background-color: #f3eef2;
+  color: #7a5575;
+}
+
+.noteCell {
+  color: #6b6270;
+}
+
+/* Documents */
+.docHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 11px;
+  border: 1px solid #e3d9ea;
+  background-color: #ffffff;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.secondaryButton:hover {
+  background-color: #f4eff7;
+  border-color: #cdbad6;
+}
+
+.folder {
+  margin-bottom: 22px;
+}
+
+.folderTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #3d3540;
+  margin-bottom: 12px;
+}
+
+.folderIcon {
+  color: #d47f65;
+}
+
+.docList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.docItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid #f0eae0;
+  border-radius: 12px;
+  background-color: #faf7f2;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.docItem:hover {
+  background-color: #fbeee7;
+  border-color: #f0d3c6;
+}
+
+.docIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background-color: #fbeee7;
+  color: #d47f65;
+  flex-shrink: 0;
+}
+
+.docInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.docName {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2f2933;
+}
+
+.docMeta {
+  font-size: 0.76rem;
+  color: #9a8fa0;
+}
+
+.docAction {
+  border: none;
+  background: transparent;
+  color: #875c80;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  transition: background-color 0.16s ease;
+}
+
+.docAction:hover {
+  background-color: #f4eff7;
+}
+
+@media (max-width: 1024px) {
+  .main {
+    padding: 24px 20px 40px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
