@@ -182,10 +182,21 @@ export function Pacientes() {
 
             {activeTab === "datos" && (
               <div className={styles.panel}>
-                <h3 className={styles.panelTitle}>Resumen clínico</h3>
-                <p className={styles.panelSub}>
-                  Datos generales y evolución del tratamiento.
-                </p>
+                <div className={styles.panelHead}>
+                  <div>
+                    <h3 className={styles.panelTitle}>Resumen clínico</h3>
+                    <p className={styles.panelSub}>
+                      Datos generales y evolución del tratamiento.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.outlineButton}
+                    onClick={() => setIsMetricOpen(true)}
+                  >
+                    <Plus size={16} strokeWidth={2.5} /> Añadir Métrica
+                  </button>
+                </div>
 
                 <div className={styles.summaryGrid}>
                   <div className={styles.summaryCard}>
