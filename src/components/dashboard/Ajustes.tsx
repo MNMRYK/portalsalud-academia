@@ -18,10 +18,16 @@ import {
   Send,
   Trash2,
   Building2,
+  Lock,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
+import {
+  useLegalTemplates,
+  templateCategories,
+  type TemplateCategory,
+} from "../../context/LegalTemplatesContext";
 import styles from "./Ajustes.module.css";
 
 type TabId = "general" | "facturacion" | "equipo" | "seguridad";
