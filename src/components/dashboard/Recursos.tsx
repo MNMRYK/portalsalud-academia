@@ -15,6 +15,8 @@ import {
   UploadCloud,
   Eye,
   Check,
+  Download,
+  History,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
