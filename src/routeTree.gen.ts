@@ -14,6 +14,11 @@ import { Route as PacientesRouteImport } from './routes/pacientes'
 import { Route as AjustesRouteImport } from './routes/ajustes'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PortalIndexRouteImport } from './routes/portal.index'
+import { Route as PortalSuscripcionesRouteImport } from './routes/portal.suscripciones'
+import { Route as PortalRecursosClinicosRouteImport } from './routes/portal.recursos-clinicos'
+import { Route as PortalPlanRouteImport } from './routes/portal.plan'
+import { Route as PortalPerfilRouteImport } from './routes/portal.perfil'
 
 const RecursosRoute = RecursosRouteImport.update({
   id: '/recursos',
@@ -40,6 +45,31 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/portal/',
+  path: '/portal/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalSuscripcionesRoute = PortalSuscripcionesRouteImport.update({
+  id: '/portal/suscripciones',
+  path: '/portal/suscripciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRecursosClinicosRoute = PortalRecursosClinicosRouteImport.update({
+  id: '/portal/recursos-clinicos',
+  path: '/portal/recursos-clinicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalPlanRoute = PortalPlanRouteImport.update({
+  id: '/portal/plan',
+  path: '/portal/plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalPerfilRoute = PortalPerfilRouteImport.update({
+  id: '/portal/perfil',
+  path: '/portal/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +77,11 @@ export interface FileRoutesByFullPath {
   '/ajustes': typeof AjustesRoute
   '/pacientes': typeof PacientesRoute
   '/recursos': typeof RecursosRoute
+  '/portal/perfil': typeof PortalPerfilRoute
+  '/portal/plan': typeof PortalPlanRoute
+  '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
+  '/portal/suscripciones': typeof PortalSuscripcionesRoute
+  '/portal/': typeof PortalIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +89,11 @@ export interface FileRoutesByTo {
   '/ajustes': typeof AjustesRoute
   '/pacientes': typeof PacientesRoute
   '/recursos': typeof RecursosRoute
+  '/portal/perfil': typeof PortalPerfilRoute
+  '/portal/plan': typeof PortalPlanRoute
+  '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
+  '/portal/suscripciones': typeof PortalSuscripcionesRoute
+  '/portal': typeof PortalIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +102,49 @@ export interface FileRoutesById {
   '/ajustes': typeof AjustesRoute
   '/pacientes': typeof PacientesRoute
   '/recursos': typeof RecursosRoute
+  '/portal/perfil': typeof PortalPerfilRoute
+  '/portal/plan': typeof PortalPlanRoute
+  '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
+  '/portal/suscripciones': typeof PortalSuscripcionesRoute
+  '/portal/': typeof PortalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/academia' | '/ajustes' | '/pacientes' | '/recursos'
+  fullPaths:
+    | '/'
+    | '/academia'
+    | '/ajustes'
+    | '/pacientes'
+    | '/recursos'
+    | '/portal/perfil'
+    | '/portal/plan'
+    | '/portal/recursos-clinicos'
+    | '/portal/suscripciones'
+    | '/portal/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/academia' | '/ajustes' | '/pacientes' | '/recursos'
-  id: '__root__' | '/' | '/academia' | '/ajustes' | '/pacientes' | '/recursos'
+  to:
+    | '/'
+    | '/academia'
+    | '/ajustes'
+    | '/pacientes'
+    | '/recursos'
+    | '/portal/perfil'
+    | '/portal/plan'
+    | '/portal/recursos-clinicos'
+    | '/portal/suscripciones'
+    | '/portal'
+  id:
+    | '__root__'
+    | '/'
+    | '/academia'
+    | '/ajustes'
+    | '/pacientes'
+    | '/recursos'
+    | '/portal/perfil'
+    | '/portal/plan'
+    | '/portal/recursos-clinicos'
+    | '/portal/suscripciones'
+    | '/portal/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +153,11 @@ export interface RootRouteChildren {
   AjustesRoute: typeof AjustesRoute
   PacientesRoute: typeof PacientesRoute
   RecursosRoute: typeof RecursosRoute
+  PortalPerfilRoute: typeof PortalPerfilRoute
+  PortalPlanRoute: typeof PortalPlanRoute
+  PortalRecursosClinicosRoute: typeof PortalRecursosClinicosRoute
+  PortalSuscripcionesRoute: typeof PortalSuscripcionesRoute
+  PortalIndexRoute: typeof PortalIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +197,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portal/': {
+      id: '/portal/'
+      path: '/portal'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/suscripciones': {
+      id: '/portal/suscripciones'
+      path: '/portal/suscripciones'
+      fullPath: '/portal/suscripciones'
+      preLoaderRoute: typeof PortalSuscripcionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/recursos-clinicos': {
+      id: '/portal/recursos-clinicos'
+      path: '/portal/recursos-clinicos'
+      fullPath: '/portal/recursos-clinicos'
+      preLoaderRoute: typeof PortalRecursosClinicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/plan': {
+      id: '/portal/plan'
+      path: '/portal/plan'
+      fullPath: '/portal/plan'
+      preLoaderRoute: typeof PortalPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/perfil': {
+      id: '/portal/perfil'
+      path: '/portal/perfil'
+      fullPath: '/portal/perfil'
+      preLoaderRoute: typeof PortalPerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +241,11 @@ const rootRouteChildren: RootRouteChildren = {
   AjustesRoute: AjustesRoute,
   PacientesRoute: PacientesRoute,
   RecursosRoute: RecursosRoute,
+  PortalPerfilRoute: PortalPerfilRoute,
+  PortalPlanRoute: PortalPlanRoute,
+  PortalRecursosClinicosRoute: PortalRecursosClinicosRoute,
+  PortalSuscripcionesRoute: PortalSuscripcionesRoute,
+  PortalIndexRoute: PortalIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
