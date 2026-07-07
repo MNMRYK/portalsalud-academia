@@ -910,3 +910,50 @@
   background-color: #f3eef2;
   border-color: #cdbad6;
 }
+
+/* Audiencia (clínico / académico) */
+.audienceRow {
+  display: flex;
+  gap: 8px;
+}
+
+.audienceChip {
+  flex: 1;
+  border: 1px solid #ece4d8;
+  background-color: #faf6f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: #6b6270;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.audienceChipActive {
+  background-color: #fbeee7;
+  border-color: #e7bfae;
+  color: #b25c40;
+}
+
+.audienceBadge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.audienceBadgeClinic {
+  color: #b25c40;
+  background-color: #fbeee7;
+}
+
+.audienceBadgeAcademy {
+  color: #875c80;
+  background-color: #f3eef6;
+}
