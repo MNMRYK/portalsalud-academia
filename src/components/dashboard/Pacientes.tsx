@@ -693,18 +693,13 @@ export function Pacientes() {
                     <label className={styles.fieldLabel} htmlFor="phase">
                       Fase actual del tratamiento
                     </label>
-                    <select
-                      id="phase"
-                      className={styles.select}
+                    <CategoryDropdown
+                      categories={phases}
                       value={phase}
-                      onChange={(e) => setPhase(e.target.value)}
-                    >
-                      {treatmentPhases.map((ph) => (
-                        <option key={ph} value={ph}>
-                          {ph}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setPhase}
+                      onAddCategory={addPhase}
+                      onRemoveCategory={removePhase}
+                    />
                   </div>
 
                   <div className={styles.chart}>
