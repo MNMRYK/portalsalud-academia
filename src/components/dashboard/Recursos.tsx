@@ -315,6 +315,7 @@ export function Recursos() {
                     <button
                       type="button"
                       className={styles.iconAction}
+                      onClick={() => setDetailResource(resource)}
                       aria-label="Editar recurso"
                     >
                       <Pencil size={16} strokeWidth={2} />
