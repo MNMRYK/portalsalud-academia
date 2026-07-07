@@ -993,24 +993,35 @@ function CourseDetailView({
   course,
   lessons,
   onBack,
+  onAddLesson,
+  onEditLesson,
+  onDeleteLesson,
 }: {
   course: Course;
   lessons: Lesson[];
   onBack: () => void;
+  onAddLesson: () => void;
+  onEditLesson: (lesson: Lesson) => void;
+  onDeleteLesson: (id: string) => void;
 }) {
   return (
     <>
-      <ViewHeader
-        onBack={onBack}
-        title={course.title}
-        sub="Vista previa · modo alumno"
-      />
+      <ViewHeader onBack={onBack} title={course.title} />
 
       <div className={`${academia.detailCover} ${course.coverClass}`}>
         <span className={academia.detailCoverTitle}>{course.title}</span>
       </div>
 
-      <h2 className={styles.sectionTitle}>Lecciones publicadas</h2>
+      <div className={academia.lessonListHeader}>
+        <h2 className={styles.sectionTitle}>Lecciones publicadas</h2>
+        <button
+          type="button"
+          className={academia.secondaryButton}
+          onClick={onAddLesson}
+        >
+          <Plus size={15} strokeWidth={2.5} /> Añadir lección
+        </button>
+      </div>
 
       {lessons.length > 0 ? (
         <div className={academia.lessonList}>
@@ -1023,7 +1034,25 @@ function CourseDetailView({
                   <Clock size={13} /> {l.duration}
                 </span>
               </div>
-              <CheckCircle2 size={18} color="#a3bca0" />
+              <div className={academia.lessonActions}>
+                <CheckCircle2 size={18} color="#a3bca0" />
+                <button
+                  type="button"
+                  className={academia.cardActionBtn}
+                  aria-label={`Editar ${l.title}`}
+                  onClick={() => onEditLesson(l)}
+                >
+                  <Pencil size={15} />
+                </button>
+                <button
+                  type="button"
+                  className={`${academia.cardActionBtn} ${academia.cardActionDanger}`}
+                  aria-label={`Eliminar ${l.title}`}
+                  onClick={() => onDeleteLesson(l.id)}
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -1033,6 +1062,7 @@ function CourseDetailView({
         </div>
       )}
     </>
+
   );
 }
 
