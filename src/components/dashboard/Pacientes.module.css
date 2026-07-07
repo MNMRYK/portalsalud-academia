@@ -303,6 +303,100 @@
   margin: 0 0 20px;
 }
 
+/* Panel header with action button */
+.panelHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.panelHead .panelTitle,
+.panelHead .panelSub {
+  margin: 0;
+}
+
+.panelHead .panelTitle {
+  margin-bottom: 6px;
+}
+
+/* Secondary outline button (Plum) */
+.outlineButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #d8c0d3;
+  border-radius: 11px;
+  background-color: #ffffff;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.outlineButton:hover {
+  background-color: #f7f0f5;
+  border-color: #c5a6bf;
+  transform: translateY(-1px);
+}
+
+/* Plain input (no leading icon) for metric modal */
+.textInputPlain {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid #e3d9ea;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #3d3540;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.textInputPlain:focus {
+  outline: none;
+  border-color: #cdbad6;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
+.textInputPlain::placeholder {
+  color: #b3a898;
+}
+
+/* Textarea for clinical notes */
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 16px;
+  border: 1px solid #e3d9ea;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #3d3540;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  resize: vertical;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #cdbad6;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
+.textarea::placeholder {
+  color: #b3a898;
+}
+
 /* Datos y evolución */
 .summaryGrid {
   display: grid;
