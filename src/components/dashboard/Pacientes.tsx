@@ -176,8 +176,9 @@ export function Pacientes() {
 
   // Filtro de fecha del panel "Acciones rápidas pendientes"
   const todayISO = toISODate(new Date());
-  const [filterDate, setFilterDate] = useState(todayISO);
-  const filterInputRef = useRef<HTMLInputElement>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [isDateOpen, setIsDateOpen] = useState(false);
+  const filterDate = toISODate(selectedDate);
   const isToday = filterDate === todayISO;
   const dayTasks = tasksForDate(filterDate);
 
