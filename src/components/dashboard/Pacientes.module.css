@@ -2015,3 +2015,127 @@
     flex-wrap: wrap;
   }
 }
+
+/* ===== Plan de trabajo bidireccional (clínica / paciente) ===== */
+.taskAssigneeIcon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.assigneeClinic {
+  background-color: #e8eef6;
+  color: #3f5f8a;
+}
+
+.assigneePatient {
+  background-color: #f3ecf2;
+  color: #875c80;
+}
+
+.taskItemPatient {
+  cursor: default;
+}
+
+.taskItemPatient:hover {
+  border-color: #f0eae0;
+  background-color: #faf7f2;
+}
+
+.taskStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.taskStatusPending {
+  background-color: #fbe9d8;
+  color: #c07a34;
+}
+
+.taskStatusDone {
+  background-color: #e5efe1;
+  color: #5c7d51;
+}
+
+/* Selector "Asignar a" del modal de tarea */
+.assigneeOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.assigneeOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid #ecd9e6;
+  border-radius: 12px;
+  background-color: #faf7f2;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b6270;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.assigneeOption:hover {
+  border-color: #d8c0d3;
+}
+
+.assigneeOption input {
+  accent-color: #875c80;
+}
+
+.assigneeOptionActive {
+  border-color: #875c80;
+  background-color: #f3ecf2;
+  color: #3d3540;
+}
+
+/* ===== Acciones de la línea de tiempo de consultas ===== */
+.timelineActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.timelineIconBtn {
+  border: 1px solid #f0eae0;
+  background-color: #ffffff;
+  color: #8c8290;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  transition: background-color 0.16s ease, color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.timelineIconBtn:hover {
+  border-color: #d9c6b3;
+  background-color: #f6efe6;
+  color: #3d3540;
+}
+
+.timelineIconDanger:hover {
+  border-color: #f0c9c3;
+  background-color: #fbeaea;
+  color: #c0564a;
+}
