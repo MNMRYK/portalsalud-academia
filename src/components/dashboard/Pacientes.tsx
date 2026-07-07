@@ -1148,6 +1148,37 @@ export function Pacientes() {
                   />
                 </div>
 
+                <div className={styles.fieldGroup}>
+                  <span className={styles.fieldLabel}>Asignar a</span>
+                  <div className={styles.assigneeOptions} role="radiogroup">
+                    {(["clinica", "paciente"] as TaskAssignee[]).map((opt) => {
+                      const Icon = assigneeMeta[opt].icon;
+                      return (
+                        <label
+                          key={opt}
+                          className={`${styles.assigneeOption} ${
+                            taskAssignee === opt
+                              ? styles.assigneeOptionActive
+                              : ""
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="task-assignee"
+                            value={opt}
+                            checked={taskAssignee === opt}
+                            onChange={() => setTaskAssignee(opt)}
+                          />
+                          <Icon size={16} />
+                          {assigneeMeta[opt].label}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+
+
                 <div className={styles.formGrid}>
                   <div className={styles.fieldGroup}>
                     <label className={styles.fieldLabel} htmlFor="task-due">
