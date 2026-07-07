@@ -95,6 +95,8 @@ const roleOptions = ["Admin", "Nutricionista", "Administrativo"];
 export function Ajustes() {
   const { templates, addTemplate, removeTemplate, toggleRequired, markUploaded } =
     useLegalTemplates();
+  const { invoicesForPatient, patientsWithPayments, lastPaymentFor } =
+    useConsultations();
   const [activeTab, setActiveTab] = useState<TabId>("general");
   const [isTemplateOpen, setTemplateOpen] = useState(false);
   const [newTemplate, setNewTemplate] = useState<{
