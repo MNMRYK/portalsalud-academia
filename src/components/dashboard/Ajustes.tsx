@@ -39,12 +39,6 @@ const tabs: { id: TabId; label: string; icon: LucideIcon }[] = [
   { id: "seguridad", label: "Seguridad y Auditoría", icon: ShieldCheck },
 ];
 
-const legalTemplates = [
-  { name: "Consentimiento Informado", format: "Word (.docx)", uploaded: true },
-  { name: "Política de Protección de Datos (RGPD)", format: "PDF", uploaded: true },
-  { name: "Contrato de Servicios Nutricionales", format: "Word (.docx)", uploaded: false },
-  { name: "Autorización de Uso de Datos de Menores", format: "PDF", uploaded: false },
-];
 
 const billing = [
   { name: "Laura García", initials: "LG", av: styles.avSage, portal: true, academia: true, payment: "01 jul 2026 · 65 €" },
