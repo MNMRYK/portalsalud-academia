@@ -1,0 +1,148 @@
+.sidebar {
+  width: 264px;
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-right: 1px solid #ece4d8;
+  padding: 28px 18px;
+  font-family: "Nunito", system-ui, sans-serif;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 24px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #f0eae0;
+}
+
+.logoMark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #a3bca0, #875c80);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brandName {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #3d3540;
+}
+
+.brandTag {
+  font-size: 0.72rem;
+  color: #9a8fa0;
+  font-weight: 600;
+}
+
+.navGroupLabel {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b3a898;
+  padding: 22px 12px 8px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #6b6270;
+  text-align: left;
+  width: 100%;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.navItem:hover {
+  background-color: #f5f0e8;
+  color: #3d3540;
+}
+
+.navItemActive {
+  background-color: #fbeee7;
+  color: #b25c40;
+}
+
+.navItemActive .navIcon {
+  color: #d47f65;
+}
+
+.navIcon {
+  color: #9a8fa0;
+  flex-shrink: 0;
+}
+
+.profile {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: #f7f3ee;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #cdbad6, #875c80);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+.profileName {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #3d3540;
+}
+
+.profileRole {
+  font-size: 0.74rem;
+  color: #9a8fa0;
+}
