@@ -12,6 +12,7 @@
 .main {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
   padding: 32px 40px 48px;
 }
 
@@ -314,6 +315,22 @@
   font-size: 0.85rem;
   color: #8c8290;
   margin: 0 0 20px;
+}
+
+/* Force line breaks for long text in overview panels and tables */
+.panelTitle,
+.panelSub,
+.table th,
+.table td,
+.taskLabel,
+.taskPatient,
+.dateNotice,
+.taskEmpty,
+.linkCell,
+.noteCell {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 /* Panel header with action button */
@@ -1305,6 +1322,7 @@
   flex-direction: column;
   gap: 24px;
   min-width: 0;
+  overflow: hidden;
 }
 
 /* Rail: overview shortcut + neutral avatar */
@@ -1403,6 +1421,7 @@
   grid-template-columns: 7fr 3fr;
   gap: 24px;
   align-items: start;
+  min-width: 0;
 }
 
 /* Pending actions panel: fixed height with internal scroll */
@@ -1813,7 +1832,12 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .workGrid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+  .workGrid > .panel {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
