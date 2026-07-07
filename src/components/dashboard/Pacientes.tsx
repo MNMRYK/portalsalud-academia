@@ -1228,17 +1228,13 @@ export function Pacientes() {
                   <label className={styles.fieldLabel} htmlFor="metric-phase">
                     Fase del tratamiento
                   </label>
-                  <select
-                    id="metric-phase"
-                    className={styles.selectPlain}
-                    defaultValue={treatmentPhases[1]}
-                  >
-                    {treatmentPhases.map((ph) => (
-                      <option key={ph} value={ph}>
-                        {ph}
-                      </option>
-                    ))}
-                  </select>
+                  <CategoryDropdown
+                    categories={phases}
+                    value={metricPhase}
+                    onChange={setMetricPhase}
+                    onAddCategory={addPhase}
+                    onRemoveCategory={removePhase}
+                  />
                 </div>
 
                 <div className={styles.fieldGroup}>
