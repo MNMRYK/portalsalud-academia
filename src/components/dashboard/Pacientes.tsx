@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
+import { AddPatientModal } from "./AddPatientModal";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "documentos";
