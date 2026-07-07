@@ -99,6 +99,7 @@
   flex-direction: column;
   gap: 24px;
   min-width: 0;
+  max-width: 1100px;
 }
 
 .card {
@@ -210,6 +211,7 @@
 .logoRow {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 18px;
 }
 
@@ -228,8 +230,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 44px;
-  padding: 0 18px;
+  min-height: 44px;
+  padding: 8px 18px;
   border: 1px solid #e3d9ea;
   border-radius: 12px;
   background-color: #ffffff;
@@ -250,12 +252,14 @@
   font-size: 0.78rem;
   color: #9a8fa0;
   margin-top: 6px;
+  line-height: 1.4;
 }
 
 /* Brand colors */
 .colorRow {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -288,6 +292,7 @@
   color: #3d3540;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  min-width: 72px;
 }
 
 /* Divider */
@@ -297,22 +302,43 @@
   margin: 28px 0;
 }
 
+/* Page sections */
+.settings-section {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 2rem;
+}
+
+.settings-section:last-child {
+  margin-bottom: 0;
+}
+
+.identity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
 /* Legal docs */
 .docList {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 22px;
 }
 
-.docRow {
+.docRow,
+.document-card {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
   background-color: #faf7f2;
   border: 1px solid #f0eae0;
   border-radius: 14px;
+  min-width: 0;
 }
 
 .docIcon {
@@ -327,13 +353,14 @@
 }
 
 .docInfo {
-  flex: 1;
+  flex: 1 1 220px;
   min-width: 0;
 }
 
 .docName {
   font-weight: 700;
   font-size: 0.9rem;
+  line-height: 1.35;
   color: #2f2933;
 }
 
@@ -489,6 +516,20 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 4px;
+}
+
+@media (max-width: 620px) {
+  .saveRow {
+    justify-content: stretch;
+  }
+  .saveRow .primaryButton {
+    width: 100%;
+    justify-content: center;
+    white-space: normal;
+    height: auto;
+    min-height: 46px;
+    padding: 10px 20px;
+  }
 }
 
 /* Team table */
@@ -773,12 +814,19 @@
     flex-direction: row;
     flex-wrap: wrap;
   }
+  .main {
+    padding: 24px;
+  }
 }
 
 @media (max-width: 620px) {
   .formGrid,
-  .metricGrid {
+  .metricGrid,
+  .identity-grid {
     grid-template-columns: 1fr;
+  }
+  .settings-section {
+    padding: 22px;
   }
 }
 
@@ -924,6 +972,7 @@
   font-size: 0.8rem;
   font-weight: 700;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .legalOk {
@@ -937,6 +986,7 @@
 .rowActions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   flex-shrink: 0;
 }
@@ -983,12 +1033,9 @@
 }
 
 @media (max-width: 760px) {
-  .docRow {
-    flex-wrap: wrap;
-  }
-  .rowActions {
+  .document-card .rowActions {
     width: 100%;
-    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 }
 
