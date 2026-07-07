@@ -103,8 +103,17 @@ export function Dashboard() {
 
         <h2 className={styles.sectionTitle}>Acciones rápidas</h2>
         <section className={styles.quickGrid}>
-          {quickActions.map(({ title, desc, icon: Icon, iconClass }) => (
-            <button key={title} type="button" className={styles.quickCard}>
+          {quickActions.map(({ id, title, desc, icon: Icon, iconClass }) => (
+            <button
+              key={title}
+              type="button"
+              className={styles.quickCard}
+              onClick={
+                id === "paciente"
+                  ? () => setIsPatientModalOpen(true)
+                  : undefined
+              }
+            >
               <span className={`${styles.quickIcon} ${iconClass}`}>
                 <Icon size={22} strokeWidth={2} />
               </span>
