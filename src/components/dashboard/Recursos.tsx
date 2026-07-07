@@ -15,9 +15,12 @@ import {
   UploadCloud,
   Eye,
   Check,
+  Download,
+  History,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { NotificationBell } from "./NotificationBell";
 import styles from "./Recursos.module.css";
 
 type ResourceType = "pdf" | "video" | "menu";
@@ -127,6 +130,12 @@ const railFilters = [
 
 const phaseColors = ["#a3bca0", "#d47f65", "#875c80", "#c9a24b"];
 
+const versionHistory = [
+  { version: "V3", date: "07 jul 2026", note: "Versión actual", current: true },
+  { version: "V2", date: "18 may 2026", note: "Revisión de cantidades", current: false },
+  { version: "V1", date: "02 mar 2026", note: "Documento original", current: false },
+];
+
 export function Recursos() {
   const [resources, setResources] = useState<Resource[]>(initialResources);
   const [query, setQuery] = useState("");
@@ -136,6 +145,7 @@ export function Recursos() {
   const [isUploadOpen, setUploadOpen] = useState(false);
   const [assignResource, setAssignResource] = useState<Resource | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<number | null>(null);
+  const [detailResource, setDetailResource] = useState<Resource | null>(null);
 
   const toggleFavorite = (id: number) =>
     setResources((prev) =>
@@ -185,13 +195,16 @@ export function Recursos() {
             </p>
           </div>
 
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={() => setUploadOpen(true)}
-          >
-            <Plus size={18} strokeWidth={2.5} /> Subir Recurso Maestro
-          </button>
+          <div className={styles.headerRight}>
+            <NotificationBell />
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={() => setUploadOpen(true)}
+            >
+              <Plus size={18} strokeWidth={2.5} /> Subir Recurso Maestro
+            </button>
+          </div>
         </header>
 
         <div className={styles.toolbar}>
@@ -310,6 +323,7 @@ export function Recursos() {
                     <button
                       type="button"
                       className={styles.iconAction}
+                      onClick={() => setDetailResource(resource)}
                       aria-label="Editar recurso"
                     >
                       <Pencil size={16} strokeWidth={2} />
@@ -516,6 +530,94 @@ export function Recursos() {
                 style={selectedPatient === null ? { opacity: 0.55, cursor: "not-allowed" } : undefined}
               >
                 <UserPlus size={18} strokeWidth={2.2} /> Enviar recurso
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: detalle del recurso + historial de versiones */}
+      {detailResource && (
+        <div className={styles.modalOverlay} onClick={() => setDetailResource(null)}>
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Detalle del recurso"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <h2 className={styles.modalTitle}>{detailResource.name}</h2>
+                <p className={styles.modalSub}>
+                  {typeMeta[detailResource.type].label} · {detailResource.category}
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setDetailResource(null)}
+                aria-label="Cerrar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Nombre del recurso</label>
+                <input className={styles.textInputPlain} defaultValue={detailResource.name} />
+              </div>
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Categoría</label>
+                <select className={styles.selectPlain} defaultValue={detailResource.category}>
+                  {uploadCategories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.versionSection}>
+                <div className={styles.versionTitle}>
+                  <History size={16} strokeWidth={2} /> Historial de versiones
+                </div>
+                <div className={styles.versionTable}>
+                  {versionHistory.map((v) => (
+                    <div key={v.version} className={styles.versionRow}>
+                      <span className={styles.versionTag}>{v.version}</span>
+                      <div className={styles.versionInfo}>
+                        <span className={styles.versionNote}>{v.note}</span>
+                        <span className={styles.versionDate}>{v.date}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.versionDownload}
+                        aria-label={`Descargar ${v.version}`}
+                      >
+                        <Download size={15} strokeWidth={2} /> Descargar
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setDetailResource(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={() => setDetailResource(null)}
+              >
+                Guardar cambios
               </button>
             </div>
           </div>

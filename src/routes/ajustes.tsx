@@ -1,18 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Settings } from "lucide-react";
-import { Placeholder } from "@/components/dashboard/Placeholder";
+import { Ajustes } from "@/components/dashboard/Ajustes";
 
 export const Route = createFileRoute("/ajustes")({
-  component: AjustesPage,
+  head: () => ({
+    meta: [
+      { title: "Ajustes y Roles — Nutralia" },
+      {
+        name: "description",
+        content:
+          "Panel de control de la clínica: identidad legal, equipo y roles, auditoría de actividad y estado de la suscripción.",
+      },
+    ],
+  }),
+  component: Ajustes,
 });
-
-function AjustesPage() {
-  return (
-    <Placeholder
-      title="Ajustes y Roles"
-      subtitle="Configuración de la clínica, equipo y permisos de acceso."
-      icon={Settings}
-      message="Aquí podrás gestionar los datos de tu clínica, invitar a tu equipo y definir los roles y permisos de cada usuario. Esta sección estará disponible muy pronto."
-    />
-  );
-}

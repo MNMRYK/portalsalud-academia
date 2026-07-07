@@ -23,6 +23,7 @@ import {
 
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { NotificationBell } from "./NotificationBell";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "documentos";
@@ -116,6 +117,7 @@ export function Pacientes() {
           </div>
 
           <div className={styles.headerRight}>
+            <NotificationBell />
             <div className={styles.search}>
               <Search size={18} className={styles.searchIcon} />
               <input

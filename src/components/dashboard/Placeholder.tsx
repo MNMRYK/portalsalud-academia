@@ -1,5 +1,6 @@
-import { Search, Bell, type LucideIcon } from "lucide-react";
+import { Search, type LucideIcon } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { NotificationBell } from "./NotificationBell";
 import styles from "./Dashboard.module.css";
 import placeholder from "./Placeholder.module.css";
 
@@ -31,9 +32,7 @@ export function Placeholder({ title, subtitle, icon: Icon, message }: Placeholde
                 aria-label="Buscador global"
               />
             </div>
-            <button type="button" className={styles.iconButton} aria-label="Notificaciones">
-              <Bell size={19} />
-            </button>
+            <NotificationBell />
           </div>
         </header>
 
