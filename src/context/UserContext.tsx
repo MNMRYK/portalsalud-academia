@@ -65,12 +65,28 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [hasAcademyAccess, setAcademyAccess] = useState(true);
   const [devProfile, setDevProfile] = useState<DevProfile>("admin");
 
+  // Rehidratamos el perfil de pruebas desde localStorage tras el montaje
+  // (evita desajustes de hidratación SSR/cliente).
+  useEffect(() => {
+    const stored = window.localStorage.getItem("nutralia-dev-profile");
+    if (stored && stored !== "admin") {
+      const { role: r, clinical, academy } = accessForProfile(stored as DevProfile);
+      setDevProfile(stored as DevProfile);
+      setRole(r);
+      setClinicalAccess(clinical);
+      setAcademyAccess(academy);
+    }
+  }, []);
+
   const applyDevProfile = (profile: DevProfile) => {
     const { role: r, clinical, academy } = accessForProfile(profile);
     setDevProfile(profile);
     setRole(r);
     setClinicalAccess(clinical);
     setAcademyAccess(academy);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nutralia-dev-profile", profile);
+    }
   };
 
   const setAccess = (clinical: boolean, academy: boolean) => {
