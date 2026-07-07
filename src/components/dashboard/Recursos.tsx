@@ -272,22 +272,31 @@ export function Recursos() {
             </div>
 
             <div className={styles.railGroup}>
-              <p className={styles.railLabel}>Categorías de tratamiento</p>
-              {treatmentPhases.map((phase, i) => {
-                const id = `phase:${phase}`;
-                const count = resources.filter((r) => r.phase === phase).length;
+              <p className={styles.railLabel}>Categorías</p>
+              {resourceCategories.length === 0 && (
+                <p className={styles.railEmpty}>
+                  Aún no hay categorías. Créalas al subir un recurso.
+                </p>
+              )}
+              {resourceCategories.map((category, i) => {
+                const id = `cat:${category}`;
+                const count = resources.filter(
+                  (r) => r.category === category,
+                ).length;
                 return (
                   <button
-                    key={phase}
+                    key={category}
                     type="button"
                     className={`${styles.railItem} ${activeRail === id ? styles.railItemActive : ""}`}
                     onClick={() => setActiveRail(id)}
                   >
                     <span
                       className={styles.railDot}
-                      style={{ backgroundColor: phaseColors[i] }}
+                      style={{
+                        backgroundColor: phaseColors[i % phaseColors.length],
+                      }}
                     />
-                    {`Fase ${i + 1}`}
+                    {category}
                     <span className={styles.railCount}>{count}</span>
                   </button>
                 );
