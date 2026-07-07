@@ -16,6 +16,10 @@ import {
   Mail,
   User,
   Pencil,
+  FolderPlus,
+  Trash2,
+  UploadCloud,
+
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import styles from "./Pacientes.module.css";
