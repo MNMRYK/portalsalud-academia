@@ -529,7 +529,7 @@ export function Pacientes() {
             </header>
 
             <div className={styles.modalBody}>
-              <div className={styles.formFields}>
+              <div className={styles.formGrid}>
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="metric-date">
                     Fecha
@@ -542,8 +542,25 @@ export function Pacientes() {
                 </div>
 
                 <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="metric-phase">
+                    Fase del tratamiento
+                  </label>
+                  <select
+                    id="metric-phase"
+                    className={styles.selectPlain}
+                    defaultValue={treatmentPhases[1]}
+                  >
+                    {treatmentPhases.map((ph) => (
+                      <option key={ph} value={ph}>
+                        {ph}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="metric-weight">
-                    Peso (kg)
+                    Peso actual (kg)
                   </label>
                   <input
                     id="metric-weight"
@@ -579,7 +596,7 @@ export function Pacientes() {
                 Cancelar
               </button>
               <button type="button" className={styles.primaryButton}>
-                Guardar
+                Guardar registro
               </button>
             </footer>
           </div>
