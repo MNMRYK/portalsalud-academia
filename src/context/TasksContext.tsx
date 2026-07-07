@@ -7,6 +7,9 @@ import {
 
 export type TaskPriority = "Baja" | "Media" | "Alta";
 
+/** Destinatario de la tarea: la clínica (Sara) o el paciente. */
+export type TaskAssignee = "clinica" | "paciente";
+
 export interface Task {
   id: string;
   patientName: string;
@@ -14,6 +17,7 @@ export interface Task {
   /** Fecha límite en formato ISO local: "yyyy-mm-dd" */
   dueDate: string;
   priority: TaskPriority;
+  assignee: TaskAssignee;
   isCompleted: boolean;
 }
 
@@ -22,6 +26,7 @@ export interface NewTaskInput {
   description: string;
   dueDate: string;
   priority: TaskPriority;
+  assignee: TaskAssignee;
 }
 
 /** Devuelve la fecha actual como "yyyy-mm-dd" en horario local. */
