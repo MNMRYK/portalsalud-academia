@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Search,
   Plus,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
+import { AddPatientModal } from "./AddPatientModal";
 import styles from "./Dashboard.module.css";
 
 const quickActions = [
