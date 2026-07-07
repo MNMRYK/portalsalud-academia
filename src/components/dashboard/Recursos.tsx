@@ -22,19 +22,13 @@ import {
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { CategoryDropdown } from "./academia/CategoryDropdown";
+import {
+  useResources,
+  type Resource,
+  type ResourceType,
+  type ResourceAudience,
+} from "../../context/ResourcesContext";
 import styles from "./Recursos.module.css";
-
-type ResourceType = "pdf" | "video" | "menu";
-
-interface Resource {
-  id: number;
-  name: string;
-  type: ResourceType;
-  category: string;
-  phase: string;
-  favorite: boolean;
-  recent: boolean;
-}
 
 const categories = ["Todas", "PDFs", "Menús", "Vídeos"] as const;
 
