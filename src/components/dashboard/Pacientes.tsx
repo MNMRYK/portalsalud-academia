@@ -32,6 +32,8 @@ import {
   Wallet,
   Banknote,
   ArrowRightLeft,
+  Briefcase,
+  User,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
