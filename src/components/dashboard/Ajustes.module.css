@@ -255,45 +255,6 @@
   line-height: 1.4;
 }
 
-/* Brand colors */
-.colorRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.colorSwatch {
-  position: relative;
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  border: 1px solid #e3d9ea;
-  cursor: pointer;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.colorSwatch input {
-  position: absolute;
-  inset: -6px;
-  width: 140%;
-  height: 140%;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  background: transparent;
-}
-
-.colorValue {
-  font-family: "Nunito", sans-serif;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #3d3540;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  min-width: 72px;
-}
 
 /* Divider */
 .divider {
