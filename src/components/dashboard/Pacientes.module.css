@@ -1285,8 +1285,24 @@
   .layout {
     grid-template-columns: 1fr;
   }
+  .rail {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
   .summaryGrid {
     grid-template-columns: 1fr;
+  }
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .workGrid {
+    display: flex;
+    flex-direction: column;
+  }
+  .workGrid > .panel {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
