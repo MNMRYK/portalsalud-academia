@@ -186,6 +186,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-width: 0;
 }
 
 .fileHeader {
@@ -298,6 +299,7 @@
   border: 1px solid #ece4d8;
   border-radius: 16px;
   padding: 26px;
+  min-width: 0;
 }
 
 .panelTitle {
@@ -319,6 +321,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 20px;
 }
