@@ -3,32 +3,44 @@ import {
   Building2,
   Users,
   ShieldCheck,
-  CreditCard,
+  Receipt,
   Upload,
   FileText,
   Plus,
   X,
   MoreVertical,
-  HardDrive,
-  UserCheck,
+  Eye,
+  Check,
+  AlertTriangle,
+  Download,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import styles from "./Ajustes.module.css";
 
-type TabId = "general" | "equipo" | "seguridad" | "suscripcion";
+type TabId = "general" | "facturacion" | "equipo" | "seguridad";
 
 const tabs: { id: TabId; label: string; icon: LucideIcon }[] = [
-  { id: "general", label: "General", icon: Building2 },
+  { id: "general", label: "General", icon: FileText },
+  { id: "facturacion", label: "Facturación y Accesos", icon: Receipt },
   { id: "equipo", label: "Equipo", icon: Users },
   { id: "seguridad", label: "Seguridad y Auditoría", icon: ShieldCheck },
-  { id: "suscripcion", label: "Suscripción y Estado", icon: CreditCard },
 ];
 
-const legalDocs = [
-  { name: "Política de Protección de Datos (RGPD)", meta: "PDF · actualizado 12 mar 2026", uploaded: true },
-  { name: "Consentimiento Informado", meta: "Pendiente de subida", uploaded: false },
+const legalTemplates = [
+  { name: "Consentimiento Informado", format: "Word (.docx)", uploaded: true },
+  { name: "Política de Protección de Datos (RGPD)", format: "PDF", uploaded: true },
+  { name: "Contrato de Servicios Nutricionales", format: "Word (.docx)", uploaded: false },
+  { name: "Autorización de Uso de Datos de Menores", format: "PDF", uploaded: false },
+];
+
+const billing = [
+  { name: "Laura García", initials: "LG", av: styles.avSage, portal: true, academia: true, payment: "01 jul 2026 · 65 €" },
+  { name: "Marc Puig", initials: "MP", av: styles.avPlum, portal: true, academia: false, payment: "28 jun 2026 · 65 €" },
+  { name: "Elena Soler", initials: "ES", av: styles.avTerracota, portal: false, academia: false, payment: "15 jun 2026 · 90 €" },
+  { name: "David Roca", initials: "DR", av: styles.avPlum, portal: true, academia: true, payment: "02 jul 2026 · 120 €" },
+  { name: "Nuria Vidal", initials: "NV", av: styles.avSage, portal: false, academia: true, payment: "20 jun 2026 · 65 €" },
 ];
 
 const team = [
@@ -43,14 +55,22 @@ const logs = [
   { user: "Sara Ruiz", initials: "SR", av: styles.avPlum, action: "Editó ficha clínica", doc: "Marc Puig", time: "07 jul 2026 · 09:58" },
   { user: "Carlos Vidal", initials: "CV", av: styles.avTerracota, action: "Invitó a un miembro", doc: "nuria@nutralia.es", time: "06 jul 2026 · 17:41" },
   { user: "Elena Martín", initials: "EM", av: styles.avSage, action: "Eliminó un recurso", doc: "Menú_v1.pdf", time: "06 jul 2026 · 12:03" },
-  { user: "Sara Ruiz", initials: "SR", av: styles.avPlum, action: "Actualizó datos legales", doc: "RGPD.pdf", time: "05 jul 2026 · 08:30" },
+  { user: "Sara Ruiz", initials: "SR", av: styles.avPlum, action: "Actualizó plantilla legal", doc: "RGPD.pdf", time: "05 jul 2026 · 08:30" },
 ];
 
 export function Ajustes() {
   const [activeTab, setActiveTab] = useState<TabId>("general");
-  const [primaryColor, setPrimaryColor] = useState("#d47f65");
-  const [secondaryColor, setSecondaryColor] = useState("#875c80");
   const [isInviteOpen, setInviteOpen] = useState(false);
+  const [previewDoc, setPreviewDoc] = useState<string | null>(null);
+  const [access, setAccess] = useState(() =>
+    billing.map((b) => ({ portal: b.portal, academia: b.academia }))
+  );
+
+  const toggleAccess = (index: number, key: "portal" | "academia") => {
+    setAccess((prev) =>
+      prev.map((row, i) => (i === index ? { ...row, [key]: !row[key] } : row))
+    );
+  };
 
   return (
     <div className={styles.page}>
@@ -59,9 +79,9 @@ export function Ajustes() {
       <main className={styles.main}>
         <header className={styles.header}>
           <div>
-            <h1 className={styles.title}>Ajustes y Roles</h1>
+            <h1 className={styles.title}>Panel de control · Nutralia</h1>
             <p className={styles.titleSub}>
-              Panel de control central de la clínica: identidad, equipo y seguridad.
+              Plantillas legales, facturación, equipo y seguridad de la clínica.
             </p>
           </div>
           <NotificationBell />
@@ -85,125 +105,122 @@ export function Ajustes() {
 
           <div className={styles.content}>
             {activeTab === "general" && (
-              <>
-                <section className={styles.card}>
-                  <div className={styles.cardHead}>
-                    <h2 className={styles.cardTitle}>Identidad de la clínica</h2>
-                    <p className={styles.cardSub}>
-                      Datos legales, logotipo y colores de marca.
-                    </p>
-                  </div>
+              <section className={styles.card}>
+                <div className={styles.cardHead}>
+                  <h2 className={styles.cardTitle}>Gestión de Plantillas Legales Maestras</h2>
+                  <p className={styles.cardSub}>
+                    El sistema generará los documentos personalizados automáticamente. Usa las
+                    etiquetas <span className={styles.tag}>[NOMBRE]</span>,{" "}
+                    <span className={styles.tag}>[DNI]</span> y{" "}
+                    <span className={styles.tag}>[FECHA]</span> en tus archivos para que el
+                    sistema los rellene con los datos del paciente.
+                  </p>
+                </div>
 
-                  <div className={styles.formGrid}>
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel}>Nombre legal</label>
-                      <input className={styles.textInput} defaultValue="Nutralia Salud Integrativa S.L." />
-                    </div>
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel}>NIF / CIF</label>
-                      <input className={styles.textInput} defaultValue="B-12345678" />
-                    </div>
-                    <div className={`${styles.fieldGroup} ${styles.fieldSpan2}`}>
-                      <label className={styles.fieldLabel}>Dirección</label>
-                      <input
-                        className={styles.textInput}
-                        defaultValue="Carrer de la Salut, 24 · 08012 Barcelona"
-                      />
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel}>Logotipo</label>
-                      <div className={styles.logoRow}>
-                        <span className={styles.logoPreview}>
-                          <Building2 size={26} strokeWidth={1.9} />
-                        </span>
-                        <div>
-                          <label className={styles.uploadButton}>
-                            <Upload size={16} strokeWidth={2} /> Subir logo
-                            <input type="file" accept="image/*" hidden />
-                          </label>
-                          <p className={styles.hint}>PNG o SVG · máx. 2MB</p>
-                        </div>
+                <div className={styles.docList}>
+                  {legalTemplates.map((doc) => (
+                    <div key={doc.name} className={styles.docRow}>
+                      <span className={styles.docIcon}>
+                        <FileText size={20} strokeWidth={1.9} />
+                      </span>
+                      <div className={styles.docInfo}>
+                        <div className={styles.docName}>{doc.name}</div>
+                        <div className={styles.docMeta}>{doc.format}</div>
                       </div>
-                    </div>
 
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel}>Colores de marca</label>
-                      <div className={styles.colorRow}>
-                        <span className={styles.colorSwatch} style={{ backgroundColor: primaryColor }}>
-                          <input
-                            type="color"
-                            value={primaryColor}
-                            onChange={(e) => setPrimaryColor(e.target.value)}
-                            aria-label="Color primario"
-                          />
-                        </span>
-                        <span className={styles.colorValue}>{primaryColor}</span>
-                        <span className={styles.colorSwatch} style={{ backgroundColor: secondaryColor }}>
-                          <input
-                            type="color"
-                            value={secondaryColor}
-                            onChange={(e) => setSecondaryColor(e.target.value)}
-                            aria-label="Color secundario"
-                          />
-                        </span>
-                        <span className={styles.colorValue}>{secondaryColor}</span>
-                      </div>
-                    </div>
-                  </div>
+                      <span
+                        className={`${styles.legalStatus} ${doc.uploaded ? styles.legalOk : styles.legalMissing}`}
+                      >
+                        {doc.uploaded ? (
+                          <>
+                            <Check size={15} strokeWidth={2.6} /> Plantilla vigente
+                          </>
+                        ) : (
+                          <>
+                            <AlertTriangle size={15} strokeWidth={2.4} /> Plantilla no cargada
+                          </>
+                        )}
+                      </span>
 
-                  <div className={styles.divider} />
-
-                  <div className={styles.cardHead}>
-                    <h2 className={styles.cardTitle}>Documentación legal</h2>
-                    <p className={styles.cardSub}>
-                      Sube los documentos que tus pacientes deben conocer y aceptar.
-                    </p>
-                  </div>
-
-                  <div className={styles.docList}>
-                    {legalDocs.map((doc) => (
-                      <div key={doc.name} className={styles.docRow}>
-                        <span className={styles.docIcon}>
-                          <FileText size={20} strokeWidth={1.9} />
-                        </span>
-                        <div className={styles.docInfo}>
-                          <div className={styles.docName}>{doc.name}</div>
-                          <div className={styles.docMeta}>{doc.meta}</div>
-                        </div>
-                        <span
-                          className={`${styles.docStatus} ${doc.uploaded ? styles.statusUploaded : styles.statusPending}`}
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className={styles.previewButton}
+                          onClick={() => setPreviewDoc(doc.name)}
                         >
-                          {doc.uploaded ? "Subido" : "Pendiente"}
-                        </span>
+                          <Eye size={15} strokeWidth={2} /> Vista previa
+                        </button>
                         <label className={styles.uploadSmall}>
-                          <Upload size={14} strokeWidth={2} /> Subir PDF
-                          <input type="file" accept="application/pdf" hidden />
+                          <Upload size={14} strokeWidth={2} /> Cargar Plantilla (.docx o .pdf)
+                          <input type="file" accept=".docx,application/pdf" hidden />
                         </label>
                       </div>
-                    ))}
-                  </div>
-
-                  <label className={styles.toggleRow}>
-                    <div className={styles.toggleContent}>
-                      <div className={styles.toggleLabel}>Obligar a aceptar en primer acceso</div>
-                      <div className={styles.toggleHint}>
-                        El paciente deberá aceptar estos documentos antes de entrar a su portal.
-                      </div>
                     </div>
-                    <span className={styles.toggleSwitch}>
-                      <input type="checkbox" defaultChecked />
-                      <span className={styles.toggleTrack} />
-                    </span>
-                  </label>
+                  ))}
+                </div>
+              </section>
+            )}
 
-                  <div className={styles.saveRow}>
-                    <button type="button" className={styles.primaryButton}>
-                      Guardar cambios
-                    </button>
+            {activeTab === "facturacion" && (
+              <section className={styles.card}>
+                <div className={styles.cardHeadRow}>
+                  <div>
+                    <h2 className={styles.cardTitle}>Estado de servicios por paciente</h2>
+                    <p className={styles.cardSub}>
+                      Controla los accesos y el estado de pago de cada paciente.
+                    </p>
                   </div>
-                </section>
-              </>
+                  <button type="button" className={styles.primaryButton}>
+                    <Download size={17} strokeWidth={2.2} /> Exportar reporte financiero
+                  </button>
+                </div>
+
+                <div className={styles.tableWrap}>
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>Paciente</th>
+                        <th>Acceso Portal Salud</th>
+                        <th>Acceso Academia</th>
+                        <th>Último pago recibido</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {billing.map((p, i) => (
+                        <tr key={p.name}>
+                          <td>
+                            <span className={styles.logUser}>
+                              <span className={`${styles.logAvatar} ${p.av}`}>{p.initials}</span>
+                              {p.name}
+                            </span>
+                          </td>
+                          <td>
+                            <label className={styles.toggleSwitch}>
+                              <input
+                                type="checkbox"
+                                checked={access[i].portal}
+                                onChange={() => toggleAccess(i, "portal")}
+                              />
+                              <span className={styles.toggleTrack} />
+                            </label>
+                          </td>
+                          <td>
+                            <label className={styles.toggleSwitch}>
+                              <input
+                                type="checkbox"
+                                checked={access[i].academia}
+                                onChange={() => toggleAccess(i, "academia")}
+                              />
+                              <span className={styles.toggleTrack} />
+                            </label>
+                          </td>
+                          <td className={styles.logDoc}>{p.payment}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
             )}
 
             {activeTab === "equipo" && (
@@ -286,48 +303,6 @@ export function Ajustes() {
                 </div>
               </section>
             )}
-
-            {activeTab === "suscripcion" && (
-              <section className={styles.card}>
-                <div className={styles.planHead}>
-                  <h2 className={styles.planName}>
-                    Plan Clínica Pro
-                    <span className={styles.planBadge}>Activo</span>
-                  </h2>
-                  <button type="button" className={styles.primaryButton}>
-                    <CreditCard size={18} strokeWidth={2} /> Gestionar plan
-                  </button>
-                </div>
-
-                <div className={styles.metricGrid}>
-                  <div className={styles.metricCard}>
-                    <div className={styles.metricLabel}>
-                      <HardDrive size={13} strokeWidth={2} style={{ verticalAlign: "-2px", marginRight: 6 }} />
-                      Almacenamiento
-                    </div>
-                    <div className={styles.progressTrack}>
-                      <div className={styles.progressFill} style={{ width: "64%" }} />
-                    </div>
-                    <div className={styles.progressMeta}>32 GB de 50 GB utilizados</div>
-                  </div>
-
-                  <div className={styles.metricCard}>
-                    <div className={styles.metricLabel}>
-                      <UserCheck size={13} strokeWidth={2} style={{ verticalAlign: "-2px", marginRight: 6 }} />
-                      Pacientes activos
-                    </div>
-                    <div>
-                      <span className={styles.metricValue}>148</span>
-                      <span className={styles.metricUnit}>/ 200 incluidos</span>
-                    </div>
-                    <div className={styles.progressTrack}>
-                      <div className={styles.progressFill} style={{ width: "74%" }} />
-                    </div>
-                    <div className={styles.progressMeta}>74% de tu cupo de pacientes</div>
-                  </div>
-                </div>
-              </section>
-            )}
           </div>
         </div>
       </main>
@@ -388,6 +363,62 @@ export function Ajustes() {
                 onClick={() => setInviteOpen(false)}
               >
                 Enviar invitación
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Legal template preview modal */}
+      {previewDoc && (
+        <div className={styles.modalOverlay} onClick={() => setPreviewDoc(null)}>
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Vista previa de plantilla"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <h2 className={styles.modalTitle}>Vista previa</h2>
+                <p className={styles.modalSub}>{previewDoc}</p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setPreviewDoc(null)}
+                aria-label="Cerrar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.previewSheet}>
+                <p className={styles.previewLine}>
+                  Por la presente, D./Dña. <span className={styles.tag}>[NOMBRE]</span>, con DNI{" "}
+                  <span className={styles.tag}>[DNI]</span>, declara haber sido informado/a de las
+                  condiciones del servicio.
+                </p>
+                <p className={styles.previewLine}>
+                  En Barcelona, a <span className={styles.tag}>[FECHA]</span>.
+                </p>
+                <p className={styles.previewLine}>Firma del paciente: ____________________</p>
+              </div>
+              <p className={styles.hint}>
+                Las etiquetas se sustituirán automáticamente con los datos reales del paciente al
+                generar el documento.
+              </p>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setPreviewDoc(null)}
+              >
+                Cerrar
               </button>
             </div>
           </div>
