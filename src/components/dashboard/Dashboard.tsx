@@ -90,9 +90,7 @@ export function Dashboard() {
                 aria-label="Buscador global"
               />
             </div>
-            <button type="button" className={styles.iconButton} aria-label="Notificaciones">
-              <Bell size={19} />
-            </button>
+            <NotificationBell />
           </div>
         </header>
 
