@@ -151,6 +151,10 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const removeConsultation = (id: string) => {
+    setConsultations((prev) => prev.filter((c) => c.id !== id));
+  };
+
   const consultationsForPatient = (patientName: string) =>
     consultations
       .filter((c) => c.patientName === patientName)
