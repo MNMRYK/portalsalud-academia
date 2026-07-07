@@ -991,3 +991,224 @@
     flex-wrap: wrap;
   }
 }
+
+/* Table action column alignment */
+.thRight,
+.tdRight {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tdRight .previewButton {
+  margin-left: auto;
+}
+
+/* Dropdown menu (team) */
+.menuAnchor {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.menuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 50;
+  min-width: 214px;
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow: 0 18px 42px -16px rgba(45, 39, 48, 0.35);
+  animation: slideUp 0.16s ease;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: #4b4350;
+  text-align: left;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.menuItem svg {
+  color: #9a8fa0;
+  flex-shrink: 0;
+}
+
+.menuItem:hover {
+  background-color: #f5f0e8;
+  color: #2f2933;
+}
+
+.menuDivider {
+  height: 1px;
+  background-color: #f0eae0;
+  margin: 6px 4px;
+}
+
+.menuItemDanger {
+  color: #c0564a;
+}
+
+.menuItemDanger svg {
+  color: #c0564a;
+}
+
+.menuItemDanger:hover {
+  background-color: #fbeaea;
+  color: #9a2f26;
+}
+
+.menuItemDanger:hover svg {
+  color: #9a2f26;
+}
+
+/* Scrollable modal body */
+.modalBodyScroll {
+  padding: 24px 28px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Invoice list */
+.invoiceList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.invoiceRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background-color: #faf7f2;
+  border: 1px solid #f0eae0;
+  border-radius: 14px;
+}
+
+.invoiceIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background-color: #fbeee7;
+  color: #d47f65;
+  flex-shrink: 0;
+}
+
+.invoiceInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.invoiceConcept {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2f2933;
+}
+
+.invoiceDate {
+  font-size: 0.78rem;
+  color: #9a8fa0;
+  margin-top: 2px;
+}
+
+.invoiceAmount {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #875c80;
+  white-space: nowrap;
+}
+
+/* User activity timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timelineRow {
+  display: flex;
+  gap: 14px;
+  padding-bottom: 18px;
+  position: relative;
+}
+
+.timelineRow::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: 0;
+  width: 2px;
+  background-color: #f0eae0;
+}
+
+.timelineRow:last-child {
+  padding-bottom: 0;
+}
+
+.timelineRow:last-child::before {
+  display: none;
+}
+
+.timelineDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #d47f65;
+  margin-top: 3px;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.timelineBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.timelineAction {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2f2933;
+}
+
+.timelineMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  font-size: 0.8rem;
+}
+
+.timelineTime {
+  color: #9a8fa0;
+}
+
+.emptyState {
+  font-size: 0.9rem;
+  color: #9a8fa0;
+  text-align: center;
+  padding: 16px 0;
+}
