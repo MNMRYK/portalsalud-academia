@@ -19,6 +19,7 @@ import {
   FolderPlus,
   Trash2,
   UploadCloud,
+  AlertTriangle,
 
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
