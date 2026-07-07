@@ -763,6 +763,83 @@
   background-color: #f4eff7;
 }
 
+/* Header actions group (Nueva carpeta + Subir documento) */
+.docHeadActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Folder name grows so the delete icon sits to the right */
+.folderName {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Soft red delete action */
+.deleteAction {
+  border: none;
+  background: transparent;
+  color: #b3a898;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.deleteAction:hover {
+  background-color: #fbeaea;
+  color: #c0564a;
+}
+
+/* Upload dropzone */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 32px 24px;
+  border: 2px dashed #e0d6ca;
+  border-radius: 14px;
+  background-color: #faf7f2;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.dropzone:hover {
+  border-color: #d47f65;
+  background-color: #fbf3ee;
+}
+
+.dropzoneIcon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background-color: #fbeee7;
+  color: #d47f65;
+}
+
+.dropzoneText {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #8c8290;
+  max-width: 260px;
+}
+
+.fileInputHidden {
+  display: none;
+}
+
 /* Modal: nuevo paciente */
 .modalOverlay {
   position: fixed;
