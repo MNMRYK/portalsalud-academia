@@ -504,14 +504,31 @@ function LessonFormView({
   const [courseId, setCourseId] = useState(courses[0]?.id ?? "");
   const [title, setTitle] = useState("");
   const [duration, setDuration] = useState("");
-  const [platform, setPlatform] = useState(platforms[0]);
   const [videoUrl, setVideoUrl] = useState("");
   const [files, setFiles] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
 
   const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const list = Array.from(e.target.files ?? []).map((f) => f.name);
     setFiles((prev) => [...prev, ...list]);
   };
+
+  const addTag = () => {
+    const value = tagInput.trim();
+    if (value && !tags.includes(value)) {
+      setTags((prev) => [...prev, value]);
+    }
+    setTagInput("");
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTag();
+    }
+  };
+
 
   return (
     <>
