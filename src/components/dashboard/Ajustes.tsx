@@ -458,6 +458,40 @@ export function Ajustes() {
                           </td>
                         </tr>
                       ))}
+                      {extraBillingRows.map((p) => (
+                        <tr key={p.name}>
+                          <td>
+                            <span className={styles.logUser}>
+                              <span className={`${styles.logAvatar} ${p.av}`}>
+                                {p.initials}
+                              </span>
+                              {p.name}
+                            </span>
+                          </td>
+                          <td>
+                            <label className={styles.toggleSwitch}>
+                              <input type="checkbox" defaultChecked />
+                              <span className={styles.toggleTrack} />
+                            </label>
+                          </td>
+                          <td>
+                            <label className={styles.toggleSwitch}>
+                              <input type="checkbox" />
+                              <span className={styles.toggleTrack} />
+                            </label>
+                          </td>
+                          <td className={styles.logDoc}>{p.payment}</td>
+                          <td className={styles.tdRight}>
+                            <button
+                              type="button"
+                              className={styles.previewButton}
+                              onClick={() => setInvoicePatient(p.name)}
+                            >
+                              <FolderOpen size={15} strokeWidth={2} /> Ver facturas
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
