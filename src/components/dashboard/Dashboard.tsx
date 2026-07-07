@@ -15,18 +15,21 @@ import styles from "./Dashboard.module.css";
 
 const quickActions = [
   {
+    id: "leccion",
     title: "Añadir Lección a la Academia",
     desc: "Sube un nuevo vídeo o material formativo a tus cursos.",
     icon: BookOpen,
     iconClass: styles.iconTerracota,
   },
   {
+    id: "paciente",
     title: "Nueva Ficha de Paciente",
     desc: "Registra un paciente y comienza su historial clínico.",
     icon: UserPlus,
     iconClass: styles.iconPlum,
   },
   {
+    id: "clase",
     title: "Crear Clase en Directo",
     desc: "Programa una sesión en vivo para tu comunidad.",
     icon: Video,
