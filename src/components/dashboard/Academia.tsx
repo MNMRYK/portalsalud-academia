@@ -575,31 +575,48 @@ function LessonFormView({
           </div>
         </div>
 
-        <div className={academia.formRow}>
-          <div className={academia.formGroup}>
-            <label className={academia.formLabel}>Plataforma de vídeo</label>
-            <select
-              className={academia.formSelect}
-              value={platform}
-              onChange={(e) => setPlatform(e.target.value)}
-            >
-              {platforms.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className={academia.formGroup}>
-            <label className={academia.formLabel}>URL o ID del vídeo</label>
-            <input
-              className={academia.formInput}
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
-              placeholder="Ej. 76979871 o https://…"
-            />
-          </div>
+        <div className={academia.formGroup}>
+          <label className={academia.formLabel}>
+            ID o URL del vídeo (Bunny.net)
+          </label>
+          <input
+            className={academia.formInput}
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            placeholder="Ej. 76979871 o https://iframe.mediadelivery.net/…"
+          />
         </div>
+
+        <div className={academia.formGroup}>
+          <label className={academia.formLabel}>Etiquetas / Categorías</label>
+          <input
+            className={academia.tagInput}
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={handleTagKeyDown}
+            placeholder="Escribe una etiqueta y pulsa Enter"
+          />
+          {tags.length > 0 && (
+            <div className={academia.chipList}>
+              {tags.map((tag) => (
+                <span key={tag} className={academia.chip}>
+                  {tag}
+                  <button
+                    type="button"
+                    className={academia.chipRemove}
+                    aria-label={`Quitar ${tag}`}
+                    onClick={() =>
+                      setTags((prev) => prev.filter((t) => t !== tag))
+                    }
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
 
         <div className={academia.formGroup}>
           <label className={academia.formLabel}>Contenido de la lección</label>
