@@ -1,0 +1,806 @@
+/* Reuses the organic palette + patterns from the Pacientes / Dashboard views */
+.page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f7f3ee;
+  font-family: "Nunito", system-ui, sans-serif;
+  color: #3d3540;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px 40px 48px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.7rem;
+  color: #2f2933;
+  margin: 0;
+}
+
+.titleSub {
+  font-size: 0.92rem;
+  color: #8c8290;
+  margin: 4px 0 0;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #e0987f, #d47f65);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 10px 22px -12px rgba(212, 127, 101, 0.85);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px -14px rgba(212, 127, 101, 0.9);
+}
+
+/* Toolbar: search + category chips */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 12px;
+  padding: 0 14px;
+  height: 46px;
+  width: 340px;
+  max-width: 100%;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.search:focus-within {
+  border-color: #cdbad6;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
+.searchIcon {
+  color: #b3a898;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.92rem;
+  color: #3d3540;
+}
+
+.searchInput::placeholder {
+  color: #b3a898;
+}
+
+.chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #ece4d8;
+  border-radius: 999px;
+  background-color: #ffffff;
+  color: #6b6270;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.chip:hover {
+  border-color: #cdbad6;
+  color: #875c80;
+}
+
+.chipActive {
+  background-color: #fbeee7;
+  border-color: #f0cbbb;
+  color: #b25c40;
+}
+
+/* Two column layout: library rail + grid */
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Library filters rail */
+.rail {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 20px 16px;
+  position: sticky;
+  top: 24px;
+}
+
+.railGroup + .railGroup {
+  margin-top: 24px;
+}
+
+.railLabel {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b3a898;
+  padding: 0 8px 10px;
+}
+
+.railItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b6270;
+  text-align: left;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.railItem + .railItem {
+  margin-top: 2px;
+}
+
+.railItem:hover {
+  background-color: #f5f0e8;
+  color: #3d3540;
+}
+
+.railItemActive {
+  background-color: #fbeee7;
+  color: #b25c40;
+}
+
+.railItemActive .railIcon {
+  color: #d47f65;
+}
+
+.railIcon {
+  color: #9a8fa0;
+  flex-shrink: 0;
+}
+
+.railCount {
+  margin-left: auto;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #b3a898;
+}
+
+.railDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Resource grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 18px;
+  padding: 22px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: #f0cbbb;
+  box-shadow: 0 20px 34px -22px rgba(45, 39, 48, 0.4);
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.iconPdf {
+  background-color: #fbeee7;
+  color: #d47f65;
+}
+
+.iconVideo {
+  background-color: #f3eef2;
+  color: #875c80;
+}
+
+.iconMenu {
+  background-color: #eef3ed;
+  color: #6e9169;
+}
+
+.favButton {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+  background-color: #faf7f2;
+  color: #b3a898;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.favButton:hover {
+  background-color: #f3eef2;
+  color: #875c80;
+}
+
+.favActive {
+  color: #d9a441;
+}
+
+.cardName {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: #2f2933;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: #9a8fa0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background-color: #f3eef2;
+  color: #875c80;
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #f3ede4;
+}
+
+.assignButton {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #f0cbbb;
+  border-radius: 10px;
+  background-color: #fbf3ee;
+  color: #b25c40;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.assignButton:hover {
+  background-color: #fbeee7;
+  border-color: #d47f65;
+}
+
+.iconAction {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ece4d8;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #8c8290;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.iconAction:hover {
+  background-color: #faf7f2;
+  border-color: #cdbad6;
+  color: #875c80;
+}
+
+.deleteAction:hover {
+  background-color: #fbeaea;
+  border-color: #e8b4ae;
+  color: #c0564a;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #9a8fa0;
+  font-size: 0.9rem;
+}
+
+/* ---- Modal ---- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: rgba(45, 39, 48, 0.45);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 24px 60px -16px rgba(45, 39, 48, 0.35);
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 28px 0;
+}
+
+.modalTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #2f2933;
+  margin: 0;
+}
+
+.modalSub {
+  font-size: 0.85rem;
+  color: #8c8290;
+  margin: 6px 0 0;
+}
+
+.modalClose {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  background-color: #faf7f2;
+  color: #8c8290;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+  flex-shrink: 0;
+}
+
+.modalClose:hover {
+  background-color: #f3eef2;
+  color: #875c80;
+}
+
+.modalBody {
+  padding: 24px 28px;
+}
+
+.fieldGroup {
+  margin-bottom: 20px;
+}
+
+.fieldLabel {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #3d3540;
+  margin-bottom: 8px;
+}
+
+.textInputPlain {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid #e3d9ea;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #3d3540;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.textInputPlain:focus {
+  outline: none;
+  border-color: #cdbad6;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
+.textInputPlain::placeholder {
+  color: #b3a898;
+}
+
+.selectPlain {
+  width: 100%;
+  height: 52px;
+  padding: 0 44px 0 16px;
+  border: 1px solid #e3d9ea;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #3d3540;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23875c80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.selectPlain:focus {
+  outline: none;
+  border-color: #cdbad6;
+  box-shadow: 0 0 0 3px rgba(135, 92, 128, 0.12);
+}
+
+/* Dropzone */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 32px 24px;
+  border: 2px dashed #e0d6ca;
+  border-radius: 14px;
+  background-color: #faf7f2;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.dropzone:hover {
+  border-color: #d47f65;
+  background-color: #fbf3ee;
+}
+
+.dropzoneIcon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background-color: #fbeee7;
+  color: #d47f65;
+}
+
+.dropzoneText {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #8c8290;
+  max-width: 260px;
+}
+
+.fileInputHidden {
+  display: none;
+}
+
+/* Toggle */
+.toggleRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background-color: #faf7f2;
+  border: 1px solid #f0eae0;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.toggleIconBox {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background-color: #f3eef2;
+  color: #875c80;
+  flex-shrink: 0;
+}
+
+.toggleContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 12px;
+}
+
+.toggleLabel {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2f2933;
+}
+
+.toggleHint {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #8c8290;
+}
+
+.toggleSwitch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.toggleSwitch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background-color: #e3d9ea;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.toggleTrack::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(45, 39, 48, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.toggleSwitch input:checked + .toggleTrack {
+  background-color: #d47f65;
+}
+
+.toggleSwitch input:checked + .toggleTrack::after {
+  transform: translateX(20px);
+}
+
+.toggleSwitch input:focus + .toggleTrack {
+  box-shadow: 0 0 0 3px rgba(212, 127, 101, 0.2);
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 28px 28px;
+}
+
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 22px;
+  border: 1px solid #e3d9ea;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #6b6270;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.ghostButton:hover {
+  background-color: #faf7f2;
+  border-color: #cdbad6;
+  color: #875c80;
+}
+
+/* Assign patient picker */
+.patientList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.patientRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ece4d8;
+  border-radius: 12px;
+  background-color: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.patientRow:hover {
+  border-color: #f0cbbb;
+  background-color: #fbf7f3;
+}
+
+.patientRowActive {
+  border-color: #d47f65;
+  background-color: #fbeee7;
+}
+
+.patientAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #cdbad6, #875c80);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.patientName {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2f2933;
+}
+
+.patientNote {
+  font-size: 0.76rem;
+  color: #9a8fa0;
+}
+
+.patientCheck {
+  margin-left: auto;
+  color: #d47f65;
+}
+
+.assignResource {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background-color: #faf7f2;
+  border: 1px solid #f0eae0;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.assignResourceName {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2f2933;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .rail {
+    position: static;
+  }
+}
