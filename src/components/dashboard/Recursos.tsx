@@ -535,6 +535,94 @@ export function Recursos() {
           </div>
         </div>
       )}
+
+      {/* Modal: detalle del recurso + historial de versiones */}
+      {detailResource && (
+        <div className={styles.modalOverlay} onClick={() => setDetailResource(null)}>
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Detalle del recurso"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <h2 className={styles.modalTitle}>{detailResource.name}</h2>
+                <p className={styles.modalSub}>
+                  {typeMeta[detailResource.type].label} · {detailResource.category}
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setDetailResource(null)}
+                aria-label="Cerrar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Nombre del recurso</label>
+                <input className={styles.textInputPlain} defaultValue={detailResource.name} />
+              </div>
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Categoría</label>
+                <select className={styles.selectPlain} defaultValue={detailResource.category}>
+                  {uploadCategories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.versionSection}>
+                <div className={styles.versionTitle}>
+                  <History size={16} strokeWidth={2} /> Historial de versiones
+                </div>
+                <div className={styles.versionTable}>
+                  {versionHistory.map((v) => (
+                    <div key={v.version} className={styles.versionRow}>
+                      <span className={styles.versionTag}>{v.version}</span>
+                      <div className={styles.versionInfo}>
+                        <span className={styles.versionNote}>{v.note}</span>
+                        <span className={styles.versionDate}>{v.date}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.versionDownload}
+                        aria-label={`Descargar ${v.version}`}
+                      >
+                        <Download size={15} strokeWidth={2} /> Descargar
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setDetailResource(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={() => setDetailResource(null)}
+              >
+                Guardar cambios
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
