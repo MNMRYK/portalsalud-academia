@@ -1488,6 +1488,133 @@
   text-decoration: line-through;
 }
 
+.taskBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.taskMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.taskPatient {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #875c80;
+}
+
+.taskDate {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #8c8290;
+}
+
+.priorityTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.priorityHigh {
+  background-color: #fbe4da;
+  color: #c05a3c;
+}
+
+.priorityMedium {
+  background-color: #f3e9c9;
+  color: #a07d2c;
+}
+
+.priorityLow {
+  background-color: #e5efe1;
+  color: #5c7d51;
+}
+
+.taskItemDone .priorityTag {
+  background-color: #e5efe1;
+  color: #5c7d51;
+}
+
+.taskEmpty {
+  margin: 4px 0 0;
+  padding: 22px;
+  border: 1px dashed #ecd9e6;
+  border-radius: 12px;
+  background-color: #faf7f2;
+  font-size: 0.86rem;
+  color: #8c8290;
+  text-align: center;
+}
+
+/* Filtro de fecha (Acciones rápidas pendientes) */
+.dateFilter {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.datePickerTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #ecd9e6;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #875c80;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.datePickerTrigger:hover {
+  border-color: #d8c0d3;
+  background-color: #fbf6fa;
+}
+
+.dateFilterInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.dateNotice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: #fbeee7;
+  border: 1px solid #f0d3c6;
+  color: #c05a3c;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+
 /* Next appointment highlight block (patient header) */
 .nextAppt {
   display: flex;
