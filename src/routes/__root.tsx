@@ -16,6 +16,7 @@ import { TasksProvider } from "../context/TasksContext";
 import { ConsultationsProvider } from "../context/ConsultationsContext";
 import { UserProvider } from "../context/UserContext";
 import { ResourcesProvider } from "../context/ResourcesContext";
+import { AcademyProvider } from "../context/AcademyContext";
 import { DevSwitcher } from "../components/dashboard/DevSwitcher";
 
 function NotFoundComponent() {
