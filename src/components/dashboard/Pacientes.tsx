@@ -90,6 +90,22 @@ const priorityClass: Record<TaskPriority, string> = {
   Baja: styles.priorityLow,
 };
 
+const assigneeMeta: Record<
+  TaskAssignee,
+  { icon: typeof Briefcase; label: string; iconClass: string }
+> = {
+  clinica: {
+    icon: Briefcase,
+    label: "Para la clínica",
+    iconClass: styles.assigneeClinic,
+  },
+  paciente: {
+    icon: User,
+    label: "Para el paciente",
+    iconClass: styles.assigneePatient,
+  },
+};
+
 const formatLongDate = (iso: string) => {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString("es-ES", {
