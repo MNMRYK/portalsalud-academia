@@ -12,6 +12,8 @@ import {
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { AddPatientModal } from "./AddPatientModal";
+import { PortalDashboard } from "./Portal";
+import { useUser } from "../../context/UserContext";
 import styles from "./Dashboard.module.css";
 
 const quickActions = [
