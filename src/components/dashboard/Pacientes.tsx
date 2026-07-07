@@ -315,16 +315,36 @@ export function Pacientes() {
                       Archivos privados del paciente organizados por carpeta.
                     </p>
                   </div>
-                  <button type="button" className={styles.secondaryButton}>
-                    <Upload size={16} /> Subir documento
-                  </button>
+                  <div className={styles.docHeadActions}>
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() => setIsFolderOpen(true)}
+                    >
+                      <FolderPlus size={16} /> Nueva Carpeta
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={() => setIsUploadOpen(true)}
+                    >
+                      <Upload size={16} /> Subir documento
+                    </button>
+                  </div>
                 </div>
 
                 {Object.entries(documents).map(([folder, files]) => (
                   <div key={folder} className={styles.folder}>
                     <div className={styles.folderTitle}>
                       <Folder size={18} className={styles.folderIcon} />
-                      {folder}
+                      <span className={styles.folderName}>{folder}</span>
+                      <button
+                        type="button"
+                        className={styles.deleteAction}
+                        aria-label={`Eliminar carpeta ${folder}`}
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                     <div className={styles.docList}>
                       {files.map((f) => (
@@ -342,6 +362,13 @@ export function Pacientes() {
                             aria-label={`Descargar ${f.name}`}
                           >
                             <Download size={18} />
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.deleteAction}
+                            aria-label={`Eliminar ${f.name}`}
+                          >
+                            <Trash2 size={18} />
                           </button>
                         </div>
                       ))}
