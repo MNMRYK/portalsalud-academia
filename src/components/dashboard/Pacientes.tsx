@@ -393,6 +393,7 @@ export function Pacientes() {
     setTaskDesc("");
     setTaskDue(todayISO);
     setTaskPriority("Media");
+    setTaskAssignee("clinica");
   };
 
   const submitTask = () => {
@@ -402,6 +403,7 @@ export function Pacientes() {
       description: taskDesc.trim(),
       dueDate: taskDue,
       priority: taskPriority,
+      assignee: taskAssignee,
     });
     resetTaskForm();
     setIsTaskOpen(false);
