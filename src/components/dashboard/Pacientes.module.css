@@ -628,3 +628,17 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Avatar gradients */
+.avPlum {
+  background: linear-gradient(140deg, #9d719a, #875c80);
+}
+.avSage {
+  background: linear-gradient(140deg, #b3c9b0, #869e83);
+}
+.avTerracota {
+  background: linear-gradient(140deg, #e0987f, #d47f65);
+}
+.avLilac {
+  background: linear-gradient(140deg, #d8c8df, #b79dc2);
+}
