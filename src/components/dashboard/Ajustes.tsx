@@ -92,7 +92,23 @@ const logs = [
 const roleOptions = ["Admin", "Nutricionista", "Administrativo"];
 
 export function Ajustes() {
+  const { templates, addTemplate, removeTemplate, toggleRequired, markUploaded } =
+    useLegalTemplates();
   const [activeTab, setActiveTab] = useState<TabId>("general");
+  const [isTemplateOpen, setTemplateOpen] = useState(false);
+  const [newTemplate, setNewTemplate] = useState<{
+    name: string;
+    category: TemplateCategory;
+    format: string;
+    required: boolean;
+    fileName: string;
+  }>({
+    name: "",
+    category: templateCategories[0],
+    format: "PDF",
+    required: false,
+    fileName: "",
+  });
   const [isInviteOpen, setInviteOpen] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<string | null>(null);
   const [invoicePatient, setInvoicePatient] = useState<string | null>(null);
