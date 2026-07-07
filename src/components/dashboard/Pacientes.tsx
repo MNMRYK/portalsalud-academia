@@ -302,6 +302,7 @@ export function Pacientes() {
 
   // Modal "Registrar / Ver consulta" del Historial
   const [isConsultOpen, setIsConsultOpen] = useState(false);
+  const [editingConsultId, setEditingConsultId] = useState<string | null>(null);
   const [detailConsult, setDetailConsult] = useState<Consultation | null>(null);
   const [consultForm, setConsultForm] = useState({
     note: "",
@@ -315,6 +316,7 @@ export function Pacientes() {
   });
 
   const openConsultForm = () => {
+    setEditingConsultId(null);
     setConsultForm({
       note: "",
       date: todayISO,
@@ -328,22 +330,50 @@ export function Pacientes() {
     setIsConsultOpen(true);
   };
 
+  const openEditConsult = (c: Consultation) => {
+    setEditingConsultId(c.id);
+    setConsultForm({
+      note: c.note,
+      date: c.date,
+      time: c.time,
+      phase: c.phase,
+      status: c.status,
+      withPayment: c.payment !== null,
+      amount: c.payment ? String(c.payment.amount) : "",
+      method: c.payment?.method ?? "Tarjeta",
+    });
+    setIsConsultOpen(true);
+  };
+
   const submitConsult = () => {
     if (!selectedPatient || !consultForm.note.trim()) return;
     const amountNum = Number(consultForm.amount);
-    addConsultation({
-      patientName: selectedPatient,
-      note: consultForm.note.trim(),
-      date: consultForm.date,
-      time: consultForm.time,
-      phase: consultForm.phase,
-      status: consultForm.status,
-      payment:
-        consultForm.withPayment && amountNum > 0
-          ? { amount: amountNum, method: consultForm.method }
-          : null,
-    });
+    const payment =
+      consultForm.withPayment && amountNum > 0
+        ? { amount: amountNum, method: consultForm.method }
+        : null;
+    if (editingConsultId) {
+      updateConsultation(editingConsultId, {
+        note: consultForm.note.trim(),
+        date: consultForm.date,
+        time: consultForm.time,
+        phase: consultForm.phase,
+        status: consultForm.status,
+        payment,
+      });
+    } else {
+      addConsultation({
+        patientName: selectedPatient,
+        note: consultForm.note.trim(),
+        date: consultForm.date,
+        time: consultForm.time,
+        phase: consultForm.phase,
+        status: consultForm.status,
+        payment,
+      });
+    }
     setIsConsultOpen(false);
+    setEditingConsultId(null);
   };
 
   const patient = patientList.find((p) => p.name === selectedPatient) ?? null;
