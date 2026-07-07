@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Building2,
   Users,
   ShieldCheck,
   Receipt,
@@ -13,6 +12,11 @@ import {
   Check,
   AlertTriangle,
   Download,
+  FolderOpen,
+  History,
+  Pencil,
+  Send,
+  Trash2,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
@@ -43,6 +47,30 @@ const billing = [
   { name: "Nuria Vidal", initials: "NV", av: styles.avSage, portal: false, academia: true, payment: "20 jun 2026 · 65 €" },
 ];
 
+const invoicesByPatient: Record<string, { date: string; concept: string; amount: string }[]> = {
+  "Laura García": [
+    { date: "01 jul 2026", concept: "Cuota mensual · Portal + Academia", amount: "65 €" },
+    { date: "01 jun 2026", concept: "Cuota mensual · Portal + Academia", amount: "65 €" },
+    { date: "01 may 2026", concept: "Consulta inicial + plan personalizado", amount: "120 €" },
+  ],
+  "Marc Puig": [
+    { date: "28 jun 2026", concept: "Cuota mensual · Portal Salud", amount: "65 €" },
+    { date: "28 may 2026", concept: "Cuota mensual · Portal Salud", amount: "65 €" },
+  ],
+  "Elena Soler": [
+    { date: "15 jun 2026", concept: "Consulta de seguimiento", amount: "90 €" },
+    { date: "15 may 2026", concept: "Consulta inicial", amount: "90 €" },
+  ],
+  "David Roca": [
+    { date: "02 jul 2026", concept: "Programa trimestral completo", amount: "120 €" },
+    { date: "02 abr 2026", concept: "Programa trimestral completo", amount: "120 €" },
+  ],
+  "Nuria Vidal": [
+    { date: "20 jun 2026", concept: "Cuota mensual · Academia", amount: "65 €" },
+    { date: "20 may 2026", concept: "Cuota mensual · Academia", amount: "65 €" },
+  ],
+};
+
 const team = [
   { name: "Sara Ruiz", email: "sara@nutralia.es", role: "Admin", initials: "SR", av: styles.avPlum, state: "Activo", pending: false },
   { name: "Elena Martín", email: "elena@nutralia.es", role: "Nutricionista", initials: "EM", av: styles.avSage, state: "Activo", pending: false },
@@ -56,12 +84,20 @@ const logs = [
   { user: "Carlos Vidal", initials: "CV", av: styles.avTerracota, action: "Invitó a un miembro", doc: "nuria@nutralia.es", time: "06 jul 2026 · 17:41" },
   { user: "Elena Martín", initials: "EM", av: styles.avSage, action: "Eliminó un recurso", doc: "Menú_v1.pdf", time: "06 jul 2026 · 12:03" },
   { user: "Sara Ruiz", initials: "SR", av: styles.avPlum, action: "Actualizó plantilla legal", doc: "RGPD.pdf", time: "05 jul 2026 · 08:30" },
+  { user: "Elena Martín", initials: "EM", av: styles.avSage, action: "Generó documento legal", doc: "Consentimiento_MarcP.pdf", time: "05 jul 2026 · 11:12" },
+  { user: "Carlos Vidal", initials: "CV", av: styles.avTerracota, action: "Registró un pago", doc: "David Roca · 120 €", time: "02 jul 2026 · 16:20" },
 ];
+
+const roleOptions = ["Admin", "Nutricionista", "Administrativo"];
 
 export function Ajustes() {
   const [activeTab, setActiveTab] = useState<TabId>("general");
   const [isInviteOpen, setInviteOpen] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<string | null>(null);
+  const [invoicePatient, setInvoicePatient] = useState<string | null>(null);
+  const [historyUser, setHistoryUser] = useState<string | null>(null);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [editMember, setEditMember] = useState<(typeof team)[number] | null>(null);
   const [access, setAccess] = useState(() =>
     billing.map((b) => ({ portal: b.portal, academia: b.academia }))
   );
@@ -70,6 +106,11 @@ export function Ajustes() {
     setAccess((prev) =>
       prev.map((row, i) => (i === index ? { ...row, [key]: !row[key] } : row))
     );
+  };
+
+  const openUserHistory = (user: string) => {
+    setOpenMenu(null);
+    setHistoryUser(user);
   };
 
   return (
@@ -183,6 +224,7 @@ export function Ajustes() {
                         <th>Acceso Portal Salud</th>
                         <th>Acceso Academia</th>
                         <th>Último pago recibido</th>
+                        <th className={styles.thRight}>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -215,6 +257,15 @@ export function Ajustes() {
                             </label>
                           </td>
                           <td className={styles.logDoc}>{p.payment}</td>
+                          <td className={styles.tdRight}>
+                            <button
+                              type="button"
+                              className={styles.previewButton}
+                              onClick={() => setInvoicePatient(p.name)}
+                            >
+                              <FolderOpen size={15} strokeWidth={2} /> Ver facturas
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -256,9 +307,69 @@ export function Ajustes() {
                         <span className={styles.stateDot} />
                         {m.state}
                       </span>
-                      <button type="button" className={styles.rowAction} aria-label="Opciones">
-                        <MoreVertical size={16} />
-                      </button>
+                      <div className={styles.menuAnchor}>
+                        <button
+                          type="button"
+                          className={styles.rowAction}
+                          aria-label="Opciones"
+                          aria-haspopup="menu"
+                          aria-expanded={openMenu === m.email}
+                          onClick={() =>
+                            setOpenMenu((cur) => (cur === m.email ? null : m.email))
+                          }
+                        >
+                          <MoreVertical size={16} />
+                        </button>
+
+                        {openMenu === m.email && (
+                          <>
+                            <div
+                              className={styles.menuBackdrop}
+                              onClick={() => setOpenMenu(null)}
+                            />
+                            <div className={styles.dropdownMenu} role="menu">
+                              <button
+                                type="button"
+                                className={styles.menuItem}
+                                role="menuitem"
+                                onClick={() => {
+                                  setOpenMenu(null);
+                                  setEditMember(m);
+                                }}
+                              >
+                                <Pencil size={15} strokeWidth={2} /> Editar rol
+                              </button>
+                              <button
+                                type="button"
+                                className={styles.menuItem}
+                                role="menuitem"
+                                onClick={() => openUserHistory(m.name)}
+                              >
+                                <History size={15} strokeWidth={2} /> Ver actividad reciente
+                              </button>
+                              {m.pending && (
+                                <button
+                                  type="button"
+                                  className={styles.menuItem}
+                                  role="menuitem"
+                                  onClick={() => setOpenMenu(null)}
+                                >
+                                  <Send size={15} strokeWidth={2} /> Reenviar invitación
+                                </button>
+                              )}
+                              <div className={styles.menuDivider} />
+                              <button
+                                type="button"
+                                className={`${styles.menuItem} ${styles.menuItemDanger}`}
+                                role="menuitem"
+                                onClick={() => setOpenMenu(null)}
+                              >
+                                <Trash2 size={15} strokeWidth={2} /> Revocar acceso
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -282,6 +393,7 @@ export function Ajustes() {
                         <th>Acción</th>
                         <th>Documento afectado</th>
                         <th>Fecha / Hora</th>
+                        <th className={styles.thRight}>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -296,6 +408,15 @@ export function Ajustes() {
                           <td className={styles.logAction}>{log.action}</td>
                           <td className={styles.logDoc}>{log.doc}</td>
                           <td className={styles.logTime}>{log.time}</td>
+                          <td className={styles.tdRight}>
+                            <button
+                              type="button"
+                              className={styles.previewButton}
+                              onClick={() => setHistoryUser(log.user)}
+                            >
+                              <History size={15} strokeWidth={2} /> Ver historial del usuario
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -342,9 +463,9 @@ export function Ajustes() {
               <div className={styles.fieldGroup}>
                 <label className={styles.fieldLabel}>Rol</label>
                 <select className={styles.selectPlain} defaultValue="Nutricionista">
-                  <option>Admin</option>
-                  <option>Nutricionista</option>
-                  <option>Administrativo</option>
+                  {roleOptions.map((r) => (
+                    <option key={r}>{r}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -419,6 +540,183 @@ export function Ajustes() {
                 onClick={() => setPreviewDoc(null)}
               >
                 Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Billing history modal */}
+      {invoicePatient && (
+        <div className={styles.modalOverlay} onClick={() => setInvoicePatient(null)}>
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Historial de facturación"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <h2 className={styles.modalTitle}>Historial de facturación</h2>
+                <p className={styles.modalSub}>{invoicePatient}</p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setInvoicePatient(null)}
+                aria-label="Cerrar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBodyScroll}>
+              <div className={styles.invoiceList}>
+                {(invoicesByPatient[invoicePatient] ?? []).map((inv, i) => (
+                  <div key={i} className={styles.invoiceRow}>
+                    <span className={styles.invoiceIcon}>
+                      <Receipt size={18} strokeWidth={1.9} />
+                    </span>
+                    <div className={styles.invoiceInfo}>
+                      <div className={styles.invoiceConcept}>{inv.concept}</div>
+                      <div className={styles.invoiceDate}>{inv.date}</div>
+                    </div>
+                    <span className={styles.invoiceAmount}>{inv.amount}</span>
+                    <button type="button" className={styles.previewButton}>
+                      <Download size={14} strokeWidth={2} /> Descargar PDF
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setInvoicePatient(null)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* User activity history modal */}
+      {historyUser && (
+        <div className={styles.modalOverlay} onClick={() => setHistoryUser(null)}>
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Historial del usuario"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <h2 className={styles.modalTitle}>Historial del usuario</h2>
+                <p className={styles.modalSub}>{historyUser}</p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setHistoryUser(null)}
+                aria-label="Cerrar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBodyScroll}>
+              {(() => {
+                const userLogs = logs.filter((l) => l.user === historyUser);
+                if (userLogs.length === 0) {
+                  return <p className={styles.emptyState}>Sin actividad registrada.</p>;
+                }
+                return (
+                  <div className={styles.timeline}>
+                    {userLogs.map((log, i) => (
+                      <div key={i} className={styles.timelineRow}>
+                        <span className={styles.timelineDot} />
+                        <div className={styles.timelineBody}>
+                          <div className={styles.timelineAction}>{log.action}</div>
+                          <div className={styles.timelineMeta}>
+                            <span className={styles.logDoc}>{log.doc}</span>
+                            <span className={styles.timelineTime}>{log.time}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setHistoryUser(null)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit role modal */}
+      {editMember && (
+        <div className={styles.modalOverlay} onClick={() => setEditMember(null)}>
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Editar rol"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <h2 className={styles.modalTitle}>Editar rol</h2>
+                <p className={styles.modalSub}>{editMember.name}</p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setEditMember(null)}
+                aria-label="Cerrar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>Rol del miembro</label>
+                <select className={styles.selectPlain} defaultValue={editMember.role}>
+                  {roleOptions.map((r) => (
+                    <option key={r}>{r}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setEditMember(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={() => setEditMember(null)}
+              >
+                Guardar cambios
               </button>
             </div>
           </div>
