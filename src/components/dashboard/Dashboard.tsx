@@ -75,6 +75,17 @@ const patients = [
 
 export function Dashboard() {
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleQuickAction = (id: string) => {
+    if (id === "paciente") {
+      setIsPatientModalOpen(true);
+    } else if (id === "leccion") {
+      navigate({ to: "/academia", state: { view: "lessonForm" } as never });
+    } else if (id === "clase") {
+      navigate({ to: "/academia", state: { view: "liveClassForm" } as never });
+    }
+  };
 
   return (
     <div className={styles.page}>
