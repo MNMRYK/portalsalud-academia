@@ -46,6 +46,11 @@ const initialRecords: AccessRecord[] = [
     payment: "01 jul 2026 · 65 €",
     joinDate: "12 ene 2026",
     coursesEnrolled: 3,
+    courses: [
+      "Fundamentos de Nutrición Antiinflamatoria",
+      "Salud Hormonal Femenina",
+      "Microbiota y Digestión",
+    ],
     inAcademyList: true,
   },
   {
@@ -59,6 +64,7 @@ const initialRecords: AccessRecord[] = [
     payment: "28 jun 2026 · 65 €",
     joinDate: "05 mar 2026",
     coursesEnrolled: 0,
+    courses: [],
     inAcademyList: false,
   },
   {
@@ -72,6 +78,7 @@ const initialRecords: AccessRecord[] = [
     payment: "15 jun 2026 · 90 €",
     joinDate: "22 abr 2026",
     coursesEnrolled: 0,
+    courses: [],
     inAcademyList: false,
   },
   {
@@ -85,6 +92,7 @@ const initialRecords: AccessRecord[] = [
     payment: "02 jul 2026 · 120 €",
     joinDate: "03 feb 2026",
     coursesEnrolled: 2,
+    courses: ["Cocina Terapéutica en Casa", "Gestión del Estrés y Descanso"],
     inAcademyList: true,
   },
   {
@@ -98,6 +106,12 @@ const initialRecords: AccessRecord[] = [
     payment: "20 jun 2026 · 65 €",
     joinDate: "20 nov 2025",
     coursesEnrolled: 4,
+    courses: [
+      "Fundamentos de Nutrición Antiinflamatoria",
+      "Salud Hormonal Femenina",
+      "Microbiota y Digestión",
+      "Cocina Terapéutica en Casa",
+    ],
     inAcademyList: true,
   },
 ];
