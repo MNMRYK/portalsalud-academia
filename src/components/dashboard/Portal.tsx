@@ -11,6 +11,13 @@ import {
   AlertTriangle,
   MessageCircle,
   CalendarPlus,
+  CreditCard,
+  Download,
+  Mail,
+  Camera,
+  Lock,
+  Bell,
+  ShieldAlert,
   X,
   type LucideIcon,
 } from "lucide-react";
