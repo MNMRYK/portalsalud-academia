@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   ChevronLeft,
   PlayCircle,
@@ -7,17 +8,10 @@ import {
   Lock,
   CheckCircle2,
   Circle,
-  ArrowRight,
-  ShieldCheck,
-  Infinity as InfinityIcon,
-  Award,
+  Plus,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
-import {
-  useAcademy,
-  CHECKOUT_URL,
-  type AcademyLesson,
-} from "../../context/AcademyContext";
+import { useAcademy, type AcademyLesson } from "../../context/AcademyContext";
 import styles from "./Dashboard.module.css";
 import learn from "./AcademiaLearn.module.css";
 
@@ -75,6 +69,7 @@ export function CourseDetail({ courseId }: { courseId: string }) {
     isCompleted,
     progressOf,
     resumeLessonId,
+    enroll,
   } = useAcademy();
   const navigate = useNavigate();
 
@@ -221,35 +216,33 @@ export function CourseDetail({ courseId }: { courseId: string }) {
               </>
             ) : (
               <>
-                <div className={learn.priceRow}>
-                  <span className={learn.priceValue}>{course.price}</span>
-                  <span className={learn.priceCurrency}>€</span>
+                <h3 className={learn.sectionHeading}>Contenido del curso</h3>
+                <div className={learn.cardStat}>
+                  <Layers size={16} className={learn.cardStatIcon} />
+                  {course.lessons} lecciones
                 </div>
-                <span className={learn.priceNote}>
-                  Pago único · acceso de por vida
-                </span>
-                <a
-                  className={learn.ctaBig}
-                  href={CHECKOUT_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <div className={learn.cardStat}>
+                  <Clock size={16} className={learn.cardStatIcon} />
+                  {course.duration} de contenido
+                </div>
+                <div className={learn.cardStat}>
+                  <PlayCircle size={16} className={learn.cardStatIcon} />
+                  Vídeo + material descargable
+                </div>
+                <button
+                  type="button"
+                  className={learn.resumeButton}
+                  onClick={() => {
+                    enroll(course.id);
+                    toast.success("Curso añadido a Mis Cursos", {
+                      description:
+                        "Ya tienes acceso completo a todas las lecciones.",
+                    });
+                  }}
                 >
-                  Inscríbete ahora <ArrowRight size={18} />
-                </a>
-                <div className={learn.guarantee}>
-                  <span className={learn.guaranteeItem}>
-                    <InfinityIcon size={16} className={learn.guaranteeIcon} />
-                    Acceso ilimitado a {course.lessons} lecciones
-                  </span>
-                  <span className={learn.guaranteeItem}>
-                    <Award size={16} className={learn.guaranteeIcon} />
-                    Certificado al finalizar
-                  </span>
-                  <span className={learn.guaranteeItem}>
-                    <ShieldCheck size={16} className={learn.guaranteeIcon} />
-                    Garantía de devolución 14 días
-                  </span>
-                </div>
+                  <Plus size={18} />
+                  Añadir a Mis Cursos
+                </button>
               </>
             )}
           </aside>
