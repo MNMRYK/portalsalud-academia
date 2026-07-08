@@ -604,6 +604,7 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
       isCompleted,
       completeLesson,
       progressOf,
+      resetCourse,
       nextLessonId,
       prevLessonId,
       resumeLessonId,
