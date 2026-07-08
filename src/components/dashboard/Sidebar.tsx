@@ -17,11 +17,13 @@ import {
   CreditCard,
   UserRound,
   Lock,
+  HelpCircle,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useUser } from "../../context/UserContext";
 import { UpsellModal, type UpsellVariant } from "./UpsellModal";
+import { SupportModal } from "./SupportModal";
 import styles from "./Sidebar.module.css";
 
 const adminNav = [
@@ -59,6 +61,7 @@ const settingsLinks: PatientLink[] = [
 export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
   const { isAdmin, hasClinicalAccess, hasAcademyAccess, logout } = useUser();
   const [upsell, setUpsell] = useState<UpsellVariant | null>(null);
+  const [supportOpen, setSupportOpen] = useState(false);
 
   return (
     <>
@@ -171,6 +174,14 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
                 {label}
               </Link>
             ))}
+            <button
+              type="button"
+              className={styles.navItem}
+              onClick={() => setSupportOpen(true)}
+            >
+              <HelpCircle size={19} className={styles.navIcon} strokeWidth={2} />
+              Ayuda y Soporte
+            </button>
           </nav>
         )}
         </div>
@@ -202,6 +213,7 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
       </aside>
 
       <UpsellModal variant={upsell} onClose={() => setUpsell(null)} />
+      <SupportModal open={supportOpen} onClose={() => setSupportOpen(false)} />
     </>
   );
 }

@@ -21,12 +21,17 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Sidebar } from "./Sidebar";
 import { PatientFicha } from "./PatientFicha";
 import { PatientResourceLibrary } from "./PatientResourceLibrary";
 import { useUser } from "../../context/UserContext";
 import { useTasks } from "../../context/TasksContext";
 import { useConsultations } from "../../context/ConsultationsContext";
+import {
+  useSymptomDiary,
+  intensityLabel,
+} from "../../context/SymptomDiaryContext";
 import styles from "./Portal.module.css";
 
 /** Datos de contacto de la especialista para reprogramar citas. */
@@ -303,13 +308,63 @@ const sharedDiary = [
   { id: "d3", date: "28 jun 2026", text: "Buena semana en general. He cumplido la pauta antiinflamatoria sin dificultad." },
 ];
 
+const monthShort = [
+  "ene", "feb", "mar", "abr", "may", "jun",
+  "jul", "ago", "sep", "oct", "nov", "dic",
+];
+
+function formatShortDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${d} ${monthShort[m - 1]} ${y}`;
+}
+
+function intensityBadgeClass(intensity: number): string {
+  if (intensity <= 2) return styles.diaryBadgeLow;
+  if (intensity === 3) return styles.diaryBadgeMid;
+  return styles.diaryBadgeHigh;
+}
+
 export function PortalPlan() {
   const { patientName } = useUser();
   const { tasks, toggleTask } = useTasks();
+  const { addEntry, entriesForPatient } = useSymptomDiary();
 
   const patientTasks = tasks.filter(
     (t) => t.patientName === patientName && t.assignee === "paciente",
   );
+
+  const myEntries = entriesForPatient(patientName);
+
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const [isEntryOpen, setIsEntryOpen] = useState(false);
+  const [entryDate, setEntryDate] = useState(todayISO);
+  const [entryIntensity, setEntryIntensity] = useState(3);
+  const [entryNotes, setEntryNotes] = useState("");
+
+  const resetEntry = () => {
+    setEntryDate(todayISO);
+    setEntryIntensity(3);
+    setEntryNotes("");
+  };
+
+  const openEntry = () => {
+    resetEntry();
+    setIsEntryOpen(true);
+  };
+
+  const submitEntry = () => {
+    addEntry({
+      patientName,
+      date: entryDate,
+      intensity: entryIntensity,
+      notes: entryNotes.trim(),
+    });
+    setIsEntryOpen(false);
+    resetEntry();
+    toast.success("Entrada registrada", {
+      description: "Se ha compartido con tu especialista.",
+    });
+  };
 
   return (
     <PortalShell
@@ -363,10 +418,28 @@ export function PortalPlan() {
       <div className={styles.card}>
         <div className={styles.cardHead}>
           <h2 className={styles.cardTitle}>Diario de síntomas</h2>
-          <button type="button" className={styles.disabledButton} disabled>
+          <button type="button" className={styles.addButton} onClick={openEntry}>
             <Plus size={15} /> Nueva entrada
           </button>
         </div>
+
+        {myEntries.map((entry) => (
+          <div key={entry.id} className={styles.diaryEntry}>
+            <span className={styles.diaryDot} />
+            <div>
+              <div className={styles.diaryDate}>{formatShortDate(entry.date)}</div>
+              {entry.notes && (
+                <div className={styles.diaryText}>{entry.notes}</div>
+              )}
+              <span
+                className={`${styles.diaryBadge} ${intensityBadgeClass(entry.intensity)}`}
+              >
+                Intensidad {entry.intensity}/5 · {intensityLabel(entry.intensity)}
+              </span>
+            </div>
+          </div>
+        ))}
+
         {sharedDiary.map((entry) => (
           <div key={entry.id} className={styles.diaryEntry}>
             <span className={styles.diaryDot} />
@@ -377,6 +450,99 @@ export function PortalPlan() {
           </div>
         ))}
       </div>
+
+      {isEntryOpen && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsEntryOpen(false)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className={styles.modalClose}
+              onClick={() => setIsEntryOpen(false)}
+              aria-label="Cerrar"
+            >
+              <X size={18} />
+            </button>
+
+            <span className={styles.modalIcon}>
+              <ClipboardList size={26} strokeWidth={1.9} />
+            </span>
+            <h2 className={styles.modalTitle}>Nueva entrada del diario</h2>
+            <p className={styles.modalText}>
+              Registra cómo te encuentras. Tu especialista lo verá en tu ficha.
+            </p>
+
+            <div className={styles.formStack}>
+              <div className={styles.formField}>
+                <label className={styles.formLabel} htmlFor="entry-date">
+                  Fecha
+                </label>
+                <input
+                  id="entry-date"
+                  type="date"
+                  className={styles.input}
+                  value={entryDate}
+                  onChange={(e) => setEntryDate(e.target.value)}
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <span className={styles.formLabel}>
+                  Intensidad del síntoma (1-5)
+                </span>
+                <div className={styles.intensityScale}>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      className={`${styles.intensityOption} ${
+                        entryIntensity === n ? styles.intensityOptionActive : ""
+                      }`}
+                      onClick={() => setEntryIntensity(n)}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.formField}>
+                <label className={styles.formLabel} htmlFor="entry-notes">
+                  Notas / Observaciones
+                </label>
+                <textarea
+                  id="entry-notes"
+                  className={styles.textareaField}
+                  placeholder="Describe cómo te sientes, síntomas o cambios que notes…"
+                  value={entryNotes}
+                  onChange={(e) => setEntryNotes(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setIsEntryOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitEntry}
+              >
+                Guardar entrada
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PortalShell>
   );
 }

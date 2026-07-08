@@ -18,7 +18,9 @@ import { UserProvider } from "../context/UserContext";
 import { ResourcesProvider } from "../context/ResourcesContext";
 import { AcademyProvider } from "../context/AcademyContext";
 import { AccessProvider } from "../context/AccessContext";
+import { SymptomDiaryProvider } from "../context/SymptomDiaryContext";
 import { DevSwitcher } from "../components/dashboard/DevSwitcher";
+import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -148,9 +150,12 @@ function RootComponent() {
               <ResourcesProvider>
                 <AcademyProvider>
                   <AccessProvider>
-                    {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-                    <Outlet />
-                    <DevSwitcher />
+                    <SymptomDiaryProvider>
+                      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+                      <Outlet />
+                      <DevSwitcher />
+                      <Toaster position="top-right" richColors />
+                    </SymptomDiaryProvider>
                   </AccessProvider>
                 </AcademyProvider>
               </ResourcesProvider>

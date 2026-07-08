@@ -57,6 +57,10 @@ import {
   type ConsultationStatus,
   type PaymentMethod,
 } from "@/context/ConsultationsContext";
+import {
+  useSymptomDiary,
+  intensityLabel,
+} from "@/context/SymptomDiaryContext";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
@@ -211,6 +215,7 @@ export function Pacientes() {
     removeConsultation,
     consultationsForPatient,
   } = useConsultations();
+  const { entriesForPatient: symptomEntriesForPatient } = useSymptomDiary();
 
   const incomingPatient = (
     useLocation().state as { selectedPatient?: string | null }
@@ -380,6 +385,9 @@ export function Pacientes() {
   const patientTasks = selectedPatient ? tasksForPatient(selectedPatient) : [];
   const patientConsultations = selectedPatient
     ? consultationsForPatient(selectedPatient)
+    : [];
+  const patientSymptomEntries = selectedPatient
+    ? symptomEntriesForPatient(selectedPatient)
     : [];
 
   const openPatient = (name: string) => {
@@ -807,6 +815,45 @@ export function Pacientes() {
                       </tr>
                     </thead>
                     <tbody>
+                      {patientSymptomEntries.map((e) => {
+                        const [yy, mm, dd] = e.date.split("-").map(Number);
+                        const shortDate = new Date(yy, mm - 1, dd)
+                          .toLocaleDateString("es-ES", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          });
+                        const intensityCls =
+                          e.intensity <= 2
+                            ? styles.levelSage
+                            : e.intensity === 3
+                              ? styles.levelPlum
+                              : styles.levelTerracota;
+                        return (
+                          <tr key={e.id}>
+                            <td>
+                              <span
+                                className={`${styles.visibilityTag} ${styles.visibilityShared}`}
+                                title="Registro enviado por el paciente"
+                              >
+                                <User size={15} /> Del paciente
+                              </span>
+                            </td>
+                            <td className={styles.dateCell}>{shortDate}</td>
+                            <td>
+                              <span className={styles.level}>—</span>
+                            </td>
+                            <td>
+                              <span className={`${styles.level} ${intensityCls}`}>
+                                {intensityLabel(e.intensity)} · {e.intensity}/5
+                              </span>
+                            </td>
+                            <td className={styles.noteCell}>
+                              {e.notes || "Sin observaciones."}
+                            </td>
+                          </tr>
+                        );
+                      })}
                       {diaryEntries.map((e) => (
                         <tr key={e.id}>
                           <td>

@@ -1224,3 +1224,126 @@
   margin-left: auto;
   flex-shrink: 0;
 }
+
+/* ===== Diario de síntomas — botón activo y formulario ===== */
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(140deg, #d47f65, #875c80);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 9px 15px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.addButton:hover {
+  filter: brightness(1.05);
+}
+
+.diaryBadge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.76rem;
+}
+
+.diaryBadgeLow {
+  background-color: #eaf1e6;
+  color: #5f8a5b;
+}
+
+.diaryBadgeMid {
+  background-color: #f3eef6;
+  color: #875c80;
+}
+
+.diaryBadgeHigh {
+  background-color: #fbeee7;
+  color: #b25c40;
+}
+
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+  margin-bottom: 22px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.formLabel {
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: #3d3540;
+}
+
+.textareaField {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.94rem;
+  color: #3d3540;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background-color: #faf6f0;
+  border: 1px solid #ece4d8;
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.textareaField:focus {
+  outline: none;
+  border-color: #cdbad6;
+  background-color: #ffffff;
+}
+
+.intensityScale {
+  display: flex;
+  gap: 8px;
+}
+
+.intensityOption {
+  flex: 1;
+  border: 1px solid #ece4d8;
+  border-radius: 10px;
+  background-color: #faf6f0;
+  color: #6b6270;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 11px 0;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.intensityOption:hover {
+  border-color: #cdbad6;
+}
+
+.intensityOptionActive {
+  background: linear-gradient(140deg, #d47f65, #875c80);
+  border-color: transparent;
+  color: #ffffff;
+}
