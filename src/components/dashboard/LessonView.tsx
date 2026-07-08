@@ -72,7 +72,15 @@ export function LessonView({
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f7f3ee" }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#f7f3ee",
+        fontFamily: '"Nunito", system-ui, sans-serif',
+        color: "#3d3540",
+      }}
+    >
       <Sidebar collapsed />
 
       <main className={learn.learnMain}>
