@@ -1164,3 +1164,108 @@
   color: #875c80;
 }
 
+/* ── Acción "Reactivar" (tono salvia / verde sutil) ── */
+.rowActionSuccess:hover {
+  background-color: #eaf1e6;
+  color: #5c7a4f;
+}
+
+/* ── Celda de cursos con tooltip ── */
+.coursesCell {
+  cursor: help;
+  border-bottom: 1px dotted #cdbad6;
+}
+
+/* ── Modales de confirmación ── */
+.modalTitleDanger {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #b25c40;
+  margin: 0;
+}
+
+.dangerBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background-color: #fbeee7;
+  border: 1px solid #f2d8cb;
+}
+
+.dangerIcon {
+  color: #b25c40;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.dangerText {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #7a4a38;
+}
+
+.confirmText {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #6b6270;
+}
+
+.confirmText strong {
+  color: #2f2933;
+}
+
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 12px;
+  background-color: #b25c40;
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.18s ease, opacity 0.18s ease;
+}
+
+.dangerButton:hover:not(:disabled) {
+  background-color: #a04a30;
+}
+
+.dangerButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.confirmButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #a3bca0, #875c80);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.18s ease;
+}
+
+.confirmButton:hover {
+  opacity: 0.92;
+}
+
+

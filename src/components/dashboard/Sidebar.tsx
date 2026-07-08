@@ -73,6 +73,7 @@ export function Sidebar() {
           </div>
         </div>
 
+        <div className={styles.navScroll}>
         {isAdmin ? (
           <>
             <span className={styles.navGroupLabel}>Espacio de trabajo</span>
@@ -170,6 +171,9 @@ export function Sidebar() {
             ))}
           </nav>
         )}
+        </div>
+
+
 
         <div className={styles.footer}>
           <div className={styles.profile}>

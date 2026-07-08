@@ -28,6 +28,8 @@ export interface AccessRecord {
   /** Fecha de alta como alumno/paciente. */
   joinDate: string;
   coursesEnrolled: number;
+  /** Nombres exactos de los cursos inscritos (para el tooltip). */
+  courses: string[];
   /** Si aparece en la tabla de "Gestión de Alumnos". */
   inAcademyList: boolean;
 }
@@ -44,6 +46,11 @@ const initialRecords: AccessRecord[] = [
     payment: "01 jul 2026 · 65 €",
     joinDate: "12 ene 2026",
     coursesEnrolled: 3,
+    courses: [
+      "Fundamentos de Nutrición Antiinflamatoria",
+      "Salud Hormonal Femenina",
+      "Microbiota y Digestión",
+    ],
     inAcademyList: true,
   },
   {
@@ -57,6 +64,7 @@ const initialRecords: AccessRecord[] = [
     payment: "28 jun 2026 · 65 €",
     joinDate: "05 mar 2026",
     coursesEnrolled: 0,
+    courses: [],
     inAcademyList: false,
   },
   {
@@ -70,6 +78,7 @@ const initialRecords: AccessRecord[] = [
     payment: "15 jun 2026 · 90 €",
     joinDate: "22 abr 2026",
     coursesEnrolled: 0,
+    courses: [],
     inAcademyList: false,
   },
   {
@@ -83,6 +92,7 @@ const initialRecords: AccessRecord[] = [
     payment: "02 jul 2026 · 120 €",
     joinDate: "03 feb 2026",
     coursesEnrolled: 2,
+    courses: ["Cocina Terapéutica en Casa", "Gestión del Estrés y Descanso"],
     inAcademyList: true,
   },
   {
@@ -96,6 +106,12 @@ const initialRecords: AccessRecord[] = [
     payment: "20 jun 2026 · 65 €",
     joinDate: "20 nov 2025",
     coursesEnrolled: 4,
+    courses: [
+      "Fundamentos de Nutrición Antiinflamatoria",
+      "Salud Hormonal Femenina",
+      "Microbiota y Digestión",
+      "Cocina Terapéutica en Casa",
+    ],
     inAcademyList: true,
   },
 ];
@@ -107,6 +123,8 @@ interface AccessContextValue {
   toggleAccess: (id: string, key: "portal" | "academia") => void;
   /** "Dar de baja": el alumno pasa a Inactivo (academia = false) pero sigue en la lista. */
   deactivateStudent: (id: string) => void;
+  /** "Reactivar": restaura el acceso a la academia (academia = true). */
+  reactivateStudent: (id: string) => void;
   /** "Eliminar": sale de la tabla de alumnos pero el usuario sigue existiendo con academia = false. */
   removeStudent: (id: string) => void;
 }
@@ -126,6 +144,11 @@ export function AccessProvider({ children }: { children: ReactNode }) {
       prev.map((r) => (r.id === id ? { ...r, academia: false } : r)),
     );
 
+  const reactivateStudent = (id: string) =>
+    setRecords((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, academia: true } : r)),
+    );
+
   const removeStudent = (id: string) =>
     setRecords((prev) =>
       prev.map((r) =>
@@ -139,6 +162,7 @@ export function AccessProvider({ children }: { children: ReactNode }) {
       students: records.filter((r) => r.inAcademyList),
       toggleAccess,
       deactivateStudent,
+      reactivateStudent,
       removeStudent,
     }),
     [records],
