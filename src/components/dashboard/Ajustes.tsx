@@ -29,6 +29,7 @@ import {
   type TemplateCategory,
 } from "../../context/LegalTemplatesContext";
 import { useConsultations } from "../../context/ConsultationsContext";
+import { useAccess } from "../../context/AccessContext";
 import styles from "./Ajustes.module.css";
 
 type TabId = "general" | "facturacion" | "equipo" | "seguridad";
@@ -41,13 +42,7 @@ const tabs: { id: TabId; label: string; icon: LucideIcon }[] = [
 ];
 
 
-const billing = [
-  { name: "Laura García", initials: "LG", av: styles.avSage, portal: true, academia: true, payment: "01 jul 2026 · 65 €" },
-  { name: "Marc Puig", initials: "MP", av: styles.avPlum, portal: true, academia: false, payment: "28 jun 2026 · 65 €" },
-  { name: "Elena Soler", initials: "ES", av: styles.avTerracota, portal: false, academia: false, payment: "15 jun 2026 · 90 €" },
-  { name: "David Roca", initials: "DR", av: styles.avPlum, portal: true, academia: true, payment: "02 jul 2026 · 120 €" },
-  { name: "Nuria Vidal", initials: "NV", av: styles.avSage, portal: false, academia: true, payment: "20 jun 2026 · 65 €" },
-];
+
 
 const invoicesByPatient: Record<string, { date: string; concept: string; amount: string }[]> = {
   "Laura García": [
@@ -118,26 +113,18 @@ export function Ajustes() {
   const [historyUser, setHistoryUser] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [editMember, setEditMember] = useState<(typeof team)[number] | null>(null);
-  const [access, setAccess] = useState(() =>
-    billing.map((b) => ({ portal: b.portal, academia: b.academia }))
-  );
+  const { records, toggleAccess } = useAccess();
   const [identity, setIdentity] = useState({
     legalName: "Nutralia Centro de Nutrición S.L.",
     taxId: "B-12345678",
     address: "Calle de la Salud 42, 28001 Madrid",
   });
 
-  const toggleAccess = (index: number, key: "portal" | "academia") => {
-    setAccess((prev) =>
-      prev.map((row, i) => (i === index ? { ...row, [key]: !row[key] } : row))
-    );
-  };
-
   // Pacientes con pagos registrados desde el módulo de consultas que aún no
-  // figuran en la tabla estática de facturación → se añaden automáticamente.
+  // figuran en la tabla maestra de accesos → se añaden automáticamente.
   const extraAvatars = [styles.avPlum, styles.avSage, styles.avTerracota];
   const extraBillingRows = patientsWithPayments()
-    .filter((name) => !billing.some((b) => b.name === name))
+    .filter((name) => !records.some((b) => b.name === name))
     .map((name, i) => ({
       name,
       initials: name
@@ -418,11 +405,11 @@ export function Ajustes() {
                       </tr>
                     </thead>
                     <tbody>
-                      {billing.map((p, i) => (
-                        <tr key={p.name}>
+                      {records.map((p) => (
+                        <tr key={p.id}>
                           <td>
                             <span className={styles.logUser}>
-                              <span className={`${styles.logAvatar} ${p.av}`}>{p.initials}</span>
+                              <span className={`${styles.logAvatar} ${styles[p.avatar]}`}>{p.initials}</span>
                               {p.name}
                             </span>
                           </td>
@@ -430,8 +417,8 @@ export function Ajustes() {
                             <label className={styles.toggleSwitch}>
                               <input
                                 type="checkbox"
-                                checked={access[i].portal}
-                                onChange={() => toggleAccess(i, "portal")}
+                                checked={p.portal}
+                                onChange={() => toggleAccess(p.id, "portal")}
                               />
                               <span className={styles.toggleTrack} />
                             </label>
@@ -440,8 +427,8 @@ export function Ajustes() {
                             <label className={styles.toggleSwitch}>
                               <input
                                 type="checkbox"
-                                checked={access[i].academia}
-                                onChange={() => toggleAccess(i, "academia")}
+                                checked={p.academia}
+                                onChange={() => toggleAccess(p.id, "academia")}
                               />
                               <span className={styles.toggleTrack} />
                             </label>

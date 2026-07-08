@@ -17,6 +17,7 @@ import { ConsultationsProvider } from "../context/ConsultationsContext";
 import { UserProvider } from "../context/UserContext";
 import { ResourcesProvider } from "../context/ResourcesContext";
 import { AcademyProvider } from "../context/AcademyContext";
+import { AccessProvider } from "../context/AccessContext";
 import { DevSwitcher } from "../components/dashboard/DevSwitcher";
 
 function NotFoundComponent() {
@@ -146,9 +147,11 @@ function RootComponent() {
             <ConsultationsProvider>
               <ResourcesProvider>
                 <AcademyProvider>
-                  {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-                  <Outlet />
-                  <DevSwitcher />
+                  <AccessProvider>
+                    {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+                    <Outlet />
+                    <DevSwitcher />
+                  </AccessProvider>
                 </AcademyProvider>
               </ResourcesProvider>
             </ConsultationsProvider>
