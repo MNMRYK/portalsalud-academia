@@ -404,29 +404,92 @@ export function PortalSuscripciones() {
   const { invoicesForPatient } = useConsultations();
   const invoices = invoicesForPatient(patientName);
 
+  const [showCancelAcademy, setShowCancelAcademy] = useState(false);
+  const [academyCancelled, setAcademyCancelled] = useState(false);
+
+  const clinicalContact =
+    "mailto:hola@nutralia.com?subject=Gestión%20de%20mi%20plan%20clínico";
+
   return (
     <PortalShell
       title="Mis Suscripciones y Pagos"
-      sub="Consulta tus planes activos y tu historial de facturación."
+      sub="Consulta tus planes activos, tu método de pago y tu historial de facturación."
     >
+      <h2 className={styles.sectionTitle}>Planes activos</h2>
+
+      {/* Portal de Salud — sin opción de cancelar online */}
       <div className={styles.planCard}>
-        <div>
+        <div className={styles.planInfo}>
           <div className={styles.planName}>Portal de Salud</div>
-          <div className={styles.planMeta}>Acompañamiento clínico · renovación mensual</div>
+          <div className={styles.planMeta}>
+            Acompañamiento clínico · renovación mensual
+          </div>
+          <div className={styles.planBilling}>
+            Próximo cobro: 5 de agosto de 2026 · 45€
+          </div>
+          <a className={styles.planManageLink} href={clinicalContact}>
+            <Mail size={14} /> Contactar para gestionar plan clínico
+          </a>
         </div>
         <span className={styles.planPill}>Activo</span>
       </div>
 
+      {/* Academia Nutralia — cancelable con confirmación */}
       {hasAcademyAccess && (
         <div className={styles.planCard}>
-          <div>
+          <div className={styles.planInfo}>
             <div className={styles.planName}>Academia Nutralia</div>
-            <div className={styles.planMeta}>Acceso a cursos y clases en directo</div>
+            <div className={styles.planMeta}>
+              Acceso a cursos y clases en directo
+            </div>
+            <div className={styles.planBilling}>
+              Próximo cobro: 1 de agosto de 2026 · 19€
+            </div>
+            {academyCancelled ? (
+              <span className={styles.planCancelledNote}>
+                <Info size={14} /> Suscripción cancelada · activa hasta el 1 de
+                agosto de 2026
+              </span>
+            ) : (
+              <button
+                type="button"
+                className={styles.planCancelLink}
+                onClick={() => setShowCancelAcademy(true)}
+              >
+                Cancelar suscripción
+              </button>
+            )}
           </div>
-          <span className={styles.planPill}>Activo</span>
+          <span
+            className={
+              academyCancelled ? styles.planPillMuted : styles.planPill
+            }
+          >
+            {academyCancelled ? "Cancelada" : "Activo"}
+          </span>
         </div>
       )}
 
+      {/* Método de pago */}
+      <h2 className={styles.sectionTitle}>Método de pago</h2>
+      <div className={styles.card}>
+        <div className={styles.paymentMethod}>
+          <span className={styles.paymentCardIcon}>
+            <CreditCard size={24} strokeWidth={1.9} />
+          </span>
+          <div className={styles.paymentInfo}>
+            <div className={styles.paymentCardNumber}>
+              Tarjeta terminada en •••• 4567
+            </div>
+            <div className={styles.paymentCardExp}>Visa · Caduca 09/2027</div>
+          </div>
+          <button type="button" className={styles.secondaryButton}>
+            Actualizar datos de pago
+          </button>
+        </div>
+      </div>
+
+      {/* Historial de facturación */}
       <h2 className={styles.sectionTitle}>Historial de facturación</h2>
       <div className={styles.card}>
         {invoices.length === 0 ? (
@@ -439,6 +502,7 @@ export function PortalSuscripciones() {
                 <th>Concepto</th>
                 <th>Importe</th>
                 <th>Método</th>
+                <th className={styles.billingColRight}>Factura</th>
               </tr>
             </thead>
             <tbody>
@@ -448,12 +512,72 @@ export function PortalSuscripciones() {
                   <td>{inv.concept}</td>
                   <td>{inv.amount}</td>
                   <td>{inv.method}</td>
+                  <td className={styles.billingColRight}>
+                    <button
+                      type="button"
+                      className={styles.invoiceDownload}
+                      aria-label={`Descargar factura del ${inv.date}`}
+                      title="Descargar recibo (PDF)"
+                    >
+                      <Download size={16} />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
+
+      {showCancelAcademy && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setShowCancelAcademy(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cancel-academy-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className={styles.modalClose}
+              onClick={() => setShowCancelAcademy(false)}
+              aria-label="Cerrar"
+            >
+              <X size={18} />
+            </button>
+            <span className={styles.modalIcon}>
+              <AlertTriangle size={26} strokeWidth={1.9} />
+            </span>
+            <h2 id="cancel-academy-title" className={styles.modalTitle}>
+              ¿Estás seguro de que quieres cancelar tu acceso a la comunidad?
+            </h2>
+            <p className={styles.modalText}>
+              Perderás el acceso a los cursos y clases en directo al final del
+              periodo de facturación actual.
+            </p>
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setShowCancelAcademy(false)}
+              >
+                Mantener suscripción
+              </button>
+              <button
+                type="button"
+                className={styles.dangerButton}
+                onClick={() => {
+                  setAcademyCancelled(true);
+                  setShowCancelAcademy(false);
+                }}
+              >
+                Confirmar cancelación
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PortalShell>
   );
 }
@@ -464,29 +588,201 @@ export function PortalSuscripciones() {
 export function PortalPerfil() {
   const { logout } = useUser();
 
-  const fields = [
-    { label: "Nombre completo", value: "Elena Martín García" },
-    { label: "Correo electrónico", value: "elena.martin@email.com" },
-    { label: "Teléfono", value: "+34 600 987 654" },
-    { label: "Fase actual", value: "Fase 2: Reducción de inflamación" },
-  ];
+  const [profile, setProfile] = useState({
+    name: "Elena Martín García",
+    email: "elena.martin@email.com",
+    phone: "+34 600 987 654",
+  });
+
+  const [notifyReminders, setNotifyReminders] = useState(true);
+  const [notifyAcademy, setNotifyAcademy] = useState(false);
+
+  const initials = profile.name
+    .split(" ")
+    .slice(0, 2)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
 
   return (
-    <PortalShell title="Mi Perfil" sub="Tus datos personales y de contacto.">
+    <PortalShell
+      title="Mi Perfil"
+      sub="Gestiona tus datos personales, seguridad y preferencias."
+    >
+      {/* Tarjeta 1: Información personal */}
       <div className={styles.card}>
         <div className={styles.cardHead}>
-          <h2 className={styles.cardTitle}>Datos personales</h2>
+          <h2 className={styles.cardTitle}>Información personal</h2>
         </div>
-        <div className={styles.profileGrid}>
-          {fields.map((f) => (
-            <div key={f.label} className={styles.field}>
-              <span className={styles.fieldLabel}>{f.label}</span>
-              <span className={styles.fieldValue}>{f.value}</span>
+        <div className={styles.avatarRow}>
+          <div className={styles.avatarWrap}>
+            <span className={styles.avatarLarge}>{initials}</span>
+            <button
+              type="button"
+              className={styles.avatarEdit}
+              aria-label="Subir foto de perfil"
+              title="Subir foto"
+            >
+              <Camera size={15} />
+            </button>
+          </div>
+          <div className={styles.avatarText}>
+            <div className={styles.avatarName}>{profile.name}</div>
+            <div className={styles.avatarHint}>Sube una foto de perfil</div>
+          </div>
+        </div>
+
+        <div className={styles.formGrid}>
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Nombre completo</span>
+            <input
+              className={styles.input}
+              type="text"
+              value={profile.name}
+              onChange={(e) =>
+                setProfile((p) => ({ ...p, name: e.target.value }))
+              }
+            />
+          </label>
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Correo electrónico</span>
+            <input
+              className={styles.input}
+              type="email"
+              value={profile.email}
+              onChange={(e) =>
+                setProfile((p) => ({ ...p, email: e.target.value }))
+              }
+            />
+          </label>
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Teléfono</span>
+            <input
+              className={styles.input}
+              type="tel"
+              value={profile.phone}
+              onChange={(e) =>
+                setProfile((p) => ({ ...p, phone: e.target.value }))
+              }
+            />
+          </label>
+        </div>
+
+        <div className={styles.cardActions}>
+          <button type="button" className={styles.primaryButton}>
+            Guardar cambios
+          </button>
+        </div>
+      </div>
+
+      {/* Tarjeta 2: Seguridad y contraseña */}
+      <div className={styles.card}>
+        <div className={styles.cardHead}>
+          <h2 className={styles.cardTitle}>
+            <Lock size={17} className={styles.cardTitleIcon} /> Seguridad y
+            contraseña
+          </h2>
+        </div>
+        <div className={styles.formGrid}>
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Contraseña actual</span>
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="••••••••"
+            />
+          </label>
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Nueva contraseña</span>
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="••••••••"
+            />
+          </label>
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Repetir nueva contraseña</span>
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="••••••••"
+            />
+          </label>
+        </div>
+        <div className={styles.cardActions}>
+          <button type="button" className={styles.secondaryButton}>
+            Actualizar contraseña
+          </button>
+        </div>
+      </div>
+
+      {/* Tarjeta 3: Preferencias de notificaciones */}
+      <div className={styles.card}>
+        <div className={styles.cardHead}>
+          <h2 className={styles.cardTitle}>
+            <Bell size={17} className={styles.cardTitleIcon} /> Preferencias de
+            notificaciones
+          </h2>
+        </div>
+        <div className={styles.toggleList}>
+          <div className={styles.toggleRow}>
+            <div className={styles.toggleText}>
+              <div className={styles.toggleTitle}>
+                Recordatorios de citas y tareas
+              </div>
+              <div className={styles.toggleSub}>
+                Recibe avisos antes de tus consultas y vencimientos.
+              </div>
             </div>
-          ))}
+            <button
+              type="button"
+              role="switch"
+              aria-checked={notifyReminders}
+              className={`${styles.toggle} ${notifyReminders ? styles.toggleOn : ""}`}
+              onClick={() => setNotifyReminders((v) => !v)}
+            >
+              <span className={styles.toggleKnob} />
+            </button>
+          </div>
+          <div className={styles.toggleRow}>
+            <div className={styles.toggleText}>
+              <div className={styles.toggleTitle}>
+                Comunicaciones de la academia y nuevos cursos
+              </div>
+              <div className={styles.toggleSub}>
+                Novedades, talleres en directo y lanzamientos.
+              </div>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={notifyAcademy}
+              className={`${styles.toggle} ${notifyAcademy ? styles.toggleOn : ""}`}
+              onClick={() => setNotifyAcademy((v) => !v)}
+            >
+              <span className={styles.toggleKnob} />
+            </button>
+          </div>
         </div>
-        <div className={styles.footerLogout}>
-          <button type="button" className={styles.logoutButton} onClick={logout}>
+      </div>
+
+      {/* Tarjeta 4: Zona de sesión */}
+      <div className={styles.dangerCard}>
+        <div className={styles.dangerHead}>
+          <span className={styles.dangerIcon}>
+            <ShieldAlert size={18} />
+          </span>
+          <div>
+            <div className={styles.dangerTitle}>Sesión y cuenta</div>
+            <div className={styles.dangerSub}>
+              Aceptaste la Política de Privacidad el 12 de marzo de 2026.
+            </div>
+          </div>
+          <button
+            type="button"
+            className={styles.logoutButton}
+            onClick={logout}
+          >
             <LogOut size={17} /> Cerrar sesión
           </button>
         </div>
