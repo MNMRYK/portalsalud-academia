@@ -28,6 +28,8 @@ export interface AccessRecord {
   /** Fecha de alta como alumno/paciente. */
   joinDate: string;
   coursesEnrolled: number;
+  /** Nombres exactos de los cursos inscritos (para el tooltip). */
+  courses: string[];
   /** Si aparece en la tabla de "Gestión de Alumnos". */
   inAcademyList: boolean;
 }
