@@ -1060,5 +1060,107 @@
   flex-shrink: 0;
 }
 
+/* ===== Stat card link "Ver todos" ===== */
+.statCardLinkable {
+  position: relative;
+}
 
+.statLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #875c80;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.statLink:hover {
+  color: #6b4667;
+}
+
+/* ===== Gestión de Alumnos ===== */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 18px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #875c80;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.backLink:hover {
+  color: #6b4667;
+}
+
+.studentIdentity {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.studentName {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #2f2933;
+}
+
+.studentEmail {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #9a8fa0;
+}
+
+.stateInactive {
+  color: #b25c40;
+}
+
+.stateDotInactive {
+  background-color: #d98a6f;
+}
+
+.studentActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.rowActionDanger:hover {
+  background-color: #fbeee7;
+  color: #b25c40;
+}
+
+.rowActionDanger:disabled,
+.studentActions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.studentsEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 20px;
+  color: #9a8fa0;
+  font-size: 0.92rem;
+}
+
+.studentsEmptyIcon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background-color: #f3eef6;
+  color: #875c80;
+}
 
