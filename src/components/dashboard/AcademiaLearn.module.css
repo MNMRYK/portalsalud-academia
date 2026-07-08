@@ -1,0 +1,831 @@
+/* ============================================================
+   Academia — Vistas de aprendizaje del alumno
+   (Detalle de curso + Vista de lección)
+   ============================================================ */
+
+/* ---- Enlace volver ---- */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  border-radius: 10px;
+  border: 1px solid #e3d9ea;
+  background-color: #ffffff;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.backLink:hover {
+  background-color: #f4eff7;
+  border-color: #cdbad6;
+}
+
+/* ============================================================
+   Hero banner (detalle de curso)
+   ============================================================ */
+.hero {
+  border-radius: 20px;
+  padding: 44px 40px;
+  color: #ffffff;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.coverTerracota {
+  background: linear-gradient(135deg, #e0987f, #d47f65);
+}
+.coverPlum {
+  background: linear-gradient(135deg, #9d719a, #875c80);
+}
+.coverSage {
+  background: linear-gradient(135deg, #b3c9b0, #869e83);
+}
+.coverLilac {
+  background: linear-gradient(135deg, #d8c8df, #b79dc2);
+}
+
+.heroBadge {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #3d3540;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.heroTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1.1;
+  margin: 0 0 12px;
+  max-width: 720px;
+}
+
+.heroExcerpt {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  max-width: 620px;
+  opacity: 0.95;
+}
+
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 22px;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.heroMetaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  opacity: 0.95;
+}
+
+/* ============================================================
+   Layout 65 / 35
+   ============================================================ */
+.detailGrid {
+  display: grid;
+  grid-template-columns: 65fr 35fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.detailMain {
+  min-width: 0;
+}
+
+.sectionHeading {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #2f2933;
+  margin: 0 0 14px;
+}
+
+.sectionHeadingSpaced {
+  margin-top: 34px;
+}
+
+/* Texto enriquecido (contenido del editor) */
+.richText {
+  font-family: "Nunito", sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #4a4350;
+}
+
+.richText h3 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.1rem;
+  color: #2f2933;
+  margin: 1.2em 0 0.4em;
+}
+
+.richText h2 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.3rem;
+  color: #2f2933;
+  margin: 1.2em 0 0.4em;
+}
+
+.richText p {
+  margin: 0 0 1em;
+}
+
+.richText ul,
+.richText ol {
+  padding-left: 1.4em;
+  margin: 0.6em 0 1.2em;
+}
+
+.richText li {
+  margin-bottom: 0.4em;
+}
+
+.richText strong {
+  color: #2f2933;
+}
+
+/* ============================================================
+   Temario (acordeón / lista de lecciones)
+   ============================================================ */
+.lessonAccordion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lessonRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  background-color: #ffffff;
+  padding: 15px 18px;
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+
+.lessonRow:hover {
+  border-color: #ddd2c2;
+  box-shadow: 0 10px 24px -18px rgba(61, 53, 64, 0.45);
+  transform: translateY(-1px);
+}
+
+.lessonRowLocked {
+  cursor: not-allowed;
+  background-color: #faf7f2;
+}
+
+.lessonRowLocked:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #ece4d8;
+}
+
+.lessonNum {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background-color: #f4eff7;
+  color: #875c80;
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.lessonRowInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.lessonRowTitle {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #2f2933;
+}
+
+.lessonRowMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #9a8fa0;
+}
+
+.lessonStatus {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.checkDone {
+  color: #5f8a5b;
+}
+
+.checkPending {
+  color: #cbc3d0;
+}
+
+.checkLocked {
+  color: #b8a9c0;
+}
+
+/* ============================================================
+   Tarjeta lateral sticky (35%)
+   ============================================================ */
+.stickyCard {
+  position: sticky;
+  top: 24px;
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 18px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 20px 44px -30px rgba(61, 53, 64, 0.4);
+}
+
+.ring {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ringSvg {
+  flex-shrink: 0;
+}
+
+.ringTrack {
+  stroke: #f0eae0;
+}
+
+.ringFill {
+  stroke: url(#academyGradient);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.ringPct {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 1.35rem;
+  fill: #2f2933;
+}
+
+.ringInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ringLabel {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #2f2933;
+}
+
+.ringSub {
+  font-size: 0.8rem;
+  color: #8c8290;
+}
+
+.cardStat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.86rem;
+  color: #6b6270;
+  font-weight: 600;
+  padding-top: 4px;
+  border-top: 1px solid #f0eae0;
+}
+
+.cardStatIcon {
+  color: #9a8fa0;
+}
+
+.resumeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d47f65, #875c80);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+}
+
+.resumeButton:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* Escaparate (curso no comprado) */
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.priceValue {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 2rem;
+  color: #2f2933;
+}
+
+.priceCurrency {
+  font-weight: 700;
+  color: #6b6270;
+}
+
+.priceNote {
+  font-size: 0.82rem;
+  color: #8c8290;
+}
+
+.ctaBig {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #d47f65, #875c80);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 17px 18px;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+}
+
+.ctaBig:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.guarantee {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: #6b6270;
+}
+
+.guaranteeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.guaranteeIcon {
+  color: #5f8a5b;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Vista de lección — modo enfoque 70 / 30
+   ============================================================ */
+.learnMain {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 36px 110px;
+}
+
+.learnGrid {
+  display: grid;
+  grid-template-columns: 70fr 30fr;
+  gap: 28px;
+  align-items: start;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.learnLeft {
+  min-width: 0;
+}
+
+/* Media condicional */
+.videoWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #1c171f;
+  margin-bottom: 24px;
+}
+
+.videoEl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.readingBanner {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background-color: #f7f0e8;
+  color: #a06b3f;
+  border: 1px solid #ecdcc9;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.lessonHeading {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 1.9rem;
+  color: #2f2933;
+  margin: 0 0 8px;
+  line-height: 1.15;
+}
+
+.lessonEyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #b25c40;
+  margin-bottom: 6px;
+}
+
+.lessonRichText {
+  font-family: "Nunito", sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: #46404c;
+  margin-top: 20px;
+}
+
+.lessonRichText h3 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.2rem;
+  color: #2f2933;
+  margin: 1.3em 0 0.4em;
+}
+
+.lessonRichText p {
+  margin: 0 0 1.1em;
+}
+
+.lessonRichText ul,
+.lessonRichText ol {
+  padding-left: 1.5em;
+  margin: 0.6em 0 1.2em;
+}
+
+.lessonRichText li {
+  margin-bottom: 0.5em;
+}
+
+/* Caja de material de apoyo (fondo arena) */
+.resourcesBox {
+  margin-top: 32px;
+  background-color: #f7f0e6;
+  border: 1px solid #ecdcc9;
+  border-radius: 16px;
+  padding: 22px 24px;
+}
+
+.resourcesTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: #7a5a38;
+  margin: 0 0 16px;
+}
+
+.resourceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.resourceCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #ffffff;
+  border: 1px solid #ecdcc9;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.resourceIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background-color: #fbeee7;
+  color: #b25c40;
+  flex-shrink: 0;
+}
+
+.resourceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.resourceName {
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: #2f2933;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resourceSize {
+  font-size: 0.74rem;
+  color: #9a8fa0;
+}
+
+.resourceDownload {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid #ece4d8;
+  background-color: #ffffff;
+  display: grid;
+  place-items: center;
+  color: #875c80;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.resourceDownload:hover {
+  background-color: #f4eff7;
+}
+
+/* ============================================================
+   Panel índice (30%)
+   ============================================================ */
+.indexPanel {
+  position: sticky;
+  top: 24px;
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 18px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.indexPanel::-webkit-scrollbar {
+  display: none;
+}
+
+.indexTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #2f2933;
+  margin: 0 0 14px;
+  padding: 0 6px;
+}
+
+.indexItem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  border-radius: 11px;
+  padding: 11px 10px;
+  cursor: pointer;
+  color: #6b6270;
+  transition: background-color 0.15s ease;
+}
+
+.indexItem:hover {
+  background-color: #f5f0e8;
+}
+
+.indexItemActive {
+  background-color: #fbeee7;
+}
+
+.indexItemActive .indexItemTitle {
+  color: #b25c40;
+  font-weight: 700;
+}
+
+.indexIcon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.indexItemBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.indexItemTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3d3540;
+  line-height: 1.3;
+}
+
+.indexItemMeta {
+  font-size: 0.73rem;
+  color: #9a8fa0;
+}
+
+/* ============================================================
+   Pie de navegación fijo
+   ============================================================ */
+.footerBar {
+  position: fixed;
+  bottom: 0;
+  left: 76px;
+  right: 0;
+  height: 74px;
+  background-color: #ffffff;
+  border-top: 1px solid #ece4d8;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 32px;
+  z-index: 40;
+  box-shadow: 0 -8px 24px -20px rgba(61, 53, 64, 0.4);
+}
+
+.footerPrev {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: none;
+  background: transparent;
+  color: #6b6270;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.footerPrev:hover:not(:disabled) {
+  color: #875c80;
+}
+
+.footerPrev:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.footerProgress {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.footerProgressLabel {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #8c8290;
+  text-align: center;
+}
+
+.footerProgressTrack {
+  height: 8px;
+  border-radius: 999px;
+  background-color: #f0eae0;
+  overflow: hidden;
+}
+
+.footerProgressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #a3bca0, #875c80);
+  transition: width 0.4s ease;
+}
+
+.footerNext {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d47f65, #875c80);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  padding: 12px 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+}
+
+.footerNext:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.footerNextDone {
+  background: #eef4ec;
+  color: #5f8a5b;
+}
+
+.footerNextDone:hover {
+  transform: none;
+  filter: none;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1024px) {
+  .detailGrid,
+  .learnGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .stickyCard,
+  .indexPanel {
+    position: static;
+    max-height: none;
+  }
+
+  .heroTitle {
+    font-size: 1.8rem;
+  }
+
+  .footerBar {
+    left: 0;
+  }
+}

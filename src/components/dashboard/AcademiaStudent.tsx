@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   PlayCircle,
   Clock,
@@ -6,7 +7,7 @@ import {
   CheckCircle2,
   GraduationCap,
   Award,
-  Compass,
+  ArrowRight,
   Video,
   CalendarDays,
   Search,
@@ -19,6 +20,7 @@ import styles from "./Dashboard.module.css";
 import academia from "./Academia.module.css";
 import portal from "./Portal.module.css";
 import recursos from "./Recursos.module.css";
+
 
 
 export type StudentSection = "cursos" | "explorar" | "directo" | "recursos";
@@ -62,7 +64,7 @@ function StudentHeader({ title, sub }: { title: string; sub: string }) {
    Mis Cursos
    ============================================================ */
 function MisCursos() {
-  const { enrolledCourses } = useAcademy();
+  const { enrolledCourses, progressOf } = useAcademy();
   const courses = enrolledCourses();
 
   const totalCompleted = courses.reduce((s, c) => s + c.completedLessons, 0);
@@ -72,7 +74,7 @@ function MisCursos() {
     { value: String(courses.length), label: "Cursos inscritos", icon: Layers, cls: styles.iconPlum },
     { value: String(totalCompleted), label: "Lecciones completadas", icon: CheckCircle2, cls: styles.iconSage },
     { value: `${totalLessons}`, label: "Lecciones totales", icon: PlayCircle, cls: styles.iconTerracota },
-    { value: String(courses.filter((c) => c.completedLessons >= c.lessons).length), label: "Cursos finalizados", icon: Award, cls: styles.iconPlum },
+    { value: String(courses.filter((c) => progressOf(c.id).pct >= 100).length), label: "Cursos finalizados", icon: Award, cls: styles.iconPlum },
   ];
 
   return (
@@ -96,45 +98,67 @@ function MisCursos() {
 
       <h2 className={styles.sectionTitle}>Cursos inscritos</h2>
       <section className={academia.courseGrid}>
-        {courses.map((c) => (
-          <article key={c.id} className={academia.courseCard}>
-            <div className={`${academia.courseCover} ${academia[c.coverClass as keyof typeof academia]}`}>
-              <span className={academia.courseTag}>{c.tag}</span>
-              <PlayCircle size={40} strokeWidth={1.6} />
-            </div>
-            <div className={academia.courseBody}>
-              <span className={academia.courseTitle}>{c.title}</span>
-              <span className={academia.courseDesc}>{c.desc}</span>
-              <div className={academia.courseMeta}>
-                <span className={academia.courseMetaItem}>
-                  <PlayCircle size={14} /> {c.lessons} lecciones
-                </span>
-                <span className={academia.courseMetaItem}>
-                  <Clock size={14} /> {c.duration}
-                </span>
+        {courses.map((c) => {
+          const prog = progressOf(c.id);
+          return (
+            <article key={c.id} className={academia.courseCard}>
+              <Link
+                to="/academia/curso/$courseId"
+                params={{ courseId: c.id }}
+                style={{ textDecoration: "none", color: "inherit", display: "contents" }}
+              >
+                <div className={`${academia.courseCover} ${academia[c.coverClass as keyof typeof academia]}`}>
+                  <span className={academia.courseTag}>{c.tag}</span>
+                  <PlayCircle size={40} strokeWidth={1.6} />
+                </div>
+              </Link>
+              <div className={academia.courseBody}>
+                <span className={academia.courseTitle}>{c.title}</span>
+                <span className={academia.courseDesc}>{c.desc}</span>
+                <div className={academia.courseMeta}>
+                  <span className={academia.courseMetaItem}>
+                    <PlayCircle size={14} /> {c.lessons} lecciones
+                  </span>
+                  <span className={academia.courseMetaItem}>
+                    <Clock size={14} /> {c.duration}
+                  </span>
+                </div>
+                <div className={portal.miniProgress}>
+                  {prog.done} de {prog.total} lecciones completadas
+                </div>
+                <div className={academia.progressBar}>
+                  <div
+                    className={academia.progressFill}
+                    style={{ width: `${prog.pct}%` }}
+                  />
+                </div>
+                <div className={portal.courseFooterStudent}>
+                  <Link
+                    to="/academia/curso/$courseId"
+                    params={{ courseId: c.id }}
+                    className={portal.continueButton}
+                  >
+                    <PlayCircle size={16} />
+                    {prog.done > 0 ? "Continuar curso" : "Empezar curso"}
+                  </Link>
+                </div>
               </div>
-              <div className={portal.miniProgress}>
-                {c.completedLessons} de {c.lessons} lecciones completadas
-              </div>
-              <div className={portal.courseFooterStudent}>
-                <button type="button" className={portal.continueButton}>
-                  <PlayCircle size={16} />
-                  {c.completedLessons > 0 ? "Continuar curso" : "Empezar curso"}
-                </button>
-              </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </section>
     </>
   );
 }
 
+
 /* ============================================================
    Explorar Cursos (catálogo + inscripción)
    ============================================================ */
 function ExplorarCursos() {
-  const { catalog, isEnrolled, enroll } = useAcademy();
+  const { availableCourses } = useAcademy();
+  const navigate = useNavigate();
+  const catalog = availableCourses();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
@@ -151,11 +175,14 @@ function ExplorarCursos() {
       c.title.toLowerCase().includes(query.trim().toLowerCase()),
   );
 
+  const openCourse = (id: string) =>
+    navigate({ to: "/academia/curso/$courseId", params: { courseId: id } });
+
   return (
     <>
       <StudentHeader
         title="Explorar Cursos"
-        sub="Descubre todo el catálogo e inscríbete en un clic."
+        sub="Descubre nuevos cursos y amplía tu formación."
       />
 
       <div className={recursos.toolbar}>
@@ -207,50 +234,43 @@ function ExplorarCursos() {
         <section className={academia.courseGrid}>
           {filtered.length === 0 && (
             <p className={recursos.empty}>
-              No hay cursos que coincidan con tu búsqueda.
+              No hay cursos nuevos que coincidan con tu búsqueda. ¡Ya estás
+              inscrito en todo lo demás!
             </p>
           )}
-          {filtered.map((c) => {
-            const enrolled = isEnrolled(c.id);
-            return (
-              <article key={c.id} className={academia.courseCard}>
-                <div className={`${academia.courseCover} ${academia[c.coverClass as keyof typeof academia]}`}>
-                  <span className={academia.courseTag}>{c.tag}</span>
-                  <GraduationCap size={40} strokeWidth={1.5} />
+          {filtered.map((c) => (
+            <article
+              key={c.id}
+              className={academia.courseCard}
+              onClick={() => openCourse(c.id)}
+            >
+              <div className={`${academia.courseCover} ${academia[c.coverClass as keyof typeof academia]}`}>
+                <span className={academia.courseTag}>{c.tag}</span>
+                <GraduationCap size={40} strokeWidth={1.5} />
+              </div>
+              <div className={academia.courseBody}>
+                <span className={academia.courseTitle}>{c.title}</span>
+                <span className={academia.courseDesc}>{c.desc}</span>
+                <div className={academia.courseMeta}>
+                  <span className={academia.courseMetaItem}>
+                    <PlayCircle size={14} /> {c.lessons} lecciones
+                  </span>
+                  <span className={academia.courseMetaItem}>
+                    <Clock size={14} /> {c.duration}
+                  </span>
                 </div>
-                <div className={academia.courseBody}>
-                  <span className={academia.courseTitle}>{c.title}</span>
-                  <span className={academia.courseDesc}>{c.desc}</span>
-                  <div className={academia.courseMeta}>
-                    <span className={academia.courseMetaItem}>
-                      <PlayCircle size={14} /> {c.lessons} lecciones
-                    </span>
-                    <span className={academia.courseMetaItem}>
-                      <Clock size={14} /> {c.duration}
-                    </span>
-                  </div>
-                  <div className={portal.courseFooterStudent}>
-                    {enrolled ? (
-                      <span className={portal.enrolledPill}>
-                        <CheckCircle2 size={16} /> Ya estás inscrito
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        className={portal.enrollButton}
-                        onClick={() => enroll(c.id)}
-                      >
-                        <Compass size={16} /> Inscribirme
-                      </button>
-                    )}
-                  </div>
+                <div className={portal.courseFooterStudent}>
+                  <span className={portal.enrollButton}>
+                    Ver detalles <ArrowRight size={16} />
+                  </span>
                 </div>
-              </article>
-            );
-          })}
+              </div>
+            </article>
+          ))}
         </section>
       </div>
     </>
+
   );
 }
 

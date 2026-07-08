@@ -12,6 +12,47 @@
   font-family: "Nunito", system-ui, sans-serif;
 }
 
+/* ===== Modo enfoque: sidebar colapsada (solo iconos) ===== */
+.sidebarCollapsed {
+  width: 76px;
+  padding: 28px 12px;
+  transition: width 0.2s ease;
+}
+
+.sidebarCollapsed .brand {
+  justify-content: center;
+  padding: 0 0 20px;
+}
+
+.sidebarCollapsed .brandText,
+.sidebarCollapsed .navGroupLabel,
+.sidebarCollapsed .lockPill,
+.sidebarCollapsed .profileText {
+  display: none;
+}
+
+.sidebarCollapsed .navItem {
+  justify-content: center;
+  gap: 0;
+  font-size: 0;
+  padding: 11px 0;
+}
+
+.sidebarCollapsed .navIcon {
+  flex-shrink: 0;
+}
+
+.sidebarCollapsed .profile {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.sidebarCollapsed .profileLogout {
+  display: none;
+}
+
+
+
 .brand {
   display: flex;
   align-items: center;

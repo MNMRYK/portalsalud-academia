@@ -24,6 +24,8 @@ import { Route as AcademiaRecursosRouteImport } from './routes/academia.recursos
 import { Route as AcademiaExplorarRouteImport } from './routes/academia.explorar'
 import { Route as AcademiaDirectoRouteImport } from './routes/academia.directo'
 import { Route as AcademiaAlumnosRouteImport } from './routes/academia.alumnos'
+import { Route as AcademiaCursoCourseIdRouteImport } from './routes/academia.curso.$courseId'
+import { Route as AcademiaLeccionCourseIdLessonIdRouteImport } from './routes/academia.leccion.$courseId.$lessonId'
 
 const RecursosRoute = RecursosRouteImport.update({
   id: '/recursos',
@@ -100,6 +102,17 @@ const AcademiaAlumnosRoute = AcademiaAlumnosRouteImport.update({
   path: '/alumnos',
   getParentRoute: () => AcademiaRoute,
 } as any)
+const AcademiaCursoCourseIdRoute = AcademiaCursoCourseIdRouteImport.update({
+  id: '/curso/$courseId',
+  path: '/curso/$courseId',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaLeccionCourseIdLessonIdRoute =
+  AcademiaLeccionCourseIdLessonIdRouteImport.update({
+    id: '/leccion/$courseId/$lessonId',
+    path: '/leccion/$courseId/$lessonId',
+    getParentRoute: () => AcademiaRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,6 +130,8 @@ export interface FileRoutesByFullPath {
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia/': typeof AcademiaIndexRoute
   '/portal/': typeof PortalIndexRoute
+  '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
+  '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -133,6 +148,8 @@ export interface FileRoutesByTo {
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia': typeof AcademiaIndexRoute
   '/portal': typeof PortalIndexRoute
+  '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
+  '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -151,6 +168,8 @@ export interface FileRoutesById {
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia/': typeof AcademiaIndexRoute
   '/portal/': typeof PortalIndexRoute
+  '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
+  '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -170,6 +189,8 @@ export interface FileRouteTypes {
     | '/portal/suscripciones'
     | '/academia/'
     | '/portal/'
+    | '/academia/curso/$courseId'
+    | '/academia/leccion/$courseId/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,6 +207,8 @@ export interface FileRouteTypes {
     | '/portal/suscripciones'
     | '/academia'
     | '/portal'
+    | '/academia/curso/$courseId'
+    | '/academia/leccion/$courseId/$lessonId'
   id:
     | '__root__'
     | '/'
@@ -203,6 +226,8 @@ export interface FileRouteTypes {
     | '/portal/suscripciones'
     | '/academia/'
     | '/portal/'
+    | '/academia/curso/$courseId'
+    | '/academia/leccion/$courseId/$lessonId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -325,6 +350,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademiaAlumnosRouteImport
       parentRoute: typeof AcademiaRoute
     }
+    '/academia/curso/$courseId': {
+      id: '/academia/curso/$courseId'
+      path: '/curso/$courseId'
+      fullPath: '/academia/curso/$courseId'
+      preLoaderRoute: typeof AcademiaCursoCourseIdRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/leccion/$courseId/$lessonId': {
+      id: '/academia/leccion/$courseId/$lessonId'
+      path: '/leccion/$courseId/$lessonId'
+      fullPath: '/academia/leccion/$courseId/$lessonId'
+      preLoaderRoute: typeof AcademiaLeccionCourseIdLessonIdRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
   }
 }
 
@@ -334,6 +373,8 @@ interface AcademiaRouteChildren {
   AcademiaExplorarRoute: typeof AcademiaExplorarRoute
   AcademiaRecursosRoute: typeof AcademiaRecursosRoute
   AcademiaIndexRoute: typeof AcademiaIndexRoute
+  AcademiaCursoCourseIdRoute: typeof AcademiaCursoCourseIdRoute
+  AcademiaLeccionCourseIdLessonIdRoute: typeof AcademiaLeccionCourseIdLessonIdRoute
 }
 
 const AcademiaRouteChildren: AcademiaRouteChildren = {
@@ -342,6 +383,8 @@ const AcademiaRouteChildren: AcademiaRouteChildren = {
   AcademiaExplorarRoute: AcademiaExplorarRoute,
   AcademiaRecursosRoute: AcademiaRecursosRoute,
   AcademiaIndexRoute: AcademiaIndexRoute,
+  AcademiaCursoCourseIdRoute: AcademiaCursoCourseIdRoute,
+  AcademiaLeccionCourseIdLessonIdRoute: AcademiaLeccionCourseIdLessonIdRoute,
 }
 
 const AcademiaRouteWithChildren = AcademiaRoute._addFileChildren(
