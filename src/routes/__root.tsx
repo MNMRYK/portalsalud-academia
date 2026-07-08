@@ -147,9 +147,11 @@ function RootComponent() {
             <ConsultationsProvider>
               <ResourcesProvider>
                 <AcademyProvider>
-                  {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-                  <Outlet />
-                  <DevSwitcher />
+                  <AccessProvider>
+                    {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+                    <Outlet />
+                    <DevSwitcher />
+                  </AccessProvider>
                 </AcademyProvider>
               </ResourcesProvider>
             </ConsultationsProvider>
