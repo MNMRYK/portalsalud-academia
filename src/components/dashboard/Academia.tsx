@@ -19,6 +19,7 @@ import {
   CalendarIcon,
   Save,
   CheckCircle2,
+  ArrowRight,
   X,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
