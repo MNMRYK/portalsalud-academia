@@ -6,24 +6,29 @@ import {
   Circle,
   Phone,
   Info,
-  FileText,
-  Video,
-  ClipboardList as MenuIcon,
-  Download,
   Plus,
   LogOut,
+  AlertTriangle,
+  MessageCircle,
+  CalendarPlus,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { PatientFicha } from "./PatientFicha";
+import { PatientResourceLibrary } from "./PatientResourceLibrary";
 import { useUser } from "../../context/UserContext";
 import { useTasks } from "../../context/TasksContext";
 import { useConsultations } from "../../context/ConsultationsContext";
-import {
-  useResources,
-  type Resource,
-  type ResourceAudience,
-} from "../../context/ResourcesContext";
 import styles from "./Portal.module.css";
+
+/** Datos de contacto de la especialista para reprogramar citas. */
+const SPECIALIST = {
+  name: "Sara Santos",
+  phone: "+34 600 123 456",
+  whatsapp: "https://wa.me/34600123456",
+};
+
 
 const monthLong = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -78,6 +83,11 @@ export function PortalDashboard() {
   const nextAppointment = upcoming[0] ?? null;
 
   const [cancelledId, setCancelledId] = useState<string | null>(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+
+  // Fase clínica actual del paciente (para la ficha en modo solo lectura).
+  const currentPhase =
+    nextAppointment?.phase ?? "Fase 2: Reducción de inflamación";
 
   const stats: { value: string; label: string; icon: LucideIcon; cls: string }[] = [
     {
@@ -100,11 +110,13 @@ export function PortalDashboard() {
     },
   ];
 
-  const handleCancel = () => {
+  // El botón "Cancelar cita" NO elimina directamente: abre un aviso de confirmación.
+  const confirmCancel = () => {
     if (nextAppointment) {
       cancelConsultation(nextAppointment.id);
       setCancelledId(nextAppointment.id);
     }
+    setShowCancelModal(false);
   };
 
   const isCancelled = nextAppointment && cancelledId === nextAppointment.id;
@@ -149,7 +161,7 @@ export function PortalDashboard() {
               <button
                 type="button"
                 className={styles.cancelButton}
-                onClick={handleCancel}
+                onClick={() => setShowCancelModal(true)}
               >
                 Cancelar cita
               </button>
@@ -160,15 +172,33 @@ export function PortalDashboard() {
               <Phone size={17} className={styles.noticeIcon} />
               <span>
                 Tu cita ha quedado registrada como cancelada. Para reprogramarla,
-                contacta con la clínica por teléfono (+34 600 123 456) o email
-                (hola@nutralia.com). Nuestro equipo ya ha sido avisado.
+                contacta con {SPECIALIST.name} por teléfono ({SPECIALIST.phone}).
+                Nuestro equipo ya ha sido avisado.
               </span>
             </div>
           )}
         </div>
       ) : (
         <div className={styles.card}>
-          <p className={styles.empty}>No tienes ninguna cita programada.</p>
+          <div className={styles.emptyState}>
+            <span className={styles.emptyStateIcon}>
+              <CalendarPlus size={26} strokeWidth={1.8} />
+            </span>
+            <div className={styles.emptyStateText}>
+              <div className={styles.emptyStateTitle}>Sin cita programada</div>
+              <div className={styles.emptyStateSub}>
+                ¿Contactar con {SPECIALIST.name}?
+              </div>
+            </div>
+            <a
+              className={styles.emptyStateButton}
+              href={SPECIALIST.whatsapp}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MessageCircle size={16} /> Contactar
+            </a>
+          </div>
         </div>
       )}
 
@@ -190,9 +220,72 @@ export function PortalDashboard() {
           </div>
         )}
       </div>
+
+      <h2 className={styles.sectionTitle}>Mi seguimiento clínico</h2>
+      <PatientFicha patientName={patientName} phase={currentPhase} />
+
+      {showCancelModal && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setShowCancelModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cancel-title"
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className={styles.modalClose}
+              onClick={() => setShowCancelModal(false)}
+              aria-label="Cerrar"
+            >
+              <X size={18} />
+            </button>
+            <span className={styles.modalIcon}>
+              <AlertTriangle size={26} strokeWidth={1.9} />
+            </span>
+            <h2 id="cancel-title" className={styles.modalTitle}>
+              ¿Estás seguro de cancelar tu cita?
+            </h2>
+            <p className={styles.modalText}>
+              Para reprogramar, contacta con {SPECIALIST.name}:
+            </p>
+            <div className={styles.contactBox}>
+              <a className={styles.contactRow} href={`tel:${SPECIALIST.phone.replace(/\s/g, "")}`}>
+                <Phone size={16} /> {SPECIALIST.phone}
+              </a>
+              <a
+                className={styles.contactRow}
+                href={SPECIALIST.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <MessageCircle size={16} /> WhatsApp
+              </a>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => setShowCancelModal(false)}
+              >
+                Volver
+              </button>
+              <button
+                type="button"
+                className={styles.dangerButton}
+                onClick={confirmCancel}
+              >
+                Confirmar cancelación
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PortalShell>
   );
 }
+
 
 /* ============================================================
    Plan de Acción (tareas del paciente + diario)
@@ -282,62 +375,19 @@ export function PortalPlan() {
 }
 
 /* ============================================================
-   Recursos (clínicos o académicos) — solo lectura
+   Recursos Clínicos — solo lectura (con buscador + categorías)
    ============================================================ */
-const resIconMeta: Record<Resource["type"], { icon: LucideIcon; cls: string; label: string }> = {
-  pdf: { icon: FileText, cls: "resIconPdf", label: "PDF" },
-  video: { icon: Video, cls: "resIconVideo", label: "Vídeo" },
-  menu: { icon: MenuIcon, cls: "resIconMenu", label: "Menú" },
-};
-
-function ResourceList({ audience }: { audience: ResourceAudience }) {
-  const { patientResources } = useResources();
-  const items = patientResources(audience);
-
-  if (items.length === 0) {
-    return (
-      <div className={styles.card}>
-        <p className={styles.empty}>
-          Aún no hay recursos compartidos contigo en esta sección.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <section className={styles.resourceGrid}>
-      {items.map((r) => {
-        const meta = resIconMeta[r.type];
-        const Icon = meta.icon;
-        return (
-          <article key={r.id} className={styles.resourceCard}>
-            <span className={`${styles.resourceIcon} ${styles[meta.cls]}`}>
-              <Icon size={24} strokeWidth={1.9} />
-            </span>
-            <div>
-              <div className={styles.resourceName}>{r.name}</div>
-              <span className={styles.resourceCat}>{r.category}</span>
-            </div>
-            <button type="button" className={styles.downloadButton}>
-              <Download size={15} /> Descargar {meta.label}
-            </button>
-          </article>
-        );
-      })}
-    </section>
-  );
-}
-
 export function PortalRecursosClinicos() {
   return (
     <PortalShell
       title="Recursos Clínicos"
       sub="Material que tu especialista ha compartido contigo."
     >
-      <ResourceList audience="clinico" />
+      <PatientResourceLibrary audience="clinico" />
     </PortalShell>
   );
 }
+
 
 /* ============================================================
    Mis Suscripciones y Pagos

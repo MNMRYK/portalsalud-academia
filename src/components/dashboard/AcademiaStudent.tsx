@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import {
   PlayCircle,
   Clock,
@@ -8,17 +9,17 @@ import {
   Compass,
   Video,
   CalendarDays,
-  FileText,
-  ClipboardList as MenuIcon,
-  Download,
+  Search,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
+import { PatientResourceLibrary } from "./PatientResourceLibrary";
 import { useAcademy } from "../../context/AcademyContext";
-import { useResources, type Resource } from "../../context/ResourcesContext";
 import styles from "./Dashboard.module.css";
 import academia from "./Academia.module.css";
 import portal from "./Portal.module.css";
+import recursos from "./Recursos.module.css";
+
 
 export type StudentSection = "cursos" | "explorar" | "directo" | "recursos";
 
@@ -134,6 +135,21 @@ function MisCursos() {
    ============================================================ */
 function ExplorarCursos() {
   const { catalog, isEnrolled, enroll } = useAcademy();
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+
+  const categories = useMemo(
+    () => Array.from(new Set(catalog.map((c) => c.tag))),
+    [catalog],
+  );
+
+  const dotColors = ["#a3bca0", "#d47f65", "#875c80", "#c9a24b"];
+
+  const filtered = catalog.filter(
+    (c) =>
+      (activeCategory === "all" || c.tag === activeCategory) &&
+      c.title.toLowerCase().includes(query.trim().toLowerCase()),
+  );
 
   return (
     <>
@@ -142,49 +158,102 @@ function ExplorarCursos() {
         sub="Descubre todo el catálogo e inscríbete en un clic."
       />
 
-      <section className={academia.courseGrid}>
-        {catalog.map((c) => {
-          const enrolled = isEnrolled(c.id);
-          return (
-            <article key={c.id} className={academia.courseCard}>
-              <div className={`${academia.courseCover} ${academia[c.coverClass as keyof typeof academia]}`}>
-                <span className={academia.courseTag}>{c.tag}</span>
-                <GraduationCap size={40} strokeWidth={1.5} />
-              </div>
-              <div className={academia.courseBody}>
-                <span className={academia.courseTitle}>{c.title}</span>
-                <span className={academia.courseDesc}>{c.desc}</span>
-                <div className={academia.courseMeta}>
-                  <span className={academia.courseMetaItem}>
-                    <PlayCircle size={14} /> {c.lessons} lecciones
-                  </span>
-                  <span className={academia.courseMetaItem}>
-                    <Clock size={14} /> {c.duration}
-                  </span>
+      <div className={recursos.toolbar}>
+        <div className={recursos.search}>
+          <Search size={18} className={recursos.searchIcon} />
+          <input
+            className={recursos.searchInput}
+            placeholder="Buscar cursos…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Buscar cursos"
+          />
+        </div>
+      </div>
+
+      <div className={recursos.layout}>
+        <aside className={recursos.rail}>
+          <div className={recursos.railGroup}>
+            <p className={recursos.railLabel}>Categorías</p>
+            <button
+              type="button"
+              className={`${recursos.railItem} ${activeCategory === "all" ? recursos.railItemActive : ""}`}
+              onClick={() => setActiveCategory("all")}
+            >
+              <Layers size={18} className={recursos.railIcon} strokeWidth={2} />
+              Todos los cursos
+            </button>
+            {categories.map((category, i) => {
+              const count = catalog.filter((c) => c.tag === category).length;
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  className={`${recursos.railItem} ${activeCategory === category ? recursos.railItemActive : ""}`}
+                  onClick={() => setActiveCategory(category)}
+                >
+                  <span
+                    className={recursos.railDot}
+                    style={{ backgroundColor: dotColors[i % dotColors.length] }}
+                  />
+                  {category}
+                  <span className={recursos.railCount}>{count}</span>
+                </button>
+              );
+            })}
+          </div>
+        </aside>
+
+        <section className={academia.courseGrid}>
+          {filtered.length === 0 && (
+            <p className={recursos.empty}>
+              No hay cursos que coincidan con tu búsqueda.
+            </p>
+          )}
+          {filtered.map((c) => {
+            const enrolled = isEnrolled(c.id);
+            return (
+              <article key={c.id} className={academia.courseCard}>
+                <div className={`${academia.courseCover} ${academia[c.coverClass as keyof typeof academia]}`}>
+                  <span className={academia.courseTag}>{c.tag}</span>
+                  <GraduationCap size={40} strokeWidth={1.5} />
                 </div>
-                <div className={portal.courseFooterStudent}>
-                  {enrolled ? (
-                    <span className={portal.enrolledPill}>
-                      <CheckCircle2 size={16} /> Ya estás inscrito
+                <div className={academia.courseBody}>
+                  <span className={academia.courseTitle}>{c.title}</span>
+                  <span className={academia.courseDesc}>{c.desc}</span>
+                  <div className={academia.courseMeta}>
+                    <span className={academia.courseMetaItem}>
+                      <PlayCircle size={14} /> {c.lessons} lecciones
                     </span>
-                  ) : (
-                    <button
-                      type="button"
-                      className={portal.enrollButton}
-                      onClick={() => enroll(c.id)}
-                    >
-                      <Compass size={16} /> Inscribirme
-                    </button>
-                  )}
+                    <span className={academia.courseMetaItem}>
+                      <Clock size={14} /> {c.duration}
+                    </span>
+                  </div>
+                  <div className={portal.courseFooterStudent}>
+                    {enrolled ? (
+                      <span className={portal.enrolledPill}>
+                        <CheckCircle2 size={16} /> Ya estás inscrito
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className={portal.enrollButton}
+                        onClick={() => enroll(c.id)}
+                      >
+                        <Compass size={16} /> Inscribirme
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          );
-        })}
-      </section>
+              </article>
+            );
+          })}
+        </section>
+      </div>
     </>
   );
 }
+
 
 /* ============================================================
    Clases en Directo (solo lectura)
@@ -231,51 +300,16 @@ function ClasesDirecto() {
 }
 
 /* ============================================================
-   Recursos Académicos (solo lectura)
+   Recursos Académicos (solo lectura, con buscador + categorías)
    ============================================================ */
-const resIconMeta: Record<Resource["type"], { icon: LucideIcon; cls: string; label: string }> = {
-  pdf: { icon: FileText, cls: "resIconPdf", label: "PDF" },
-  video: { icon: Video, cls: "resIconVideo", label: "Vídeo" },
-  menu: { icon: MenuIcon, cls: "resIconMenu", label: "Menú" },
-};
-
 function RecursosAcademicos() {
-  const { patientResources } = useResources();
-  const items = patientResources("academico");
-
   return (
     <>
       <StudentHeader
         title="Recursos Académicos"
         sub="Material de apoyo de tus cursos y clases."
       />
-
-      {items.length === 0 ? (
-        <div className={portal.card}>
-          <p className={portal.empty}>Aún no hay material de apoyo disponible.</p>
-        </div>
-      ) : (
-        <section className={portal.resourceGrid}>
-          {items.map((r) => {
-            const meta = resIconMeta[r.type];
-            const Icon = meta.icon;
-            return (
-              <article key={r.id} className={portal.resourceCard}>
-                <span className={`${portal.resourceIcon} ${portal[meta.cls]}`}>
-                  <Icon size={24} strokeWidth={1.9} />
-                </span>
-                <div>
-                  <div className={portal.resourceName}>{r.name}</div>
-                  <span className={portal.resourceCat}>{r.category}</span>
-                </div>
-                <button type="button" className={portal.downloadButton}>
-                  <Download size={15} /> Descargar {meta.label}
-                </button>
-              </article>
-            );
-          })}
-        </section>
-      )}
+      <PatientResourceLibrary audience="academico" />
     </>
   );
 }
