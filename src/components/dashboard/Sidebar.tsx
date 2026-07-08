@@ -1,11 +1,11 @@
 import { useState } from "react";
+import logoAsset from "../../assets/logo.png.asset.json";
 import {
   LayoutDashboard,
   GraduationCap,
   Users,
   FolderOpen,
   Settings,
-  Leaf,
   LogOut,
   Home,
   ClipboardList,
@@ -69,13 +69,11 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
         className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ""}`}
       >
         <div className={styles.brand}>
-          <div className={styles.logoMark}>
-            <Leaf size={22} strokeWidth={2.2} />
-          </div>
-          <div className={styles.brandText}>
-            <span className={styles.brandName}>Nutralia</span>
-            <span className={styles.brandTag}>Salud Integrativa</span>
-          </div>
+          <img
+            src={logoAsset.url}
+            alt="Sara Santos Salud Integrativa"
+            className={styles.brandLogo}
+          />
         </div>
 
         <div className={styles.navScroll}>

@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import logoAsset from "../assets/logo.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LegalTemplatesProvider } from "../context/LegalTemplatesContext";
 import { TasksProvider } from "../context/TasksContext";
@@ -87,14 +88,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Nutralia · Espacio de Administración Clínica" },
+      { title: "Sara Santos · Salud Integrativa" },
       {
         name: "description",
         content:
           "Panel de administración para una clínica de nutrición y salud integrativa: academia, pacientes, recursos y ajustes en un solo lugar.",
       },
-      { name: "author", content: "Nutralia" },
-      { property: "og:title", content: "Nutralia · Espacio de Administración Clínica" },
+      { name: "author", content: "Sara Santos" },
+      { property: "og:title", content: "Sara Santos · Salud Integrativa" },
       {
         property: "og:description",
         content:
@@ -115,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: logoAsset.url, type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
