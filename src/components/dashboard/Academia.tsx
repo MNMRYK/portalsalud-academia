@@ -321,15 +321,26 @@ function HomeView({
       </header>
 
       <section className={academia.stats}>
-        {stats.map(({ value, label, icon: Icon, iconClass }) => (
-          <div key={label} className={academia.statCard}>
-            <span className={`${academia.statIcon} ${iconClass}`}>
-              <Icon size={20} strokeWidth={2} />
-            </span>
-            <span className={academia.statValue}>{value}</span>
-            <span className={academia.statLabel}>{label}</span>
-          </div>
-        ))}
+        {stats.map(({ value, label, icon: Icon, iconClass }) => {
+          const isStudents = label === "Alumnos activos";
+          return (
+            <div
+              key={label}
+              className={`${academia.statCard} ${isStudents ? academia.statCardLinkable : ""}`}
+            >
+              <span className={`${academia.statIcon} ${iconClass}`}>
+                <Icon size={20} strokeWidth={2} />
+              </span>
+              <span className={academia.statValue}>{value}</span>
+              <span className={academia.statLabel}>{label}</span>
+              {isStudents && (
+                <Link to="/academia/alumnos" className={academia.statLink}>
+                  Ver todos <ArrowRight size={13} strokeWidth={2.5} />
+                </Link>
+              )}
+            </div>
+          );
+        })}
       </section>
 
       <h2 className={styles.sectionTitle}>Acciones rápidas</h2>
