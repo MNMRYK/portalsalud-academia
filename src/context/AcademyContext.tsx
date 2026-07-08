@@ -503,6 +503,8 @@ interface AcademyContextValue {
   isCompleted: (lessonId: string) => boolean;
   completeLesson: (lessonId: string) => void;
   progressOf: (courseId: string) => CourseProgress;
+  /** Reinicia el progreso del curso (lecciones a 0). */
+  resetCourse: (courseId: string) => void;
   nextLessonId: (courseId: string, lessonId: string) => string | null;
   prevLessonId: (courseId: string, lessonId: string) => string | null;
   resumeLessonId: (courseId: string) => string;
