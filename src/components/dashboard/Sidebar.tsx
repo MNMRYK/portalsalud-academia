@@ -182,11 +182,16 @@ export function Sidebar() {
                 {isAdmin ? "Administradora" : "Paciente"}
               </span>
             </div>
+            <button
+              type="button"
+              className={styles.profileLogout}
+              onClick={logout}
+              aria-label="Cerrar sesión"
+              title="Cerrar sesión"
+            >
+              <LogOut size={17} strokeWidth={2.2} />
+            </button>
           </div>
-          <button type="button" className={styles.logoutButton} onClick={logout}>
-            <LogOut size={17} strokeWidth={2} />
-            Cerrar sesión
-          </button>
         </div>
       </aside>
 

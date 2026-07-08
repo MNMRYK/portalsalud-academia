@@ -398,6 +398,30 @@
   color: #c0564a;
 }
 
+.cardDownloadBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #ece4d8;
+  border-radius: 10px;
+  background-color: #faf6f0;
+  color: #3d3540;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.cardDownloadBtn:hover {
+  background-color: #f0eae0;
+  border-color: #d9cfc0;
+}
+
 .empty {
   grid-column: 1 / -1;
   text-align: center;
