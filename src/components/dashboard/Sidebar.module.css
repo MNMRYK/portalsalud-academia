@@ -60,6 +60,19 @@
   padding: 22px 12px 8px;
 }
 
+.navScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  /* Estética premium: scroll funcional pero barra oculta */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.navScroll::-webkit-scrollbar {
+  display: none;
+}
+
 .nav {
   display: flex;
   flex-direction: column;
