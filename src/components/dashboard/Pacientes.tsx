@@ -57,6 +57,10 @@ import {
   type ConsultationStatus,
   type PaymentMethod,
 } from "@/context/ConsultationsContext";
+import {
+  useSymptomDiary,
+  intensityLabel,
+} from "@/context/SymptomDiaryContext";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
