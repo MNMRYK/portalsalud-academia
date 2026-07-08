@@ -99,11 +99,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Gestiona academia, pacientes y recursos de tu clínica de salud integrativa desde un panel limpio y de confianza.",
+          "Panel de administración para una clínica de nutrición y salud integrativa: academia, pacientes, recursos y ajustes en un solo lugar.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Sara Santos · Salud Integrativa" },
+      { name: "twitter:description", content: "Panel de administración para una clínica de nutrición y salud integrativa: academia, pacientes, recursos y ajustes en un solo lugar." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/MYYC0khbQihqkFS2OwbBI1XlDij2/social-images/social-1783505705194-Diseño_sin_título.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/MYYC0khbQihqkFS2OwbBI1XlDij2/social-images/social-1783505705194-Diseño_sin_título.webp" },
     ],
     links: [
       {
@@ -116,7 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap",
       },
-      { rel: "icon", href: logoAsset.url, type: "image/png" },
+      { rel: "icon", href: "/__l5e/assets-v1/83dad139-6507-41a9-b71c-e4a695ba15fa/logo.png", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
