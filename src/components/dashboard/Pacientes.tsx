@@ -211,6 +211,7 @@ export function Pacientes() {
     removeConsultation,
     consultationsForPatient,
   } = useConsultations();
+  const { entriesForPatient: symptomEntriesForPatient } = useSymptomDiary();
 
   const incomingPatient = (
     useLocation().state as { selectedPatient?: string | null }
