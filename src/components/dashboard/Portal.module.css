@@ -426,14 +426,18 @@
 
 .planCard {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 22px 24px;
+  padding: 24px 26px;
   border-radius: 16px;
   background: linear-gradient(140deg, #f3eef6, #ffffff);
   border: 1px solid #ece1ef;
   margin-bottom: 18px;
+}
+
+.planInfo {
+  min-width: 0;
 }
 
 .planName {
@@ -449,13 +453,140 @@
   margin-top: 2px;
 }
 
+.planBilling {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #6b6270;
+  margin-top: 10px;
+}
+
+.planManageLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #875c80;
+  text-decoration: none;
+  border-bottom: 1px dashed #cdbad6;
+  padding-bottom: 1px;
+  transition: color 0.15s ease;
+}
+
+.planManageLink:hover {
+  color: #6b4667;
+}
+
+.planCancelLink {
+  display: inline-block;
+  margin-top: 12px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #b25c40;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.planCancelLink:hover {
+  color: #8f4530;
+}
+
+.planCancelledNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: #a25f4c;
+}
+
 .planPill {
+  flex-shrink: 0;
   font-weight: 700;
   font-size: 0.8rem;
   color: #5f8a5b;
   background-color: #eef4ec;
   padding: 7px 14px;
   border-radius: 999px;
+}
+
+.planPillMuted {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #8a8090;
+  background-color: #f0eae0;
+  padding: 7px 14px;
+  border-radius: 999px;
+}
+
+/* Método de pago */
+.paymentMethod {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.paymentCardIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #cdbad6, #875c80);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.paymentInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.paymentCardNumber {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #3d3540;
+}
+
+.paymentCardExp {
+  font-size: 0.85rem;
+  color: #8a8090;
+  margin-top: 3px;
+}
+
+/* Historial: columna Factura */
+.billingColRight {
+  text-align: right;
+}
+
+.invoiceDownload {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #ece4d8;
+  border-radius: 9px;
+  background-color: #faf6f0;
+  color: #875c80;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.invoiceDownload:hover {
+  background-color: #f3eef6;
+  color: #6b4667;
 }
 
 .profileGrid {
