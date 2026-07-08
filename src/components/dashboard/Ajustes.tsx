@@ -405,11 +405,11 @@ export function Ajustes() {
                       </tr>
                     </thead>
                     <tbody>
-                      {billing.map((p, i) => (
-                        <tr key={p.name}>
+                      {records.map((p) => (
+                        <tr key={p.id}>
                           <td>
                             <span className={styles.logUser}>
-                              <span className={`${styles.logAvatar} ${p.av}`}>{p.initials}</span>
+                              <span className={`${styles.logAvatar} ${styles[p.avatar]}`}>{p.initials}</span>
                               {p.name}
                             </span>
                           </td>
@@ -417,8 +417,8 @@ export function Ajustes() {
                             <label className={styles.toggleSwitch}>
                               <input
                                 type="checkbox"
-                                checked={access[i].portal}
-                                onChange={() => toggleAccess(i, "portal")}
+                                checked={p.portal}
+                                onChange={() => toggleAccess(p.id, "portal")}
                               />
                               <span className={styles.toggleTrack} />
                             </label>
@@ -427,8 +427,8 @@ export function Ajustes() {
                             <label className={styles.toggleSwitch}>
                               <input
                                 type="checkbox"
-                                checked={access[i].academia}
-                                onChange={() => toggleAccess(i, "academia")}
+                                checked={p.academia}
+                                onChange={() => toggleAccess(p.id, "academia")}
                               />
                               <span className={styles.toggleTrack} />
                             </label>
