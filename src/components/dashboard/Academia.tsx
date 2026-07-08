@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "@tanstack/react-router";
+import { useLocation, Link } from "@tanstack/react-router";
 import {
   Search,
   Bell,

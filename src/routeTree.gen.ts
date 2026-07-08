@@ -23,6 +23,7 @@ import { Route as PortalPerfilRouteImport } from './routes/portal.perfil'
 import { Route as AcademiaRecursosRouteImport } from './routes/academia.recursos'
 import { Route as AcademiaExplorarRouteImport } from './routes/academia.explorar'
 import { Route as AcademiaDirectoRouteImport } from './routes/academia.directo'
+import { Route as AcademiaAlumnosRouteImport } from './routes/academia.alumnos'
 
 const RecursosRoute = RecursosRouteImport.update({
   id: '/recursos',
@@ -94,6 +95,11 @@ const AcademiaDirectoRoute = AcademiaDirectoRouteImport.update({
   path: '/directo',
   getParentRoute: () => AcademiaRoute,
 } as any)
+const AcademiaAlumnosRoute = AcademiaAlumnosRouteImport.update({
+  id: '/alumnos',
+  path: '/alumnos',
+  getParentRoute: () => AcademiaRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/ajustes': typeof AjustesRoute
   '/pacientes': typeof PacientesRoute
   '/recursos': typeof RecursosRoute
+  '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/ajustes': typeof AjustesRoute
   '/pacientes': typeof PacientesRoute
   '/recursos': typeof RecursosRoute
+  '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/ajustes': typeof AjustesRoute
   '/pacientes': typeof PacientesRoute
   '/recursos': typeof RecursosRoute
+  '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/ajustes'
     | '/pacientes'
     | '/recursos'
+    | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
     | '/academia/recursos'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/ajustes'
     | '/pacientes'
     | '/recursos'
+    | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
     | '/academia/recursos'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/ajustes'
     | '/pacientes'
     | '/recursos'
+    | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
     | '/academia/recursos'
@@ -306,10 +318,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademiaDirectoRouteImport
       parentRoute: typeof AcademiaRoute
     }
+    '/academia/alumnos': {
+      id: '/academia/alumnos'
+      path: '/alumnos'
+      fullPath: '/academia/alumnos'
+      preLoaderRoute: typeof AcademiaAlumnosRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
   }
 }
 
 interface AcademiaRouteChildren {
+  AcademiaAlumnosRoute: typeof AcademiaAlumnosRoute
   AcademiaDirectoRoute: typeof AcademiaDirectoRoute
   AcademiaExplorarRoute: typeof AcademiaExplorarRoute
   AcademiaRecursosRoute: typeof AcademiaRecursosRoute
@@ -317,6 +337,7 @@ interface AcademiaRouteChildren {
 }
 
 const AcademiaRouteChildren: AcademiaRouteChildren = {
+  AcademiaAlumnosRoute: AcademiaAlumnosRoute,
   AcademiaDirectoRoute: AcademiaDirectoRoute,
   AcademiaExplorarRoute: AcademiaExplorarRoute,
   AcademiaRecursosRoute: AcademiaRecursosRoute,
