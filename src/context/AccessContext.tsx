@@ -123,6 +123,8 @@ interface AccessContextValue {
   toggleAccess: (id: string, key: "portal" | "academia") => void;
   /** "Dar de baja": el alumno pasa a Inactivo (academia = false) pero sigue en la lista. */
   deactivateStudent: (id: string) => void;
+  /** "Reactivar": restaura el acceso a la academia (academia = true). */
+  reactivateStudent: (id: string) => void;
   /** "Eliminar": sale de la tabla de alumnos pero el usuario sigue existiendo con academia = false. */
   removeStudent: (id: string) => void;
 }
