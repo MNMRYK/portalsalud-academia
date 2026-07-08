@@ -386,6 +386,9 @@ export function Pacientes() {
   const patientConsultations = selectedPatient
     ? consultationsForPatient(selectedPatient)
     : [];
+  const patientSymptomEntries = selectedPatient
+    ? symptomEntriesForPatient(selectedPatient)
+    : [];
 
   const openPatient = (name: string) => {
     setSelectedPatient(name);
