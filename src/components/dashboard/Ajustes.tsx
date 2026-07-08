@@ -42,13 +42,7 @@ const tabs: { id: TabId; label: string; icon: LucideIcon }[] = [
 ];
 
 
-const billing = [
-  { name: "Laura García", initials: "LG", av: styles.avSage, portal: true, academia: true, payment: "01 jul 2026 · 65 €" },
-  { name: "Marc Puig", initials: "MP", av: styles.avPlum, portal: true, academia: false, payment: "28 jun 2026 · 65 €" },
-  { name: "Elena Soler", initials: "ES", av: styles.avTerracota, portal: false, academia: false, payment: "15 jun 2026 · 90 €" },
-  { name: "David Roca", initials: "DR", av: styles.avPlum, portal: true, academia: true, payment: "02 jul 2026 · 120 €" },
-  { name: "Nuria Vidal", initials: "NV", av: styles.avSage, portal: false, academia: true, payment: "20 jun 2026 · 65 €" },
-];
+
 
 const invoicesByPatient: Record<string, { date: string; concept: string; amount: string }[]> = {
   "Laura García": [
