@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import logoAsset from "../assets/logo.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LegalTemplatesProvider } from "../context/LegalTemplatesContext";
 import { TasksProvider } from "../context/TasksContext";
@@ -83,8 +84,6 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-import logoAsset from "../assets/logo.png.asset.json";
-
   head: () => ({
     meta: [
       { charSet: "utf-8" },
