@@ -8,20 +8,20 @@
   flex-direction: column;
   background-color: #ffffff;
   border-right: 1px solid #ece4d8;
-  padding: 28px 18px;
+  padding: 14px 18px 28px;
   font-family: "Nunito", system-ui, sans-serif;
 }
 
 /* ===== Modo enfoque: sidebar colapsada (solo iconos) ===== */
 .sidebarCollapsed {
   width: 76px;
-  padding: 28px 12px;
+  padding: 14px 12px 28px;
   transition: width 0.2s ease;
 }
 
 .sidebarCollapsed .brand {
   justify-content: center;
-  padding: 0 0 20px;
+  padding: 0 0 14px;
 }
 
 .sidebarCollapsed .brandText,
@@ -56,9 +56,9 @@
 .brand {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 12px 10px 22px;
-  margin-bottom: 8px;
+  justify-content: center;
+  padding: 0 0 16px;
+  margin-bottom: 6px;
   border-bottom: 1px solid #f0eae0;
 }
 
