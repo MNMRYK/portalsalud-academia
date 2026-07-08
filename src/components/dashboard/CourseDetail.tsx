@@ -107,6 +107,17 @@ export function CourseDetail({ courseId }: { courseId: string }) {
       params: { courseId: course.id, lessonId: resumeLessonId(course.id) },
     });
 
+  const restartCourse = () => {
+    resetCourse(course.id);
+    toast.success("Progreso reiniciado", {
+      description: "Has vuelto al inicio del curso.",
+    });
+    navigate({
+      to: "/academia/leccion/$courseId/$lessonId",
+      params: { courseId: course.id, lessonId: lessons[0]?.id ?? "" },
+    });
+  };
+
   return (
     <div className={styles.page}>
       <Sidebar />
