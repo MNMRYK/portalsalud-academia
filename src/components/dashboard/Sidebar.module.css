@@ -57,14 +57,14 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0 10px 24px;
+  padding: 12px 10px 22px;
   margin-bottom: 8px;
   border-bottom: 1px solid #f0eae0;
 }
 
 .brandLogo {
   width: 100%;
-  max-width: 200px;
+  max-width: 140px;
   height: auto;
   display: block;
 }
