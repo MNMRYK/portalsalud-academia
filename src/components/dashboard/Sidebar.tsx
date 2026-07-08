@@ -56,13 +56,15 @@ const settingsLinks: PatientLink[] = [
   { to: "/portal/perfil", label: "Mi Perfil", icon: UserRound },
 ];
 
-export function Sidebar() {
+export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
   const { isAdmin, hasClinicalAccess, hasAcademyAccess, logout } = useUser();
   const [upsell, setUpsell] = useState<UpsellVariant | null>(null);
 
   return (
     <>
-      <aside className={styles.sidebar}>
+      <aside
+        className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ""}`}
+      >
         <div className={styles.brand}>
           <div className={styles.logoMark}>
             <Leaf size={22} strokeWidth={2.2} />
