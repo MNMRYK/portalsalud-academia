@@ -551,6 +551,13 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
       return { done, total, pct };
     };
 
+    const resetCourse = (courseId: string) =>
+      setCompleted((prev) => {
+        const next = new Set(prev);
+        for (const l of lessonsOf(courseId)) next.delete(l.id);
+        return next;
+      });
+
     const withProgress = (c: AcademyCourse): AcademyCourse => ({
       ...c,
       completedLessons: progressOf(c.id).done,
