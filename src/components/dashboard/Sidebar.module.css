@@ -56,40 +56,21 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-start;
   padding: 0 10px 24px;
   margin-bottom: 8px;
   border-bottom: 1px solid #f0eae0;
 }
 
-.logoMark {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(140deg, #a3bca0, #875c80);
-  color: #ffffff;
-  flex-shrink: 0;
+.brandLogo {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  display: block;
 }
 
-.brandText {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-
-.brandName {
-  font-family: "Montserrat", sans-serif;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: #3d3540;
-}
-
-.brandTag {
-  font-size: 0.72rem;
-  color: #9a8fa0;
-  font-weight: 600;
+.sidebarCollapsed .brandLogo {
+  display: none;
 }
 
 .navGroupLabel {
