@@ -6,7 +6,6 @@ import {
   Users,
   FolderOpen,
   Settings,
-  Leaf,
   LogOut,
   Home,
   ClipboardList,
