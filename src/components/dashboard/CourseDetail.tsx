@@ -68,6 +68,7 @@ export function CourseDetail({ courseId }: { courseId: string }) {
     isEnrolled,
     isCompleted,
     progressOf,
+    resetCourse,
     resumeLessonId,
     enroll,
   } = useAcademy();
