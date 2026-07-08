@@ -20,6 +20,10 @@ import {
   type TaskAssignee,
 } from "@/context/TasksContext";
 import { useConsultations } from "@/context/ConsultationsContext";
+import {
+  useSymptomDiary,
+  intensityLabel,
+} from "@/context/SymptomDiaryContext";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "plan" | "historial" | "documentos";
