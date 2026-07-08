@@ -144,6 +144,11 @@ export function AccessProvider({ children }: { children: ReactNode }) {
       prev.map((r) => (r.id === id ? { ...r, academia: false } : r)),
     );
 
+  const reactivateStudent = (id: string) =>
+    setRecords((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, academia: true } : r)),
+    );
+
   const removeStudent = (id: string) =>
     setRecords((prev) =>
       prev.map((r) =>
@@ -157,6 +162,7 @@ export function AccessProvider({ children }: { children: ReactNode }) {
       students: records.filter((r) => r.inAcademyList),
       toggleAccess,
       deactivateStudent,
+      reactivateStudent,
       removeStudent,
     }),
     [records],
