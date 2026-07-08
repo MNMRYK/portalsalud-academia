@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   Circle,
   Plus,
+  RotateCcw,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { useAcademy, type AcademyLesson } from "../../context/AcademyContext";
