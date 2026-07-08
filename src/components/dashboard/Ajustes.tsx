@@ -29,6 +29,7 @@ import {
   type TemplateCategory,
 } from "../../context/LegalTemplatesContext";
 import { useConsultations } from "../../context/ConsultationsContext";
+import { useAccess } from "../../context/AccessContext";
 import styles from "./Ajustes.module.css";
 
 type TabId = "general" | "facturacion" | "equipo" | "seguridad";
