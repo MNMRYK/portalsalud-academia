@@ -107,6 +107,7 @@ export function PatientFicha({
 }) {
   const { tasksForPatient } = useTasks();
   const { consultationsForPatient } = useConsultations();
+  const { entriesForPatient } = useSymptomDiary();
   const [activeTab, setActiveTab] = useState<TabId>("datos");
 
   // El paciente solo ve sus propias tareas (asignadas a él).
@@ -114,6 +115,7 @@ export function PatientFicha({
     (t) => t.assignee === "paciente",
   );
   const myConsultations = consultationsForPatient(patientName);
+  const mySymptomEntries = entriesForPatient(patientName);
 
   const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
     { id: "datos", label: "Datos y Evolución", icon: Activity },
