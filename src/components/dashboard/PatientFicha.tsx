@@ -209,6 +209,35 @@ export function PatientFicha({
               </tr>
             </thead>
             <tbody>
+              {mySymptomEntries.map((e) => {
+                const [yy, mm, dd] = e.date.split("-").map(Number);
+                const shortDate = new Date(yy, mm - 1, dd).toLocaleDateString(
+                  "es-ES",
+                  { day: "numeric", month: "short", year: "numeric" },
+                );
+                const intensityCls =
+                  e.intensity <= 2
+                    ? styles.levelSage
+                    : e.intensity === 3
+                      ? styles.levelPlum
+                      : styles.levelTerracota;
+                return (
+                  <tr key={e.id}>
+                    <td className={styles.dateCell}>{shortDate}</td>
+                    <td>
+                      <span className={styles.level}>—</span>
+                    </td>
+                    <td>
+                      <span className={`${styles.level} ${intensityCls}`}>
+                        {intensityLabel(e.intensity)} · {e.intensity}/5
+                      </span>
+                    </td>
+                    <td className={styles.noteCell}>
+                      {e.notes || "Sin observaciones."}
+                    </td>
+                  </tr>
+                );
+              })}
               {sharedDiary.map((e) => (
                 <tr key={e.id}>
                   <td className={styles.dateCell}>{e.date}</td>
