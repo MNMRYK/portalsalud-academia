@@ -113,26 +113,18 @@ export function Ajustes() {
   const [historyUser, setHistoryUser] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [editMember, setEditMember] = useState<(typeof team)[number] | null>(null);
-  const [access, setAccess] = useState(() =>
-    billing.map((b) => ({ portal: b.portal, academia: b.academia }))
-  );
+  const { records, toggleAccess } = useAccess();
   const [identity, setIdentity] = useState({
     legalName: "Nutralia Centro de Nutrición S.L.",
     taxId: "B-12345678",
     address: "Calle de la Salud 42, 28001 Madrid",
   });
 
-  const toggleAccess = (index: number, key: "portal" | "academia") => {
-    setAccess((prev) =>
-      prev.map((row, i) => (i === index ? { ...row, [key]: !row[key] } : row))
-    );
-  };
-
   // Pacientes con pagos registrados desde el módulo de consultas que aún no
-  // figuran en la tabla estática de facturación → se añaden automáticamente.
+  // figuran en la tabla maestra de accesos → se añaden automáticamente.
   const extraAvatars = [styles.avPlum, styles.avSage, styles.avTerracota];
   const extraBillingRows = patientsWithPayments()
-    .filter((name) => !billing.some((b) => b.name === name))
+    .filter((name) => !records.some((b) => b.name === name))
     .map((name, i) => ({
       name,
       initials: name
