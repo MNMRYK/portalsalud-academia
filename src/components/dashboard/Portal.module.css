@@ -426,14 +426,18 @@
 
 .planCard {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 22px 24px;
+  padding: 24px 26px;
   border-radius: 16px;
   background: linear-gradient(140deg, #f3eef6, #ffffff);
   border: 1px solid #ece1ef;
   margin-bottom: 18px;
+}
+
+.planInfo {
+  min-width: 0;
 }
 
 .planName {
@@ -449,13 +453,140 @@
   margin-top: 2px;
 }
 
+.planBilling {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #6b6270;
+  margin-top: 10px;
+}
+
+.planManageLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #875c80;
+  text-decoration: none;
+  border-bottom: 1px dashed #cdbad6;
+  padding-bottom: 1px;
+  transition: color 0.15s ease;
+}
+
+.planManageLink:hover {
+  color: #6b4667;
+}
+
+.planCancelLink {
+  display: inline-block;
+  margin-top: 12px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #b25c40;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.planCancelLink:hover {
+  color: #8f4530;
+}
+
+.planCancelledNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: #a25f4c;
+}
+
 .planPill {
+  flex-shrink: 0;
   font-weight: 700;
   font-size: 0.8rem;
   color: #5f8a5b;
   background-color: #eef4ec;
   padding: 7px 14px;
   border-radius: 999px;
+}
+
+.planPillMuted {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #8a8090;
+  background-color: #f0eae0;
+  padding: 7px 14px;
+  border-radius: 999px;
+}
+
+/* Método de pago */
+.paymentMethod {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.paymentCardIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #cdbad6, #875c80);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.paymentInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.paymentCardNumber {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #3d3540;
+}
+
+.paymentCardExp {
+  font-size: 0.85rem;
+  color: #8a8090;
+  margin-top: 3px;
+}
+
+/* Historial: columna Factura */
+.billingColRight {
+  text-align: right;
+}
+
+.invoiceDownload {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #ece4d8;
+  border-radius: 9px;
+  background-color: #faf6f0;
+  color: #875c80;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.invoiceDownload:hover {
+  background-color: #f3eef6;
+  color: #6b4667;
 }
 
 .profileGrid {
@@ -838,4 +969,258 @@
 
 .dangerButton:hover {
   filter: brightness(1.05);
+}
+
+/* ===== Mi Perfil ===== */
+.cardTitleIcon {
+  color: #875c80;
+  vertical-align: -3px;
+  margin-right: 6px;
+}
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #f2ece2;
+}
+
+.avatarWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatarLarge {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #cdbad6, #875c80);
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+}
+
+.avatarEdit {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #d47f65, #875c80);
+  color: #ffffff;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.avatarEdit:hover {
+  filter: brightness(1.06);
+}
+
+.avatarName {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #3d3540;
+}
+
+.avatarHint {
+  font-size: 0.85rem;
+  color: #9a8fa0;
+  margin-top: 3px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.94rem;
+  color: #3d3540;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background-color: #faf6f0;
+  border: 1px solid #ece4d8;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #cdbad6;
+  background-color: #ffffff;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(140deg, #d47f65, #875c80);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 11px 20px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.primaryButton:hover {
+  filter: brightness(1.04);
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ece4d8;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #3d3540;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 11px 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.secondaryButton:hover {
+  background-color: #f5f0e8;
+}
+
+/* Toggles */
+.toggleList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f2ece2;
+}
+
+.toggleRow:last-child {
+  border-bottom: none;
+}
+
+.toggleText {
+  min-width: 0;
+}
+
+.toggleTitle {
+  font-weight: 700;
+  font-size: 0.94rem;
+  color: #3d3540;
+}
+
+.toggleSub {
+  font-size: 0.82rem;
+  color: #9a8fa0;
+  margin-top: 3px;
+}
+
+.toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 46px;
+  height: 26px;
+  border: none;
+  border-radius: 999px;
+  background-color: #e0d6ca;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.18s ease;
+}
+
+.toggleOn {
+  background: linear-gradient(140deg, #a3bca0, #7fa07c);
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(61, 53, 64, 0.25);
+  transition: transform 0.18s ease;
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(20px);
+}
+
+/* Zona de sesión */
+.dangerCard {
+  background-color: #fdf7f4;
+  border: 1px solid #f2e0d7;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 18px;
+}
+
+.dangerHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dangerIcon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background-color: #fbeee7;
+  color: #b25c40;
+  flex-shrink: 0;
+}
+
+.dangerTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #3d3540;
+}
+
+.dangerSub {
+  font-size: 0.82rem;
+  color: #9a8fa0;
+  margin-top: 2px;
+}
+
+.dangerHead .logoutButton {
+  margin-left: auto;
+  flex-shrink: 0;
 }
