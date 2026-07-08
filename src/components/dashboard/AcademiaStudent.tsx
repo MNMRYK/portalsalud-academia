@@ -133,14 +133,25 @@ function MisCursos() {
                   />
                 </div>
                 <div className={portal.courseFooterStudent}>
-                  <Link
-                    to="/academia/curso/$courseId"
-                    params={{ courseId: c.id }}
-                    className={portal.continueButton}
-                  >
-                    <PlayCircle size={16} />
-                    {prog.done > 0 ? "Continuar curso" : "Empezar curso"}
-                  </Link>
+                  {prog.pct >= 100 ? (
+                    <Link
+                      to="/academia/curso/$courseId"
+                      params={{ courseId: c.id }}
+                      className={portal.completedButton}
+                    >
+                      <CheckCircle2 size={16} />
+                      Ver curso completado
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/academia/curso/$courseId"
+                      params={{ courseId: c.id }}
+                      className={portal.continueButton}
+                    >
+                      <PlayCircle size={16} />
+                      {prog.done > 0 ? "Continuar curso" : "Empezar curso"}
+                    </Link>
+                  )}
                 </div>
               </div>
             </article>
