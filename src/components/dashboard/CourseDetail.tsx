@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   Circle,
   Plus,
+  RotateCcw,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { useAcademy, type AcademyLesson } from "../../context/AcademyContext";
@@ -68,6 +69,7 @@ export function CourseDetail({ courseId }: { courseId: string }) {
     isEnrolled,
     isCompleted,
     progressOf,
+    resetCourse,
     resumeLessonId,
     enroll,
   } = useAcademy();
@@ -106,6 +108,17 @@ export function CourseDetail({ courseId }: { courseId: string }) {
       to: "/academia/leccion/$courseId/$lessonId",
       params: { courseId: course.id, lessonId: resumeLessonId(course.id) },
     });
+
+  const restartCourse = () => {
+    resetCourse(course.id);
+    toast.success("Progreso reiniciado", {
+      description: "Has vuelto al inicio del curso.",
+    });
+    navigate({
+      to: "/academia/leccion/$courseId/$lessonId",
+      params: { courseId: course.id, lessonId: lessons[0]?.id ?? "" },
+    });
+  };
 
   return (
     <div className={styles.page}>
@@ -203,16 +216,27 @@ export function CourseDetail({ courseId }: { courseId: string }) {
                   <Clock size={16} className={learn.cardStatIcon} />
                   {course.duration} de estudio total
                 </div>
-                <button
-                  type="button"
-                  className={learn.resumeButton}
-                  onClick={goResume}
-                >
-                  <PlayCircle size={18} />
-                  {progress.done > 0
-                    ? "Continuar donde lo dejaste"
-                    : "Empezar el curso"}
-                </button>
+                {progress.pct >= 100 ? (
+                  <button
+                    type="button"
+                    className={learn.restartButton}
+                    onClick={restartCourse}
+                  >
+                    <RotateCcw size={18} />
+                    Volver a empezar
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={learn.resumeButton}
+                    onClick={goResume}
+                  >
+                    <PlayCircle size={18} />
+                    {progress.done > 0
+                      ? "Continuar donde lo dejaste"
+                      : "Empezar el curso"}
+                  </button>
+                )}
               </>
             ) : (
               <>

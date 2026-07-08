@@ -503,6 +503,8 @@ interface AcademyContextValue {
   isCompleted: (lessonId: string) => boolean;
   completeLesson: (lessonId: string) => void;
   progressOf: (courseId: string) => CourseProgress;
+  /** Reinicia el progreso del curso (lecciones a 0). */
+  resetCourse: (courseId: string) => void;
   nextLessonId: (courseId: string, lessonId: string) => string | null;
   prevLessonId: (courseId: string, lessonId: string) => string | null;
   resumeLessonId: (courseId: string) => string;
@@ -548,6 +550,13 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
       const pct = total === 0 ? 0 : Math.round((done / total) * 100);
       return { done, total, pct };
     };
+
+    const resetCourse = (courseId: string) =>
+      setCompleted((prev) => {
+        const next = new Set(prev);
+        for (const l of lessonsOf(courseId)) next.delete(l.id);
+        return next;
+      });
 
     const withProgress = (c: AcademyCourse): AcademyCourse => ({
       ...c,
@@ -595,6 +604,7 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
       isCompleted,
       completeLesson,
       progressOf,
+      resetCourse,
       nextLessonId,
       prevLessonId,
       resumeLessonId,
