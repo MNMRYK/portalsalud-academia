@@ -149,7 +149,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
+      <AuthProvider>
+        <UserProvider>
         <LegalTemplatesProvider>
           <TasksProvider>
             <ConsultationsProvider>
