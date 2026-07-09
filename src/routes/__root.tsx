@@ -169,7 +169,8 @@ function RootComponent() {
             </ConsultationsProvider>
           </TasksProvider>
         </LegalTemplatesProvider>
-      </UserProvider>
+        </UserProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
