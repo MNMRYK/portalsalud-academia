@@ -9,8 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as RecursosRouteImport } from './routes/recursos'
+import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-password'
 import { Route as PacientesRouteImport } from './routes/pacientes'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AjustesRouteImport } from './routes/ajustes'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
@@ -27,14 +30,29 @@ import { Route as AcademiaAlumnosRouteImport } from './routes/academia.alumnos'
 import { Route as AcademiaCursoCourseIdRouteImport } from './routes/academia.curso.$courseId'
 import { Route as AcademiaLeccionCourseIdLessonIdRouteImport } from './routes/academia.leccion.$courseId.$lessonId'
 
+const RegistroRoute = RegistroRouteImport.update({
+  id: '/registro',
+  path: '/registro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecursosRoute = RecursosRouteImport.update({
   id: '/recursos',
   path: '/recursos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecuperarPasswordRoute = RecuperarPasswordRouteImport.update({
+  id: '/recuperar-password',
+  path: '/recuperar-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PacientesRoute = PacientesRouteImport.update({
   id: '/pacientes',
   path: '/pacientes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AjustesRoute = AjustesRouteImport.update({
@@ -118,8 +136,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRouteWithChildren
   '/ajustes': typeof AjustesRoute
+  '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
+  '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
+  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -136,8 +157,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ajustes': typeof AjustesRoute
+  '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
+  '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
+  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -156,8 +180,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRouteWithChildren
   '/ajustes': typeof AjustesRoute
+  '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
+  '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
+  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -177,8 +204,11 @@ export interface FileRouteTypes {
     | '/'
     | '/academia'
     | '/ajustes'
+    | '/login'
     | '/pacientes'
+    | '/recuperar-password'
     | '/recursos'
+    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -195,8 +225,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/ajustes'
+    | '/login'
     | '/pacientes'
+    | '/recuperar-password'
     | '/recursos'
+    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -214,8 +247,11 @@ export interface FileRouteTypes {
     | '/'
     | '/academia'
     | '/ajustes'
+    | '/login'
     | '/pacientes'
+    | '/recuperar-password'
     | '/recursos'
+    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -234,8 +270,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcademiaRoute: typeof AcademiaRouteWithChildren
   AjustesRoute: typeof AjustesRoute
+  LoginRoute: typeof LoginRoute
   PacientesRoute: typeof PacientesRoute
+  RecuperarPasswordRoute: typeof RecuperarPasswordRoute
   RecursosRoute: typeof RecursosRoute
+  RegistroRoute: typeof RegistroRoute
   PortalPerfilRoute: typeof PortalPerfilRoute
   PortalPlanRoute: typeof PortalPlanRoute
   PortalRecursosClinicosRoute: typeof PortalRecursosClinicosRoute
@@ -245,6 +284,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/registro': {
+      id: '/registro'
+      path: '/registro'
+      fullPath: '/registro'
+      preLoaderRoute: typeof RegistroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recursos': {
       id: '/recursos'
       path: '/recursos'
@@ -252,11 +298,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecursosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recuperar-password': {
+      id: '/recuperar-password'
+      path: '/recuperar-password'
+      fullPath: '/recuperar-password'
+      preLoaderRoute: typeof RecuperarPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pacientes': {
       id: '/pacientes'
       path: '/pacientes'
       fullPath: '/pacientes'
       preLoaderRoute: typeof PacientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ajustes': {
@@ -395,8 +455,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcademiaRoute: AcademiaRouteWithChildren,
   AjustesRoute: AjustesRoute,
+  LoginRoute: LoginRoute,
   PacientesRoute: PacientesRoute,
+  RecuperarPasswordRoute: RecuperarPasswordRoute,
   RecursosRoute: RecursosRoute,
+  RegistroRoute: RegistroRoute,
   PortalPerfilRoute: PortalPerfilRoute,
   PortalPlanRoute: PortalPlanRoute,
   PortalRecursosClinicosRoute: PortalRecursosClinicosRoute,
@@ -406,13 +469,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -1,0 +1,189 @@
+/* ============================================================
+   FASE A — Autenticación · CSS tradicional (sin Tailwind)
+   Diseño minimalista · tipografía Nunito
+   ============================================================ */
+
+.auth-screen {
+  font-family: "Nunito", system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #f5f7f6;
+  color: #24312c;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border: 1px solid #e6ebe8;
+  border-radius: 16px;
+  padding: 40px 36px;
+  box-shadow: 0 12px 40px rgba(36, 49, 44, 0.08);
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #6b8f74;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 14px;
+}
+
+.auth-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6d7a74;
+  margin: 0;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #45514b;
+}
+
+.auth-input {
+  font-family: inherit;
+  font-size: 15px;
+  padding: 11px 13px;
+  border: 1px solid #d6ded9;
+  border-radius: 10px;
+  background: #fbfcfb;
+  color: #24312c;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #6b8f74;
+  box-shadow: 0 0 0 3px rgba(107, 143, 116, 0.18);
+}
+
+.auth-input::placeholder {
+  color: #a3aea9;
+}
+
+.auth-button {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #6b8f74;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+  margin-top: 4px;
+}
+
+.auth-button:hover {
+  background: #5c7d64;
+}
+
+.auth-button:active {
+  transform: translateY(1px);
+}
+
+.auth-button:disabled {
+  background: #b7c6bb;
+  cursor: not-allowed;
+}
+
+.auth-error {
+  font-size: 13px;
+  font-weight: 600;
+  color: #b4443a;
+  background: #fdf0ee;
+  border: 1px solid #f4d3ce;
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin: 0;
+}
+
+.auth-success {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3f7a52;
+  background: #eef7f0;
+  border: 1px solid #cbe6d3;
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin: 0;
+}
+
+.auth-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-link {
+  color: #6b8f74;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-footer {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6d7a74;
+}
+
+.auth-hint {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f1f4f2;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6d7a74;
+  line-height: 1.5;
+}
+
+.auth-hint code {
+  font-family: inherit;
+  color: #45514b;
+}

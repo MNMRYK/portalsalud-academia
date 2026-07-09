@@ -16,6 +16,7 @@ import { LegalTemplatesProvider } from "../context/LegalTemplatesContext";
 import { TasksProvider } from "../context/TasksContext";
 import { ConsultationsProvider } from "../context/ConsultationsContext";
 import { UserProvider } from "../context/UserContext";
+import { AuthProvider } from "../context/AuthContext";
 import { ResourcesProvider } from "../context/ResourcesContext";
 import { AcademyProvider } from "../context/AcademyContext";
 import { AccessProvider } from "../context/AccessContext";
@@ -148,7 +149,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
+      <AuthProvider>
+        <UserProvider>
         <LegalTemplatesProvider>
           <TasksProvider>
             <ConsultationsProvider>
@@ -167,7 +169,8 @@ function RootComponent() {
             </ConsultationsProvider>
           </TasksProvider>
         </LegalTemplatesProvider>
-      </UserProvider>
+        </UserProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
