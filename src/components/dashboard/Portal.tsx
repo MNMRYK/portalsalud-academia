@@ -421,6 +421,32 @@ export function PortalPlan() {
         <div className={styles.cardHead}>
           <h2 className={styles.cardTitle}>Mis tareas</h2>
         </div>
+
+        <div className={styles.taskList}>
+          <div className={styles.taskItem}>
+            <FileText size={19} color="#d47f65" />
+            <div className={styles.taskBody}>
+              <div className={styles.taskDesc}>
+                Rellenar formulario «Seguimiento Julio»
+              </div>
+              <div className={styles.taskMeta}>
+                Enviado por Sara Santos · Prioridad Alta
+              </div>
+            </div>
+            <span className={styles.pendingBadge}>
+              <Circle size={14} /> Pendiente
+            </span>
+            <button
+              type="button"
+              className={styles.startButton}
+              onClick={() => navigate({ to: "/portal/formulario" })}
+            >
+              <ArrowRight size={15} /> Comenzar
+            </button>
+          </div>
+        </div>
+
+
         {patientTasks.length === 0 ? (
           <p className={styles.empty}>No tienes tareas asignadas por ahora.</p>
         ) : (
