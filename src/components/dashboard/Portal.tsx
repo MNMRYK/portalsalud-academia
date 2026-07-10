@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   CalendarDays,
   ClipboardList,
@@ -18,6 +19,8 @@ import {
   Lock,
   Bell,
   ShieldAlert,
+  FileText,
+  ArrowRight,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -79,9 +82,11 @@ function PortalShell({
    Mi Dashboard
    ============================================================ */
 export function PortalDashboard() {
+  const navigate = useNavigate();
   const { patientName } = useUser();
   const { tasks } = useTasks();
   const { consultationsForPatient, cancelConsultation } = useConsultations();
+
 
   const today = new Date().toISOString().slice(0, 10);
   const patientTasks = tasks.filter(
@@ -215,7 +220,46 @@ export function PortalDashboard() {
       )}
 
       <h2 className={styles.sectionTitle}>Tus tareas pendientes</h2>
+
+      <div className={styles.formBanner}>
+        <span className={styles.formBannerIcon}>
+          <FileText size={24} strokeWidth={1.9} />
+        </span>
+        <div className={styles.formBannerBody}>
+          <div className={styles.formBannerTitle}>
+            Tienes un nuevo formulario de seguimiento pendiente de rellenar
+          </div>
+          <p className={styles.formBannerText}>
+            «Seguimiento Julio» · enviado por Sara Santos
+          </p>
+        </div>
+        <button
+          type="button"
+          className={styles.formBannerButton}
+          onClick={() => navigate({ to: "/portal/formulario" })}
+        >
+          Comenzar <ArrowRight size={16} />
+        </button>
+      </div>
+
       <div className={styles.card}>
+        <div
+          className={styles.taskItem}
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate({ to: "/portal/formulario" })}
+        >
+          <FileText size={18} color="#d47f65" />
+          <div className={styles.taskBody}>
+            <div className={styles.taskDesc}>
+              Formulario «Seguimiento Julio»
+            </div>
+            <div className={styles.taskMeta}>Pendiente de rellenar</div>
+          </div>
+          <span className={styles.pendingBadge}>
+            <Circle size={13} /> Pendiente
+          </span>
+        </div>
+
         {pendingTasks.length === 0 ? (
           <p className={styles.empty}>¡Estás al día! No tienes tareas pendientes.</p>
         ) : (
@@ -325,9 +369,11 @@ function intensityBadgeClass(intensity: number): string {
 }
 
 export function PortalPlan() {
+  const navigate = useNavigate();
   const { patientName } = useUser();
   const { tasks, toggleTask } = useTasks();
   const { addEntry, entriesForPatient } = useSymptomDiary();
+
 
   const patientTasks = tasks.filter(
     (t) => t.patientName === patientName && t.assignee === "paciente",
@@ -375,6 +421,32 @@ export function PortalPlan() {
         <div className={styles.cardHead}>
           <h2 className={styles.cardTitle}>Mis tareas</h2>
         </div>
+
+        <div className={styles.taskList}>
+          <div className={styles.taskItem}>
+            <FileText size={19} color="#d47f65" />
+            <div className={styles.taskBody}>
+              <div className={styles.taskDesc}>
+                Rellenar formulario «Seguimiento Julio»
+              </div>
+              <div className={styles.taskMeta}>
+                Enviado por Sara Santos · Prioridad Alta
+              </div>
+            </div>
+            <span className={styles.pendingBadge}>
+              <Circle size={14} /> Pendiente
+            </span>
+            <button
+              type="button"
+              className={styles.startButton}
+              onClick={() => navigate({ to: "/portal/formulario" })}
+            >
+              <ArrowRight size={15} /> Comenzar
+            </button>
+          </div>
+        </div>
+
+
         {patientTasks.length === 0 ? (
           <p className={styles.empty}>No tienes tareas asignadas por ahora.</p>
         ) : (

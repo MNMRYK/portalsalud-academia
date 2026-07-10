@@ -13,6 +13,8 @@ import {
   Wallet,
   User,
   Briefcase,
+  Eye,
+  ClipboardCheck,
 } from "lucide-react";
 import {
   useTasks,
@@ -379,6 +381,37 @@ export function PatientFicha({
               </p>
             </div>
           </div>
+
+          <div className={styles.folder}>
+            <div className={styles.folderTitle}>
+              <ClipboardCheck size={18} className={styles.folderIcon} />
+              <span className={styles.folderName}>Formularios completados</span>
+            </div>
+            <div className={styles.docList}>
+              <div className={styles.docItem}>
+                <span className={styles.docIcon}>
+                  <FileText size={20} />
+                </span>
+                <div className={styles.docInfo}>
+                  <div className={styles.docName}>
+                    Seguimiento Julio — Enviado el 10/07/2026
+                  </div>
+                  <div className={styles.docMeta}>
+                    Formulario · 4 respuestas · Solo lectura
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className={styles.docAction}
+                  aria-label="Ver mis respuestas"
+                >
+                  <Eye size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+
 
           {Object.entries(documents).map(([folder, files]) => (
             <div key={folder} className={styles.folder}>
