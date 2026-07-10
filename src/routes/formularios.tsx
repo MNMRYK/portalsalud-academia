@@ -1,21 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { FormDashboard } from "@/components/dashboard/FormDashboard";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AdminOnly } from "@/components/dashboard/AdminOnly";
 
 export const Route = createFileRoute("/formularios")({
-  head: () => ({
-    meta: [
-      { title: "Gestión de Formularios — Nutralia" },
-      {
-        name: "description",
-        content:
-          "Administra las plantillas de formularios de seguimiento de nutrición integrativa.",
-      },
-    ],
-  }),
   component: () => (
     <AdminOnly>
-      <FormDashboard />
+      <Outlet />
     </AdminOnly>
   ),
 });
