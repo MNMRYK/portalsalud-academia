@@ -19,6 +19,7 @@ import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
+import { Route as FormulariosIndexRouteImport } from './routes/formularios.index'
 import { Route as AcademiaIndexRouteImport } from './routes/academia.index'
 import { Route as PortalSuscripcionesRouteImport } from './routes/portal.suscripciones'
 import { Route as PortalRecursosClinicosRouteImport } from './routes/portal.recursos-clinicos'
@@ -82,6 +83,11 @@ const PortalIndexRoute = PortalIndexRouteImport.update({
   id: '/portal/',
   path: '/portal/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const FormulariosIndexRoute = FormulariosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FormulariosRoute,
 } as any)
 const AcademiaIndexRoute = AcademiaIndexRouteImport.update({
   id: '/',
@@ -171,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia/': typeof AcademiaIndexRoute
+  '/formularios/': typeof FormulariosIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
@@ -179,7 +186,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
-  '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
@@ -195,6 +201,7 @@ export interface FileRoutesByTo {
   '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia': typeof AcademiaIndexRoute
+  '/formularios': typeof FormulariosIndexRoute
   '/portal': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
@@ -221,6 +228,7 @@ export interface FileRoutesById {
   '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia/': typeof AcademiaIndexRoute
+  '/formularios/': typeof FormulariosIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
@@ -248,6 +256,7 @@ export interface FileRouteTypes {
     | '/portal/recursos-clinicos'
     | '/portal/suscripciones'
     | '/academia/'
+    | '/formularios/'
     | '/portal/'
     | '/academia/curso/$courseId'
     | '/academia/leccion/$courseId/$lessonId'
@@ -256,7 +265,6 @@ export interface FileRouteTypes {
     | '/'
     | '/activar-cuenta'
     | '/ajustes'
-    | '/formularios'
     | '/login'
     | '/pacientes'
     | '/recuperar-password'
@@ -272,6 +280,7 @@ export interface FileRouteTypes {
     | '/portal/recursos-clinicos'
     | '/portal/suscripciones'
     | '/academia'
+    | '/formularios'
     | '/portal'
     | '/academia/curso/$courseId'
     | '/academia/leccion/$courseId/$lessonId'
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/portal/recursos-clinicos'
     | '/portal/suscripciones'
     | '/academia/'
+    | '/formularios/'
     | '/portal/'
     | '/academia/curso/$courseId'
     | '/academia/leccion/$courseId/$lessonId'
@@ -391,6 +401,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/portal/'
       preLoaderRoute: typeof PortalIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/formularios/': {
+      id: '/formularios/'
+      path: '/'
+      fullPath: '/formularios/'
+      preLoaderRoute: typeof FormulariosIndexRouteImport
+      parentRoute: typeof FormulariosRoute
     }
     '/academia/': {
       id: '/academia/'
@@ -512,10 +529,12 @@ const AcademiaRouteWithChildren = AcademiaRoute._addFileChildren(
 
 interface FormulariosRouteChildren {
   FormulariosNuevaRoute: typeof FormulariosNuevaRoute
+  FormulariosIndexRoute: typeof FormulariosIndexRoute
 }
 
 const FormulariosRouteChildren: FormulariosRouteChildren = {
   FormulariosNuevaRoute: FormulariosNuevaRoute,
+  FormulariosIndexRoute: FormulariosIndexRoute,
 }
 
 const FormulariosRouteWithChildren = FormulariosRoute._addFileChildren(
