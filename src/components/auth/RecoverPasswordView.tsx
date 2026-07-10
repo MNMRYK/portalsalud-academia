@@ -1,28 +1,21 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useAuth } from "../../context/AuthContext";
 import "./auth.css";
 
+/**
+ * Vista de RECUPERAR CONTRASEÑA (solo maquetación UI).
+ *
+ * Un único campo de email y un botón para enviar el enlace de recuperación.
+ *
+ * NOTA: Esta vista es solo la interfaz. El envío real del correo se conecta
+ * en el entorno del proyecto.
+ */
 export function RecoverPasswordView() {
-  const { recoverPassword } = useAuth();
-
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      await recoverPassword(email);
-      setSent(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo enviar el correo.");
-    } finally {
-      setLoading(false);
-    }
+    // Sin lógica: el envío del enlace lo implementa el proyecto.
   };
 
   return (
@@ -36,51 +29,33 @@ export function RecoverPasswordView() {
           </p>
         </div>
 
-        {sent ? (
-          <>
-            <p className="auth-success">
-              Si existe una cuenta con <strong>{email}</strong>, recibirás un
-              correo con las instrucciones para restablecer tu contraseña.
-            </p>
-            <p className="auth-footer">
-              <Link to="/login" className="auth-link">
-                Volver a iniciar sesión
-              </Link>
-            </p>
-          </>
-        ) : (
-          <>
-            <form className="auth-form" onSubmit={handleSubmit} noValidate>
-              {error && <p className="auth-error">{error}</p>}
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="rec-email">
+              Email
+            </label>
+            <input
+              id="rec-email"
+              className="auth-input"
+              type="email"
+              placeholder="tucorreo@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              required
+            />
+          </div>
 
-              <div className="auth-field">
-                <label className="auth-label" htmlFor="rec-email">
-                  Email
-                </label>
-                <input
-                  id="rec-email"
-                  className="auth-input"
-                  type="email"
-                  placeholder="tucorreo@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  required
-                />
-              </div>
+          <button className="auth-button" type="submit">
+            Enviar enlace de recuperación
+          </button>
+        </form>
 
-              <button className="auth-button" type="submit" disabled={loading}>
-                {loading ? "Enviando…" : "Enviar enlace"}
-              </button>
-            </form>
-
-            <p className="auth-footer">
-              <Link to="/login" className="auth-link">
-                Volver a iniciar sesión
-              </Link>
-            </p>
-          </>
-        )}
+        <p className="auth-footer">
+          <Link to="/login" className="auth-link">
+            Volver a iniciar sesión
+          </Link>
+        </p>
       </div>
     </div>
   );
