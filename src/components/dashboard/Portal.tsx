@@ -369,9 +369,11 @@ function intensityBadgeClass(intensity: number): string {
 }
 
 export function PortalPlan() {
+  const navigate = useNavigate();
   const { patientName } = useUser();
   const { tasks, toggleTask } = useTasks();
   const { addEntry, entriesForPatient } = useSymptomDiary();
+
 
   const patientTasks = tasks.filter(
     (t) => t.patientName === patientName && t.assignee === "paciente",
