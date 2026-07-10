@@ -82,9 +82,11 @@ function PortalShell({
    Mi Dashboard
    ============================================================ */
 export function PortalDashboard() {
+  const navigate = useNavigate();
   const { patientName } = useUser();
   const { tasks } = useTasks();
   const { consultationsForPatient, cancelConsultation } = useConsultations();
+
 
   const today = new Date().toISOString().slice(0, 10);
   const patientTasks = tasks.filter(
