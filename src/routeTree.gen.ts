@@ -19,12 +19,14 @@ import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
+import { Route as FormulariosIndexRouteImport } from './routes/formularios.index'
 import { Route as AcademiaIndexRouteImport } from './routes/academia.index'
 import { Route as PortalSuscripcionesRouteImport } from './routes/portal.suscripciones'
 import { Route as PortalRecursosClinicosRouteImport } from './routes/portal.recursos-clinicos'
 import { Route as PortalPlanRouteImport } from './routes/portal.plan'
 import { Route as PortalPerfilRouteImport } from './routes/portal.perfil'
 import { Route as PortalFormularioRouteImport } from './routes/portal.formulario'
+import { Route as FormulariosNuevaRouteImport } from './routes/formularios.nueva'
 import { Route as AcademiaRecursosRouteImport } from './routes/academia.recursos'
 import { Route as AcademiaExplorarRouteImport } from './routes/academia.explorar'
 import { Route as AcademiaDirectoRouteImport } from './routes/academia.directo'
@@ -82,6 +84,11 @@ const PortalIndexRoute = PortalIndexRouteImport.update({
   path: '/portal/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormulariosIndexRoute = FormulariosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FormulariosRoute,
+} as any)
 const AcademiaIndexRoute = AcademiaIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -111,6 +118,11 @@ const PortalFormularioRoute = PortalFormularioRouteImport.update({
   id: '/portal/formulario',
   path: '/portal/formulario',
   getParentRoute: () => rootRouteImport,
+} as any)
+const FormulariosNuevaRoute = FormulariosNuevaRouteImport.update({
+  id: '/nueva',
+  path: '/nueva',
+  getParentRoute: () => FormulariosRoute,
 } as any)
 const AcademiaRecursosRoute = AcademiaRecursosRouteImport.update({
   id: '/recursos',
@@ -149,7 +161,7 @@ export interface FileRoutesByFullPath {
   '/academia': typeof AcademiaRouteWithChildren
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
-  '/formularios': typeof FormulariosRoute
+  '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
@@ -158,12 +170,14 @@ export interface FileRoutesByFullPath {
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
+  '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
   '/portal/perfil': typeof PortalPerfilRoute
   '/portal/plan': typeof PortalPlanRoute
   '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia/': typeof AcademiaIndexRoute
+  '/formularios/': typeof FormulariosIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
@@ -172,7 +186,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
-  '/formularios': typeof FormulariosRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
@@ -181,12 +194,14 @@ export interface FileRoutesByTo {
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
+  '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
   '/portal/perfil': typeof PortalPerfilRoute
   '/portal/plan': typeof PortalPlanRoute
   '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia': typeof AcademiaIndexRoute
+  '/formularios': typeof FormulariosIndexRoute
   '/portal': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
@@ -197,7 +212,7 @@ export interface FileRoutesById {
   '/academia': typeof AcademiaRouteWithChildren
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
-  '/formularios': typeof FormulariosRoute
+  '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
@@ -206,12 +221,14 @@ export interface FileRoutesById {
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
+  '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
   '/portal/perfil': typeof PortalPerfilRoute
   '/portal/plan': typeof PortalPlanRoute
   '/portal/recursos-clinicos': typeof PortalRecursosClinicosRoute
   '/portal/suscripciones': typeof PortalSuscripcionesRoute
   '/academia/': typeof AcademiaIndexRoute
+  '/formularios/': typeof FormulariosIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
@@ -232,12 +249,14 @@ export interface FileRouteTypes {
     | '/academia/directo'
     | '/academia/explorar'
     | '/academia/recursos'
+    | '/formularios/nueva'
     | '/portal/formulario'
     | '/portal/perfil'
     | '/portal/plan'
     | '/portal/recursos-clinicos'
     | '/portal/suscripciones'
     | '/academia/'
+    | '/formularios/'
     | '/portal/'
     | '/academia/curso/$courseId'
     | '/academia/leccion/$courseId/$lessonId'
@@ -246,7 +265,6 @@ export interface FileRouteTypes {
     | '/'
     | '/activar-cuenta'
     | '/ajustes'
-    | '/formularios'
     | '/login'
     | '/pacientes'
     | '/recuperar-password'
@@ -255,12 +273,14 @@ export interface FileRouteTypes {
     | '/academia/directo'
     | '/academia/explorar'
     | '/academia/recursos'
+    | '/formularios/nueva'
     | '/portal/formulario'
     | '/portal/perfil'
     | '/portal/plan'
     | '/portal/recursos-clinicos'
     | '/portal/suscripciones'
     | '/academia'
+    | '/formularios'
     | '/portal'
     | '/academia/curso/$courseId'
     | '/academia/leccion/$courseId/$lessonId'
@@ -279,12 +299,14 @@ export interface FileRouteTypes {
     | '/academia/directo'
     | '/academia/explorar'
     | '/academia/recursos'
+    | '/formularios/nueva'
     | '/portal/formulario'
     | '/portal/perfil'
     | '/portal/plan'
     | '/portal/recursos-clinicos'
     | '/portal/suscripciones'
     | '/academia/'
+    | '/formularios/'
     | '/portal/'
     | '/academia/curso/$courseId'
     | '/academia/leccion/$courseId/$lessonId'
@@ -295,7 +317,7 @@ export interface RootRouteChildren {
   AcademiaRoute: typeof AcademiaRouteWithChildren
   ActivarCuentaRoute: typeof ActivarCuentaRoute
   AjustesRoute: typeof AjustesRoute
-  FormulariosRoute: typeof FormulariosRoute
+  FormulariosRoute: typeof FormulariosRouteWithChildren
   LoginRoute: typeof LoginRoute
   PacientesRoute: typeof PacientesRoute
   RecuperarPasswordRoute: typeof RecuperarPasswordRoute
@@ -380,6 +402,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formularios/': {
+      id: '/formularios/'
+      path: '/'
+      fullPath: '/formularios/'
+      preLoaderRoute: typeof FormulariosIndexRouteImport
+      parentRoute: typeof FormulariosRoute
+    }
     '/academia/': {
       id: '/academia/'
       path: '/'
@@ -421,6 +450,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/portal/formulario'
       preLoaderRoute: typeof PortalFormularioRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/formularios/nueva': {
+      id: '/formularios/nueva'
+      path: '/nueva'
+      fullPath: '/formularios/nueva'
+      preLoaderRoute: typeof FormulariosNuevaRouteImport
+      parentRoute: typeof FormulariosRoute
     }
     '/academia/recursos': {
       id: '/academia/recursos'
@@ -491,12 +527,26 @@ const AcademiaRouteWithChildren = AcademiaRoute._addFileChildren(
   AcademiaRouteChildren,
 )
 
+interface FormulariosRouteChildren {
+  FormulariosNuevaRoute: typeof FormulariosNuevaRoute
+  FormulariosIndexRoute: typeof FormulariosIndexRoute
+}
+
+const FormulariosRouteChildren: FormulariosRouteChildren = {
+  FormulariosNuevaRoute: FormulariosNuevaRoute,
+  FormulariosIndexRoute: FormulariosIndexRoute,
+}
+
+const FormulariosRouteWithChildren = FormulariosRoute._addFileChildren(
+  FormulariosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcademiaRoute: AcademiaRouteWithChildren,
   ActivarCuentaRoute: ActivarCuentaRoute,
   AjustesRoute: AjustesRoute,
-  FormulariosRoute: FormulariosRoute,
+  FormulariosRoute: FormulariosRouteWithChildren,
   LoginRoute: LoginRoute,
   PacientesRoute: PacientesRoute,
   RecuperarPasswordRoute: RecuperarPasswordRoute,
@@ -511,3 +561,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
