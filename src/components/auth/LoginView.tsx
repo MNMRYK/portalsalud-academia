@@ -83,9 +83,9 @@ export function LoginView() {
         </form>
 
         <p className="auth-footer">
-          ¿No tienes cuenta?{" "}
-          <Link to="/registro" className="auth-link">
-            Regístrate
+          ¿Tienes una invitación?{" "}
+          <Link to="/activar-cuenta" className="auth-link">
+            Activa tu cuenta
           </Link>
         </p>
 

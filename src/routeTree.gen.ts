@@ -9,12 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as RecursosRouteImport } from './routes/recursos'
 import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-password'
 import { Route as PacientesRouteImport } from './routes/pacientes'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AjustesRouteImport } from './routes/ajustes'
+import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
@@ -30,11 +30,6 @@ import { Route as AcademiaAlumnosRouteImport } from './routes/academia.alumnos'
 import { Route as AcademiaCursoCourseIdRouteImport } from './routes/academia.curso.$courseId'
 import { Route as AcademiaLeccionCourseIdLessonIdRouteImport } from './routes/academia.leccion.$courseId.$lessonId'
 
-const RegistroRoute = RegistroRouteImport.update({
-  id: '/registro',
-  path: '/registro',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RecursosRoute = RecursosRouteImport.update({
   id: '/recursos',
   path: '/recursos',
@@ -58,6 +53,11 @@ const LoginRoute = LoginRouteImport.update({
 const AjustesRoute = AjustesRouteImport.update({
   id: '/ajustes',
   path: '/ajustes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivarCuentaRoute = ActivarCuentaRouteImport.update({
+  id: '/activar-cuenta',
+  path: '/activar-cuenta',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AcademiaRoute = AcademiaRouteImport.update({
@@ -135,12 +135,12 @@ const AcademiaLeccionCourseIdLessonIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRouteWithChildren
+  '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
-  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -156,12 +156,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
-  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -179,12 +179,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRouteWithChildren
+  '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
-  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -203,12 +203,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/academia'
+    | '/activar-cuenta'
     | '/ajustes'
     | '/login'
     | '/pacientes'
     | '/recuperar-password'
     | '/recursos'
-    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -224,12 +224,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activar-cuenta'
     | '/ajustes'
     | '/login'
     | '/pacientes'
     | '/recuperar-password'
     | '/recursos'
-    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -246,12 +246,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/academia'
+    | '/activar-cuenta'
     | '/ajustes'
     | '/login'
     | '/pacientes'
     | '/recuperar-password'
     | '/recursos'
-    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -269,12 +269,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcademiaRoute: typeof AcademiaRouteWithChildren
+  ActivarCuentaRoute: typeof ActivarCuentaRoute
   AjustesRoute: typeof AjustesRoute
   LoginRoute: typeof LoginRoute
   PacientesRoute: typeof PacientesRoute
   RecuperarPasswordRoute: typeof RecuperarPasswordRoute
   RecursosRoute: typeof RecursosRoute
-  RegistroRoute: typeof RegistroRoute
   PortalPerfilRoute: typeof PortalPerfilRoute
   PortalPlanRoute: typeof PortalPlanRoute
   PortalRecursosClinicosRoute: typeof PortalRecursosClinicosRoute
@@ -284,13 +284,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/registro': {
-      id: '/registro'
-      path: '/registro'
-      fullPath: '/registro'
-      preLoaderRoute: typeof RegistroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/recursos': {
       id: '/recursos'
       path: '/recursos'
@@ -324,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/ajustes'
       fullPath: '/ajustes'
       preLoaderRoute: typeof AjustesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activar-cuenta': {
+      id: '/activar-cuenta'
+      path: '/activar-cuenta'
+      fullPath: '/activar-cuenta'
+      preLoaderRoute: typeof ActivarCuentaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/academia': {
@@ -454,12 +454,12 @@ const AcademiaRouteWithChildren = AcademiaRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcademiaRoute: AcademiaRouteWithChildren,
+  ActivarCuentaRoute: ActivarCuentaRoute,
   AjustesRoute: AjustesRoute,
   LoginRoute: LoginRoute,
   PacientesRoute: PacientesRoute,
   RecuperarPasswordRoute: RecuperarPasswordRoute,
   RecursosRoute: RecursosRoute,
-  RegistroRoute: RegistroRoute,
   PortalPerfilRoute: PortalPerfilRoute,
   PortalPlanRoute: PortalPlanRoute,
   PortalRecursosClinicosRoute: PortalRecursosClinicosRoute,
