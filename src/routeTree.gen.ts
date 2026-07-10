@@ -15,6 +15,7 @@ import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-passwo
 import { Route as PacientesRouteImport } from './routes/pacientes'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AjustesRouteImport } from './routes/ajustes'
+import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
@@ -58,6 +59,11 @@ const LoginRoute = LoginRouteImport.update({
 const AjustesRoute = AjustesRouteImport.update({
   id: '/ajustes',
   path: '/ajustes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivarCuentaRoute = ActivarCuentaRouteImport.update({
+  id: '/activar-cuenta',
+  path: '/activar-cuenta',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AcademiaRoute = AcademiaRouteImport.update({
@@ -135,6 +141,7 @@ const AcademiaLeccionCourseIdLessonIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRouteWithChildren
+  '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRouteWithChildren
+  '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/academia'
+    | '/activar-cuenta'
     | '/ajustes'
     | '/login'
     | '/pacientes'
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activar-cuenta'
     | '/ajustes'
     | '/login'
     | '/pacientes'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/academia'
+    | '/activar-cuenta'
     | '/ajustes'
     | '/login'
     | '/pacientes'
@@ -269,6 +281,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcademiaRoute: typeof AcademiaRouteWithChildren
+  ActivarCuentaRoute: typeof ActivarCuentaRoute
   AjustesRoute: typeof AjustesRoute
   LoginRoute: typeof LoginRoute
   PacientesRoute: typeof PacientesRoute
@@ -324,6 +337,13 @@ declare module '@tanstack/react-router' {
       path: '/ajustes'
       fullPath: '/ajustes'
       preLoaderRoute: typeof AjustesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activar-cuenta': {
+      id: '/activar-cuenta'
+      path: '/activar-cuenta'
+      fullPath: '/activar-cuenta'
+      preLoaderRoute: typeof ActivarCuentaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/academia': {
@@ -454,6 +474,7 @@ const AcademiaRouteWithChildren = AcademiaRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcademiaRoute: AcademiaRouteWithChildren,
+  ActivarCuentaRoute: ActivarCuentaRoute,
   AjustesRoute: AjustesRoute,
   LoginRoute: LoginRoute,
   PacientesRoute: PacientesRoute,
