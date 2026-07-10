@@ -19,6 +19,8 @@ import {
   Lock,
   Bell,
   ShieldAlert,
+  FileText,
+  ArrowRight,
   X,
   type LucideIcon,
 } from "lucide-react";
