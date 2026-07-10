@@ -20,6 +20,7 @@ import {
   CalendarClock,
   BellRing,
   History,
+  ClipboardCheck,
   CalendarCheck,
   CalendarDays,
   ListChecks,
