@@ -31,6 +31,7 @@ const adminNav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/academia", label: "Módulo Academia", icon: GraduationCap },
   { to: "/pacientes", label: "Gestión de Pacientes", icon: Users },
+  { to: "/formularios", label: "Formularios", icon: FileText },
   { to: "/recursos", label: "Gestor de Recursos", icon: FolderOpen },
   { to: "/ajustes", label: "Ajustes y Roles", icon: Settings },
 ] as const;
