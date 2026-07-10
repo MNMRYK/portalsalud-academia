@@ -78,7 +78,7 @@ export function FormBuilder() {
             <button
               type="button"
               className={styles.backButton}
-              onClick={() => navigate({ to: "/pacientes" })}
+              onClick={() => navigate({ to: "/formularios" })}
               aria-label="Volver"
             >
               <ChevronLeft size={20} />
