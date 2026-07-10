@@ -9,6 +9,7 @@ import {
   LogOut,
   Home,
   ClipboardList,
+  FileText,
   FolderHeart,
   BookOpen,
   Compass,
