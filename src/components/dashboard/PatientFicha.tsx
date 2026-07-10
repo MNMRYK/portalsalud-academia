@@ -13,6 +13,8 @@ import {
   Wallet,
   User,
   Briefcase,
+  Eye,
+  ClipboardCheck,
 } from "lucide-react";
 import {
   useTasks,
