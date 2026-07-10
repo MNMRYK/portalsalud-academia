@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as RecursosRouteImport } from './routes/recursos'
 import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-password'
 import { Route as PacientesRouteImport } from './routes/pacientes'
@@ -31,11 +30,6 @@ import { Route as AcademiaAlumnosRouteImport } from './routes/academia.alumnos'
 import { Route as AcademiaCursoCourseIdRouteImport } from './routes/academia.curso.$courseId'
 import { Route as AcademiaLeccionCourseIdLessonIdRouteImport } from './routes/academia.leccion.$courseId.$lessonId'
 
-const RegistroRoute = RegistroRouteImport.update({
-  id: '/registro',
-  path: '/registro',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RecursosRoute = RecursosRouteImport.update({
   id: '/recursos',
   path: '/recursos',
@@ -147,7 +141,6 @@ export interface FileRoutesByFullPath {
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
-  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -169,7 +162,6 @@ export interface FileRoutesByTo {
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
-  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -193,7 +185,6 @@ export interface FileRoutesById {
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
-  '/registro': typeof RegistroRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
@@ -218,7 +209,6 @@ export interface FileRouteTypes {
     | '/pacientes'
     | '/recuperar-password'
     | '/recursos'
-    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -240,7 +230,6 @@ export interface FileRouteTypes {
     | '/pacientes'
     | '/recuperar-password'
     | '/recursos'
-    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -263,7 +252,6 @@ export interface FileRouteTypes {
     | '/pacientes'
     | '/recuperar-password'
     | '/recursos'
-    | '/registro'
     | '/academia/alumnos'
     | '/academia/directo'
     | '/academia/explorar'
@@ -287,7 +275,6 @@ export interface RootRouteChildren {
   PacientesRoute: typeof PacientesRoute
   RecuperarPasswordRoute: typeof RecuperarPasswordRoute
   RecursosRoute: typeof RecursosRoute
-  RegistroRoute: typeof RegistroRoute
   PortalPerfilRoute: typeof PortalPerfilRoute
   PortalPlanRoute: typeof PortalPlanRoute
   PortalRecursosClinicosRoute: typeof PortalRecursosClinicosRoute
@@ -297,13 +284,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/registro': {
-      id: '/registro'
-      path: '/registro'
-      fullPath: '/registro'
-      preLoaderRoute: typeof RegistroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/recursos': {
       id: '/recursos'
       path: '/recursos'
@@ -480,7 +460,6 @@ const rootRouteChildren: RootRouteChildren = {
   PacientesRoute: PacientesRoute,
   RecuperarPasswordRoute: RecuperarPasswordRoute,
   RecursosRoute: RecursosRoute,
-  RegistroRoute: RegistroRoute,
   PortalPerfilRoute: PortalPerfilRoute,
   PortalPlanRoute: PortalPlanRoute,
   PortalRecursosClinicosRoute: PortalRecursosClinicosRoute,
