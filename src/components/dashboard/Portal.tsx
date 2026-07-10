@@ -220,7 +220,46 @@ export function PortalDashboard() {
       )}
 
       <h2 className={styles.sectionTitle}>Tus tareas pendientes</h2>
+
+      <div className={styles.formBanner}>
+        <span className={styles.formBannerIcon}>
+          <FileText size={24} strokeWidth={1.9} />
+        </span>
+        <div className={styles.formBannerBody}>
+          <div className={styles.formBannerTitle}>
+            Tienes un nuevo formulario de seguimiento pendiente de rellenar
+          </div>
+          <p className={styles.formBannerText}>
+            «Seguimiento Julio» · enviado por Sara Santos
+          </p>
+        </div>
+        <button
+          type="button"
+          className={styles.formBannerButton}
+          onClick={() => navigate({ to: "/portal/formulario" })}
+        >
+          Comenzar <ArrowRight size={16} />
+        </button>
+      </div>
+
       <div className={styles.card}>
+        <div
+          className={styles.taskItem}
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate({ to: "/portal/formulario" })}
+        >
+          <FileText size={18} color="#d47f65" />
+          <div className={styles.taskBody}>
+            <div className={styles.taskDesc}>
+              Formulario «Seguimiento Julio»
+            </div>
+            <div className={styles.taskMeta}>Pendiente de rellenar</div>
+          </div>
+          <span className={styles.pendingBadge}>
+            <Circle size={13} /> Pendiente
+          </span>
+        </div>
+
         {pendingTasks.length === 0 ? (
           <p className={styles.empty}>¡Estás al día! No tienes tareas pendientes.</p>
         ) : (
