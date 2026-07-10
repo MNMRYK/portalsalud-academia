@@ -1154,8 +1154,39 @@ export function Pacientes() {
                       </div>
                     </div>
                   ))}
+
+                  <div className={styles.folder}>
+                    <div className={styles.folderTitle}>
+                      <ClipboardCheck size={18} className={styles.folderIcon} />
+                      <span className={styles.folderName}>
+                        Formularios recibidos
+                      </span>
+                    </div>
+                    <div className={styles.docList}>
+                      <div className={styles.docItem}>
+                        <span className={styles.docIcon}>
+                          <FileText size={20} />
+                        </span>
+                        <div className={styles.docInfo}>
+                          <div className={styles.docName}>
+                            Formulario Seguimiento Julio — Completado
+                          </div>
+                          <div className={styles.docMeta}>
+                            Enviado por el paciente · 10 Jul 2026 · 4 respuestas
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.secondaryButton}
+                        >
+                          <Eye size={16} /> Ver respuestas
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
+
             </section>
           )}
         </div>
