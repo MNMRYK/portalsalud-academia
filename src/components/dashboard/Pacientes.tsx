@@ -1619,6 +1619,26 @@ export function Pacientes() {
             <div className={styles.modalBody}>
               <div className={styles.formGrid}>
                 <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="metric-category">
+                    Categoría de la métrica
+                  </label>
+                  <select
+                    id="metric-category"
+                    className={styles.textInputPlain}
+                    value={metricCategory}
+                    onChange={(e) =>
+                      setMetricCategory(e.target.value as MetricCategory)
+                    }
+                  >
+                    {METRIC_CATEGORIES.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="metric-date">
                     Fecha
                   </label>
@@ -1626,46 +1646,37 @@ export function Pacientes() {
                     id="metric-date"
                     type="date"
                     className={styles.textInputPlain}
+                    value={metricDate}
+                    onChange={(e) => setMetricDate(e.target.value)}
                   />
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="metric-phase">
-                    Fase del tratamiento
-                  </label>
-                  <CategoryDropdown
-                    categories={phases}
-                    value={metricPhase}
-                    onChange={setMetricPhase}
-                    onAddCategory={addPhase}
-                    onRemoveCategory={removePhase}
-                  />
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="metric-weight">
-                    Peso actual (kg)
+                  <label className={styles.fieldLabel} htmlFor="metric-name">
+                    Nombre de la métrica
                   </label>
                   <input
-                    id="metric-weight"
-                    type="number"
-                    step="0.1"
+                    id="metric-name"
+                    type="text"
                     className={styles.textInputPlain}
-                    placeholder="Ej: 71.5"
+                    placeholder="Ej: Heces, Nivel de energía, Masa muscular"
+                    value={metricName}
+                    onChange={(e) => setMetricName(e.target.value)}
                   />
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="metric-adherence">
-                    Adherencia al plan (%)
+                  <label className={styles.fieldLabel} htmlFor="metric-value">
+                    Valor / Puntuación
                   </label>
                   <input
-                    id="metric-adherence"
+                    id="metric-value"
                     type="number"
-                    min="0"
-                    max="100"
+                    step="any"
                     className={styles.textInputPlain}
-                    placeholder="Ej: 86"
+                    placeholder="Ej: 4"
+                    value={metricValue}
+                    onChange={(e) => setMetricValue(e.target.value)}
                   />
                 </div>
               </div>
@@ -1679,7 +1690,11 @@ export function Pacientes() {
               >
                 Cancelar
               </button>
-              <button type="button" className={styles.primaryButton}>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitMetric}
+              >
                 Guardar registro
               </button>
             </footer>
