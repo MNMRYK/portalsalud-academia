@@ -374,7 +374,47 @@ export function Pacientes() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMetricOpen, setIsMetricOpen] = useState(false);
-  const [metricPhase, setMetricPhase] = useState(treatmentPhases[1]);
+
+  // Métricas de evolución (time-series por categoría)
+  const [metrics, setMetrics] = useState<MetricRecord[]>(initialMetrics);
+  const [metricCategory, setMetricCategory] = useState<MetricCategory>(
+    METRIC_CATEGORIES[0],
+  );
+  const [metricName, setMetricName] = useState("");
+  const [metricValue, setMetricValue] = useState("");
+  const [metricDate, setMetricDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
+
+  const resetMetricForm = () => {
+    setMetricCategory(METRIC_CATEGORIES[0]);
+    setMetricName("");
+    setMetricValue("");
+    setMetricDate(new Date().toISOString().slice(0, 10));
+  };
+
+  const submitMetric = () => {
+    const name = metricName.trim();
+    const value = Number(metricValue);
+    if (!name || metricValue === "" || Number.isNaN(value)) return;
+    setMetrics((prev) => [
+      ...prev,
+      {
+        id: `m-${Date.now()}`,
+        category: metricCategory,
+        metricName: name,
+        value,
+        date: metricDate,
+      },
+    ]);
+    resetMetricForm();
+    setIsMetricOpen(false);
+  };
+
+  // Categorías que tienen al menos un registro, en orden canónico.
+  const metricCategoriesWithData = METRIC_CATEGORIES.filter((c) =>
+    metrics.some((m) => m.category === c),
+  );
   const [isEntryOpen, setIsEntryOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isFolderOpen, setIsFolderOpen] = useState(false);
