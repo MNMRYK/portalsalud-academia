@@ -943,20 +943,23 @@ export function Pacientes() {
                     />
                   </div>
 
-                  <div className={styles.chart}>
-                    <div className={styles.chartHead}>
-                      <span className={styles.chartMetric}>Evolución de peso</span>
-                      <span className={styles.chartDelta}>-7 kg en 5 meses</span>
-                    </div>
-                    <div className={styles.bars}>
-                      {weightData.map((d) => (
-                        <div key={d.label} className={styles.barCol}>
-                          <span className={styles.barValue}>{d.value}</span>
-                          <div className={styles.bar} style={{ height: `${d.height}%` }} />
-                          <span className={styles.barLabel}>{d.label}</span>
-                        </div>
-                      ))}
-                    </div>
+                  <div className={styles.metricCharts}>
+                    {metricCategoriesWithData.length === 0 ? (
+                      <p className={styles.taskEmpty}>
+                        Aún no hay métricas registradas. Usa «Añadir Métrica»
+                        para empezar el seguimiento.
+                      </p>
+                    ) : (
+                      metricCategoriesWithData.map((category) => (
+                        <MetricCategoryChart
+                          key={category}
+                          category={category}
+                          records={metrics.filter(
+                            (m) => m.category === category,
+                          )}
+                        />
+                      ))
+                    )}
                   </div>
                 </div>
               )}
