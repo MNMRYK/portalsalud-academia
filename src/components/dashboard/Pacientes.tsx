@@ -62,6 +62,16 @@ import {
   useSymptomDiary,
   intensityLabel,
 } from "@/context/SymptomDiaryContext";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
@@ -127,13 +137,139 @@ const treatmentPhases = [
   "Fase 4: Mantenimiento y hábitos",
 ];
 
-const weightData = [
-  { label: "Mar", value: 78, height: 92 },
-  { label: "Abr", value: 76, height: 80 },
-  { label: "May", value: 74, height: 66 },
-  { label: "Jun", value: 72.5, height: 54 },
-  { label: "Jul", value: 71, height: 44 },
+// ── Métricas de evolución (time-series por categoría) ──────────────────────
+const METRIC_CATEGORIES = [
+  "Salud Digestiva",
+  "Energía y Descanso",
+  "Composición Corporal",
+  "Dolor",
+] as const;
+
+type MetricCategory = (typeof METRIC_CATEGORIES)[number];
+
+interface MetricRecord {
+  id: string;
+  category: MetricCategory;
+  /** Nombre de la métrica concreta. Ej: "Heces", "Nivel de energía". */
+  metricName: string;
+  /** Valor / puntuación numérica. */
+  value: number;
+  /** Fecha en formato ISO "yyyy-mm-dd". */
+  date: string;
+}
+
+// Paleta de colores para las líneas dentro de una misma gráfica.
+const LINE_COLORS = ["#7c9070", "#a76d8e", "#c9825b", "#6b8fb0", "#b0985c"];
+
+const initialMetrics: MetricRecord[] = [
+  // Salud Digestiva
+  { id: "m1", category: "Salud Digestiva", metricName: "Calidad heces", value: 2, date: "2026-03-15" },
+  { id: "m2", category: "Salud Digestiva", metricName: "Calidad heces", value: 3, date: "2026-04-15" },
+  { id: "m3", category: "Salud Digestiva", metricName: "Calidad heces", value: 4, date: "2026-05-15" },
+  { id: "m4", category: "Salud Digestiva", metricName: "Calidad heces", value: 4, date: "2026-06-15" },
+  { id: "m5", category: "Salud Digestiva", metricName: "Hinchazón", value: 4, date: "2026-03-15" },
+  { id: "m6", category: "Salud Digestiva", metricName: "Hinchazón", value: 3, date: "2026-04-15" },
+  { id: "m7", category: "Salud Digestiva", metricName: "Hinchazón", value: 2, date: "2026-05-15" },
+  { id: "m8", category: "Salud Digestiva", metricName: "Hinchazón", value: 1, date: "2026-06-15" },
+  // Energía y Descanso
+  { id: "m9", category: "Energía y Descanso", metricName: "Nivel de energía", value: 2, date: "2026-03-15" },
+  { id: "m10", category: "Energía y Descanso", metricName: "Nivel de energía", value: 3, date: "2026-04-15" },
+  { id: "m11", category: "Energía y Descanso", metricName: "Nivel de energía", value: 4, date: "2026-05-15" },
+  { id: "m12", category: "Energía y Descanso", metricName: "Nivel de energía", value: 5, date: "2026-06-15" },
+  { id: "m13", category: "Energía y Descanso", metricName: "Calidad del sueño", value: 3, date: "2026-03-15" },
+  { id: "m14", category: "Energía y Descanso", metricName: "Calidad del sueño", value: 3, date: "2026-04-15" },
+  { id: "m15", category: "Energía y Descanso", metricName: "Calidad del sueño", value: 4, date: "2026-05-15" },
+  { id: "m16", category: "Energía y Descanso", metricName: "Calidad del sueño", value: 5, date: "2026-06-15" },
 ];
+
+const formatShortDate = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short",
+  });
+};
+
+/**
+ * Construye la serie temporal para una categoría: agrupa por fecha y expone
+ * cada métrica como una clave del punto, de modo que Recharts pinte una línea
+ * por métrica.
+ */
+function buildCategorySeries(records: MetricRecord[]) {
+  const metricNames = Array.from(new Set(records.map((r) => r.metricName)));
+  const dates = Array.from(new Set(records.map((r) => r.date))).sort();
+  const data = dates.map((date) => {
+    const point: Record<string, string | number> = {
+      date: formatShortDate(date),
+    };
+    metricNames.forEach((name) => {
+      const rec = records.find((r) => r.date === date && r.metricName === name);
+      if (rec) point[name] = rec.value;
+    });
+    return point;
+  });
+  return { metricNames, data };
+}
+
+function MetricCategoryChart({
+  category,
+  records,
+}: {
+  category: string;
+  records: MetricRecord[];
+}) {
+  const { metricNames, data } = buildCategorySeries(records);
+  return (
+    <div className={styles.metricChartCard}>
+      <h4 className={styles.metricChartTitle}>{category}</h4>
+      <div className={styles.metricChartBody}>
+        <ResponsiveContainer width="100%" height={260}>
+          <LineChart data={data} margin={{ top: 8, right: 16, bottom: 4, left: -12 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#ece7df" vertical={false} />
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 12, fill: "#8a8178" }}
+              axisLine={{ stroke: "#e0dace" }}
+              tickLine={false}
+            />
+            <YAxis
+              tick={{ fontSize: 12, fill: "#8a8178" }}
+              axisLine={false}
+              tickLine={false}
+              allowDecimals={false}
+            />
+            <Tooltip
+              contentStyle={{
+                borderRadius: 12,
+                border: "1px solid #ece7df",
+                fontSize: 13,
+                fontFamily: "inherit",
+              }}
+            />
+            <Legend
+              verticalAlign="top"
+              align="left"
+              iconType="circle"
+              wrapperStyle={{ fontSize: 13, paddingBottom: 12 }}
+            />
+            {metricNames.map((name, i) => (
+              <Line
+                key={name}
+                type="monotone"
+                dataKey={name}
+                stroke={LINE_COLORS[i % LINE_COLORS.length]}
+                strokeWidth={2.5}
+                dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+                activeDot={{ r: 6 }}
+                connectNulls
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
 
 interface DiaryEntry {
   id: string;
@@ -238,7 +374,47 @@ export function Pacientes() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMetricOpen, setIsMetricOpen] = useState(false);
-  const [metricPhase, setMetricPhase] = useState(treatmentPhases[1]);
+
+  // Métricas de evolución (time-series por categoría)
+  const [metrics, setMetrics] = useState<MetricRecord[]>(initialMetrics);
+  const [metricCategory, setMetricCategory] = useState<MetricCategory>(
+    METRIC_CATEGORIES[0],
+  );
+  const [metricName, setMetricName] = useState("");
+  const [metricValue, setMetricValue] = useState("");
+  const [metricDate, setMetricDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
+
+  const resetMetricForm = () => {
+    setMetricCategory(METRIC_CATEGORIES[0]);
+    setMetricName("");
+    setMetricValue("");
+    setMetricDate(new Date().toISOString().slice(0, 10));
+  };
+
+  const submitMetric = () => {
+    const name = metricName.trim();
+    const value = Number(metricValue);
+    if (!name || metricValue === "" || Number.isNaN(value)) return;
+    setMetrics((prev) => [
+      ...prev,
+      {
+        id: `m-${Date.now()}`,
+        category: metricCategory,
+        metricName: name,
+        value,
+        date: metricDate,
+      },
+    ]);
+    resetMetricForm();
+    setIsMetricOpen(false);
+  };
+
+  // Categorías que tienen al menos un registro, en orden canónico.
+  const metricCategoriesWithData = METRIC_CATEGORIES.filter((c) =>
+    metrics.some((m) => m.category === c),
+  );
   const [isEntryOpen, setIsEntryOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isFolderOpen, setIsFolderOpen] = useState(false);
@@ -767,20 +943,23 @@ export function Pacientes() {
                     />
                   </div>
 
-                  <div className={styles.chart}>
-                    <div className={styles.chartHead}>
-                      <span className={styles.chartMetric}>Evolución de peso</span>
-                      <span className={styles.chartDelta}>-7 kg en 5 meses</span>
-                    </div>
-                    <div className={styles.bars}>
-                      {weightData.map((d) => (
-                        <div key={d.label} className={styles.barCol}>
-                          <span className={styles.barValue}>{d.value}</span>
-                          <div className={styles.bar} style={{ height: `${d.height}%` }} />
-                          <span className={styles.barLabel}>{d.label}</span>
-                        </div>
-                      ))}
-                    </div>
+                  <div className={styles.metricCharts}>
+                    {metricCategoriesWithData.length === 0 ? (
+                      <p className={styles.taskEmpty}>
+                        Aún no hay métricas registradas. Usa «Añadir Métrica»
+                        para empezar el seguimiento.
+                      </p>
+                    ) : (
+                      metricCategoriesWithData.map((category) => (
+                        <MetricCategoryChart
+                          key={category}
+                          category={category}
+                          records={metrics.filter(
+                            (m) => m.category === category,
+                          )}
+                        />
+                      ))
+                    )}
                   </div>
                 </div>
               )}
@@ -1440,6 +1619,26 @@ export function Pacientes() {
             <div className={styles.modalBody}>
               <div className={styles.formGrid}>
                 <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel} htmlFor="metric-category">
+                    Categoría de la métrica
+                  </label>
+                  <select
+                    id="metric-category"
+                    className={styles.textInputPlain}
+                    value={metricCategory}
+                    onChange={(e) =>
+                      setMetricCategory(e.target.value as MetricCategory)
+                    }
+                  >
+                    {METRIC_CATEGORIES.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="metric-date">
                     Fecha
                   </label>
@@ -1447,46 +1646,37 @@ export function Pacientes() {
                     id="metric-date"
                     type="date"
                     className={styles.textInputPlain}
+                    value={metricDate}
+                    onChange={(e) => setMetricDate(e.target.value)}
                   />
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="metric-phase">
-                    Fase del tratamiento
-                  </label>
-                  <CategoryDropdown
-                    categories={phases}
-                    value={metricPhase}
-                    onChange={setMetricPhase}
-                    onAddCategory={addPhase}
-                    onRemoveCategory={removePhase}
-                  />
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="metric-weight">
-                    Peso actual (kg)
+                  <label className={styles.fieldLabel} htmlFor="metric-name">
+                    Nombre de la métrica
                   </label>
                   <input
-                    id="metric-weight"
-                    type="number"
-                    step="0.1"
+                    id="metric-name"
+                    type="text"
                     className={styles.textInputPlain}
-                    placeholder="Ej: 71.5"
+                    placeholder="Ej: Heces, Nivel de energía, Masa muscular"
+                    value={metricName}
+                    onChange={(e) => setMetricName(e.target.value)}
                   />
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="metric-adherence">
-                    Adherencia al plan (%)
+                  <label className={styles.fieldLabel} htmlFor="metric-value">
+                    Valor / Puntuación
                   </label>
                   <input
-                    id="metric-adherence"
+                    id="metric-value"
                     type="number"
-                    min="0"
-                    max="100"
+                    step="any"
                     className={styles.textInputPlain}
-                    placeholder="Ej: 86"
+                    placeholder="Ej: 4"
+                    value={metricValue}
+                    onChange={(e) => setMetricValue(e.target.value)}
                   />
                 </div>
               </div>
@@ -1500,7 +1690,11 @@ export function Pacientes() {
               >
                 Cancelar
               </button>
-              <button type="button" className={styles.primaryButton}>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={submitMetric}
+              >
                 Guardar registro
               </button>
             </footer>

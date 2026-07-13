@@ -612,6 +612,32 @@
   font-weight: 700;
 }
 
+/* Gráficas de evolución (time-series por categoría) */
+.metricCharts {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.metricChartCard {
+  border: 1px solid #f0eae0;
+  border-radius: 14px;
+  padding: 20px 20px 12px;
+  background-color: #faf7f2;
+}
+
+.metricChartTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #2f2933;
+  margin: 0 0 6px;
+}
+
+.metricChartBody {
+  width: 100%;
+}
+
 /* Diario clínico table */
 .table {
   width: 100%;
