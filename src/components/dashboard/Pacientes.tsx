@@ -127,13 +127,139 @@ const treatmentPhases = [
   "Fase 4: Mantenimiento y hábitos",
 ];
 
-const weightData = [
-  { label: "Mar", value: 78, height: 92 },
-  { label: "Abr", value: 76, height: 80 },
-  { label: "May", value: 74, height: 66 },
-  { label: "Jun", value: 72.5, height: 54 },
-  { label: "Jul", value: 71, height: 44 },
+// ── Métricas de evolución (time-series por categoría) ──────────────────────
+const METRIC_CATEGORIES = [
+  "Salud Digestiva",
+  "Energía y Descanso",
+  "Composición Corporal",
+  "Dolor",
+] as const;
+
+type MetricCategory = (typeof METRIC_CATEGORIES)[number];
+
+interface MetricRecord {
+  id: string;
+  category: MetricCategory;
+  /** Nombre de la métrica concreta. Ej: "Heces", "Nivel de energía". */
+  metricName: string;
+  /** Valor / puntuación numérica. */
+  value: number;
+  /** Fecha en formato ISO "yyyy-mm-dd". */
+  date: string;
+}
+
+// Paleta de colores para las líneas dentro de una misma gráfica.
+const LINE_COLORS = ["#7c9070", "#a76d8e", "#c9825b", "#6b8fb0", "#b0985c"];
+
+const initialMetrics: MetricRecord[] = [
+  // Salud Digestiva
+  { id: "m1", category: "Salud Digestiva", metricName: "Calidad heces", value: 2, date: "2026-03-15" },
+  { id: "m2", category: "Salud Digestiva", metricName: "Calidad heces", value: 3, date: "2026-04-15" },
+  { id: "m3", category: "Salud Digestiva", metricName: "Calidad heces", value: 4, date: "2026-05-15" },
+  { id: "m4", category: "Salud Digestiva", metricName: "Calidad heces", value: 4, date: "2026-06-15" },
+  { id: "m5", category: "Salud Digestiva", metricName: "Hinchazón", value: 4, date: "2026-03-15" },
+  { id: "m6", category: "Salud Digestiva", metricName: "Hinchazón", value: 3, date: "2026-04-15" },
+  { id: "m7", category: "Salud Digestiva", metricName: "Hinchazón", value: 2, date: "2026-05-15" },
+  { id: "m8", category: "Salud Digestiva", metricName: "Hinchazón", value: 1, date: "2026-06-15" },
+  // Energía y Descanso
+  { id: "m9", category: "Energía y Descanso", metricName: "Nivel de energía", value: 2, date: "2026-03-15" },
+  { id: "m10", category: "Energía y Descanso", metricName: "Nivel de energía", value: 3, date: "2026-04-15" },
+  { id: "m11", category: "Energía y Descanso", metricName: "Nivel de energía", value: 4, date: "2026-05-15" },
+  { id: "m12", category: "Energía y Descanso", metricName: "Nivel de energía", value: 5, date: "2026-06-15" },
+  { id: "m13", category: "Energía y Descanso", metricName: "Calidad del sueño", value: 3, date: "2026-03-15" },
+  { id: "m14", category: "Energía y Descanso", metricName: "Calidad del sueño", value: 3, date: "2026-04-15" },
+  { id: "m15", category: "Energía y Descanso", metricName: "Calidad del sueño", value: 4, date: "2026-05-15" },
+  { id: "m16", category: "Energía y Descanso", metricName: "Calidad del sueño", value: 5, date: "2026-06-15" },
 ];
+
+const formatShortDate = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short",
+  });
+};
+
+/**
+ * Construye la serie temporal para una categoría: agrupa por fecha y expone
+ * cada métrica como una clave del punto, de modo que Recharts pinte una línea
+ * por métrica.
+ */
+function buildCategorySeries(records: MetricRecord[]) {
+  const metricNames = Array.from(new Set(records.map((r) => r.metricName)));
+  const dates = Array.from(new Set(records.map((r) => r.date))).sort();
+  const data = dates.map((date) => {
+    const point: Record<string, string | number> = {
+      date: formatShortDate(date),
+    };
+    metricNames.forEach((name) => {
+      const rec = records.find((r) => r.date === date && r.metricName === name);
+      if (rec) point[name] = rec.value;
+    });
+    return point;
+  });
+  return { metricNames, data };
+}
+
+function MetricCategoryChart({
+  category,
+  records,
+}: {
+  category: string;
+  records: MetricRecord[];
+}) {
+  const { metricNames, data } = buildCategorySeries(records);
+  return (
+    <div className={styles.metricChartCard}>
+      <h4 className={styles.metricChartTitle}>{category}</h4>
+      <div className={styles.metricChartBody}>
+        <ResponsiveContainer width="100%" height={260}>
+          <LineChart data={data} margin={{ top: 8, right: 16, bottom: 4, left: -12 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#ece7df" vertical={false} />
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 12, fill: "#8a8178" }}
+              axisLine={{ stroke: "#e0dace" }}
+              tickLine={false}
+            />
+            <YAxis
+              tick={{ fontSize: 12, fill: "#8a8178" }}
+              axisLine={false}
+              tickLine={false}
+              allowDecimals={false}
+            />
+            <Tooltip
+              contentStyle={{
+                borderRadius: 12,
+                border: "1px solid #ece7df",
+                fontSize: 13,
+                fontFamily: "inherit",
+              }}
+            />
+            <Legend
+              verticalAlign="top"
+              align="left"
+              iconType="circle"
+              wrapperStyle={{ fontSize: 13, paddingBottom: 12 }}
+            />
+            {metricNames.map((name, i) => (
+              <Line
+                key={name}
+                type="monotone"
+                dataKey={name}
+                stroke={LINE_COLORS[i % LINE_COLORS.length]}
+                strokeWidth={2.5}
+                dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+                activeDot={{ r: 6 }}
+                connectNulls
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
 
 interface DiaryEntry {
   id: string;
