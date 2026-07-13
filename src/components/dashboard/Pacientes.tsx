@@ -62,6 +62,16 @@ import {
   useSymptomDiary,
   intensityLabel,
 } from "@/context/SymptomDiaryContext";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import styles from "./Pacientes.module.css";
 
 type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
