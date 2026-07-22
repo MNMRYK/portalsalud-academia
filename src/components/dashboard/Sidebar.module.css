@@ -8,7 +8,7 @@
   flex-direction: column;
   background-color: #ffffff;
   border-right: 1px solid #ece4d8;
-  padding: 14px 18px 28px;
+  padding: 8px 18px 28px;
   font-family: "Nunito", system-ui, sans-serif;
 }
 
@@ -57,8 +57,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0 0 16px 12px;
-  margin-bottom: 6px;
+  padding: 0 0 8px 12px;
+  margin-bottom: 2px;
   border-bottom: 1px solid #f0eae0;
 }
 
