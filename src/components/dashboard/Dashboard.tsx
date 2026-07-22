@@ -103,7 +103,7 @@ export function Dashboard() {
       <main className={styles.main}>
         <header className={styles.header}>
           <div className={styles.greeting}>
-            <h1 className={styles.greetingHi}>Hola, Sara</h1>
+            <h1 className={styles.greetingHi}>Hola, Laura</h1>
             <p className={styles.greetingSub}>
               Este es el resumen de tu clínica de salud integrativa hoy.
             </p>
