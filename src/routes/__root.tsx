@@ -121,7 +121,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap",
       },
-      { rel: "icon", href: "/__l5e/assets-v1/83dad139-6507-41a9-b71c-e4a695ba15fa/logo.png", type: "image/png" },
+      { rel: "icon", href: "/__l5e/assets-v1/ad32b607-0bd1-4ae1-9def-a66d856a891f/logo-generic.png", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
