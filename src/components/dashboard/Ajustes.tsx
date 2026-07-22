@@ -69,7 +69,7 @@ const invoicesByPatient: Record<string, { date: string; concept: string; amount:
 };
 
 const team = [
-  { name: "Sara Ruiz", email: "sara@nutralia.es", role: "Admin", initials: "SR", av: styles.avPlum, state: "Activo", pending: false },
+  { name: "Laura García", email: "laura@nutralia.es", role: "Admin", initials: "LG", av: styles.avPlum, state: "Activo", pending: false },
   { name: "Elena Martín", email: "elena@nutralia.es", role: "Nutricionista", initials: "EM", av: styles.avSage, state: "Activo", pending: false },
   { name: "Carlos Vidal", email: "carlos@nutralia.es", role: "Administrativo", initials: "CV", av: styles.avTerracota, state: "Activo", pending: false },
   { name: "Nuria Sanz", email: "nuria@nutralia.es", role: "Nutricionista", initials: "NS", av: styles.avPlum, state: "Invitación enviada", pending: true },
@@ -77,10 +77,10 @@ const team = [
 
 const logs = [
   { user: "Elena Martín", initials: "EM", av: styles.avSage, action: "Subió un documento", doc: "Dieta_LauraG.pdf", time: "07 jul 2026 · 10:24" },
-  { user: "Sara Ruiz", initials: "SR", av: styles.avPlum, action: "Editó ficha clínica", doc: "Marc Puig", time: "07 jul 2026 · 09:58" },
+  { user: "Laura García", initials: "LG", av: styles.avPlum, action: "Editó ficha clínica", doc: "Marc Puig", time: "07 jul 2026 · 09:58" },
   { user: "Carlos Vidal", initials: "CV", av: styles.avTerracota, action: "Invitó a un miembro", doc: "nuria@nutralia.es", time: "06 jul 2026 · 17:41" },
   { user: "Elena Martín", initials: "EM", av: styles.avSage, action: "Eliminó un recurso", doc: "Menú_v1.pdf", time: "06 jul 2026 · 12:03" },
-  { user: "Sara Ruiz", initials: "SR", av: styles.avPlum, action: "Actualizó plantilla legal", doc: "RGPD.pdf", time: "05 jul 2026 · 08:30" },
+  { user: "Laura García", initials: "LG", av: styles.avPlum, action: "Actualizó plantilla legal", doc: "RGPD.pdf", time: "05 jul 2026 · 08:30" },
   { user: "Elena Martín", initials: "EM", av: styles.avSage, action: "Generó documento legal", doc: "Consentimiento_MarcP.pdf", time: "05 jul 2026 · 11:12" },
   { user: "Carlos Vidal", initials: "CV", av: styles.avTerracota, action: "Registró un pago", doc: "David Roca · 120 €", time: "02 jul 2026 · 16:20" },
 ];

@@ -190,10 +190,10 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
 
         <div className={styles.footer}>
           <div className={styles.profile}>
-            <div className={styles.avatar}>{isAdmin ? "SR" : "EM"}</div>
+            <div className={styles.avatar}>{isAdmin ? "LG" : "EM"}</div>
             <div className={styles.profileText}>
               <span className={styles.profileName}>
-                {isAdmin ? "Sara Ruiz" : "Elena Martín"}
+                {isAdmin ? "Laura García" : "Elena Martín"}
               </span>
               <span className={styles.profileRole}>
                 {isAdmin ? "Administradora" : "Paciente"}

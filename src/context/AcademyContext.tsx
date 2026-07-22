@@ -443,7 +443,7 @@ const liveClasses: LiveClass[] = [
   {
     id: "lv1",
     title: "Taller en directo: Menús antiinflamatorios de verano",
-    host: "Sara Ruiz",
+    host: "Laura García",
     date: "2026-07-15",
     time: "18:00",
     status: "upcoming",
@@ -451,7 +451,7 @@ const liveClasses: LiveClass[] = [
   {
     id: "lv2",
     title: "Q&A: Salud hormonal y alimentación",
-    host: "Sara Ruiz",
+    host: "Laura García",
     date: "2026-07-22",
     time: "19:30",
     status: "upcoming",
@@ -459,7 +459,7 @@ const liveClasses: LiveClass[] = [
   {
     id: "lv3",
     title: "Masterclass: Microbiota para principiantes",
-    host: "Sara Ruiz",
+    host: "Laura García",
     date: "2026-06-28",
     time: "18:00",
     status: "recorded",
