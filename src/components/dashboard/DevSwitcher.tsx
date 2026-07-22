@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlaskConical, Eye, EyeOff } from "lucide-react";
+import { FlaskConical, EyeOff } from "lucide-react";
 import { useUser, DEV_PROFILES, type DevProfile } from "../../context/UserContext";
 import styles from "./DevSwitcher.module.css";
 
