@@ -14,6 +14,7 @@ import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-passwo
 import { Route as PacientesRouteImport } from './routes/pacientes'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FormulariosRouteImport } from './routes/formularios'
+import { Route as CalendarioRouteImport } from './routes/calendario'
 import { Route as AjustesRouteImport } from './routes/ajustes'
 import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
 import { Route as AcademiaRouteImport } from './routes/academia'
@@ -57,6 +58,11 @@ const LoginRoute = LoginRouteImport.update({
 const FormulariosRoute = FormulariosRouteImport.update({
   id: '/formularios',
   path: '/formularios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarioRoute = CalendarioRouteImport.update({
+  id: '/calendario',
+  path: '/calendario',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AjustesRoute = AjustesRouteImport.update({
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/academia': typeof AcademiaRouteWithChildren
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
+  '/calendario': typeof CalendarioRoute
   '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
+  '/calendario': typeof CalendarioRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/academia': typeof AcademiaRouteWithChildren
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
+  '/calendario': typeof CalendarioRoute
   '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/academia'
     | '/activar-cuenta'
     | '/ajustes'
+    | '/calendario'
     | '/formularios'
     | '/login'
     | '/pacientes'
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/'
     | '/activar-cuenta'
     | '/ajustes'
+    | '/calendario'
     | '/login'
     | '/pacientes'
     | '/recuperar-password'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/academia'
     | '/activar-cuenta'
     | '/ajustes'
+    | '/calendario'
     | '/formularios'
     | '/login'
     | '/pacientes'
@@ -317,6 +329,7 @@ export interface RootRouteChildren {
   AcademiaRoute: typeof AcademiaRouteWithChildren
   ActivarCuentaRoute: typeof ActivarCuentaRoute
   AjustesRoute: typeof AjustesRoute
+  CalendarioRoute: typeof CalendarioRoute
   FormulariosRoute: typeof FormulariosRouteWithChildren
   LoginRoute: typeof LoginRoute
   PacientesRoute: typeof PacientesRoute
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       path: '/formularios'
       fullPath: '/formularios'
       preLoaderRoute: typeof FormulariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendario': {
+      id: '/calendario'
+      path: '/calendario'
+      fullPath: '/calendario'
+      preLoaderRoute: typeof CalendarioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ajustes': {
@@ -546,6 +566,7 @@ const rootRouteChildren: RootRouteChildren = {
   AcademiaRoute: AcademiaRouteWithChildren,
   ActivarCuentaRoute: ActivarCuentaRoute,
   AjustesRoute: AjustesRoute,
+  CalendarioRoute: CalendarioRoute,
   FormulariosRoute: FormulariosRouteWithChildren,
   LoginRoute: LoginRoute,
   PacientesRoute: PacientesRoute,
