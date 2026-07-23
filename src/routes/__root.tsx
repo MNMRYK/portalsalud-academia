@@ -89,14 +89,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sara Santos · Salud Integrativa" },
+      { title: "Portal Salud Integrativa · MN Design Web" },
       {
         name: "description",
         content:
           "Panel de administración para una clínica de nutrición y salud integrativa: academia, pacientes, recursos y ajustes en un solo lugar.",
       },
-      { name: "author", content: "Sara Santos" },
-      { property: "og:title", content: "Sara Santos · Salud Integrativa" },
+      { name: "author", content: "MN Design Web" },
+      { property: "og:title", content: "Portal Salud Integrativa · MN Design Web" },
       {
         property: "og:description",
         content:
@@ -105,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Sara Santos · Salud Integrativa" },
+      { name: "twitter:title", content: "Portal Salud Integrativa · MN Design Web" },
       { name: "twitter:description", content: "Panel de administración para una clínica de nutrición y salud integrativa: academia, pacientes, recursos y ajustes en un solo lugar." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/MYYC0khbQihqkFS2OwbBI1XlDij2/social-images/social-1783505705194-Diseño_sin_título.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/MYYC0khbQihqkFS2OwbBI1XlDij2/social-images/social-1783505705194-Diseño_sin_título.webp" },
