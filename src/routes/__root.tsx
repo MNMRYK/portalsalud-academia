@@ -106,9 +106,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Portal Salud Integrativa · MN Design Web" },
-      { name: "twitter:description", content: "Panel de administración para una clínica de nutrición y salud integrativa: academia, pacientes, recursos y ajustes en un solo lugar." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/MYYC0khbQihqkFS2OwbBI1XlDij2/social-images/social-1783505705194-Diseño_sin_título.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/MYYC0khbQihqkFS2OwbBI1XlDij2/social-images/social-1783505705194-Diseño_sin_título.webp" },
+      {
+        name: "twitter:description",
+        content:
+          "Panel de administración para una clínica de nutrición y salud integrativa: academia, pacientes, recursos y ajustes en un solo lugar.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/MYYC0khbQihqkFS2OwbBI1XlDij2/social-images/social-1783505705194-Diseño_sin_título.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/MYYC0khbQihqkFS2OwbBI1XlDij2/social-images/social-1783505705194-Diseño_sin_título.webp",
+      },
     ],
     links: [
       {
@@ -121,7 +133,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap",
       },
-      { rel: "icon", href: "/__l5e/assets-v1/ad32b607-0bd1-4ae1-9def-a66d856a891f/logo-generic.png", type: "image/png" },
+      {
+        rel: "icon",
+        href: "/__l5e/assets-v1/ad32b607-0bd1-4ae1-9def-a66d856a891f/logo-generic.png",
+        type: "image/png",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -146,29 +162,69 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [haCaducado, setHaCaducado] = useState(false);
 
+  useEffect(() => {
+    // Definimos el límite: 24 horas en milisegundos
+    const TIEMPO_LIMITE = 24 * 60 * 60 * 1000;
+
+    // Buscamos si este navegador ya tiene un registro de cuándo empezó la demo
+    const inicioDemo = localStorage.getItem("demoStartTime_clinica");
+
+    if (!inicioDemo) {
+      // Si no existe, es la primera vez que entra.
+      // Guardamos el momento exacto actual.
+      localStorage.setItem("demoStartTime_clinica", Date.now().toString());
+    } else {
+      // Si ya existe, calculamos cuánto tiempo ha pasado
+      const ahora = Date.now();
+      const tiempoPasado = ahora - parseInt(inicioDemo, 10);
+
+      // Si el tiempo pasado es mayor a 24h, mostramos el bloqueo
+      if (tiempoPasado > TIEMPO_LIMITE) {
+        setHaCaducado(true);
+      }
+    }
+  }, []);
+
+  // Si ha caducado, mostramos el bloqueo
+  if (haCaducado) {
+    return (
+      <div className="demo-caducada">
+        <h1>⏳ El acceso a esta demo ha finalizado</h1>
+        <p>
+          Para proteger la exclusividad de nuestros diseños, los enlaces de prueba tienen una
+          duración de 24 horas.
+        </p>
+        <a href="https://mndesignweb.es/" className="btn-contacto">
+          Contactar para reactivar
+        </a>
+      </div>
+    );
+  }
+
+  // Si NO ha caducado, devolvemos tu aplicación normal
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <UserProvider>
-        <LegalTemplatesProvider>
-          <TasksProvider>
-            <ConsultationsProvider>
-              <ResourcesProvider>
-                <AcademyProvider>
-                  <AccessProvider>
-                    <SymptomDiaryProvider>
-                      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-                      <Outlet />
-                      <DevSwitcher />
-                      <Toaster position="top-right" richColors />
-                    </SymptomDiaryProvider>
-                  </AccessProvider>
-                </AcademyProvider>
-              </ResourcesProvider>
-            </ConsultationsProvider>
-          </TasksProvider>
-        </LegalTemplatesProvider>
+          <LegalTemplatesProvider>
+            <TasksProvider>
+              <ConsultationsProvider>
+                <ResourcesProvider>
+                  <AcademyProvider>
+                    <AccessProvider>
+                      <SymptomDiaryProvider>
+                        <Outlet />
+                        <DevSwitcher />
+                        <Toaster position="top-right" richColors />
+                      </SymptomDiaryProvider>
+                    </AccessProvider>
+                  </AcademyProvider>
+                </ResourcesProvider>
+              </ConsultationsProvider>
+            </TasksProvider>
+          </LegalTemplatesProvider>
         </UserProvider>
       </AuthProvider>
     </QueryClientProvider>
