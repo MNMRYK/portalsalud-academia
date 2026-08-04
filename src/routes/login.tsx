@@ -4,7 +4,7 @@ import { LoginView } from "@/components/auth/LoginView";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Iniciar sesión · Sara Santos" },
+      { title: "Iniciar sesión · Lucía García" },
       {
         name: "description",
         content: "Accede a tu portal de salud integrativa.",

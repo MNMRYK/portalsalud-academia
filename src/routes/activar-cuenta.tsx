@@ -4,7 +4,7 @@ import { ActivateAccountView } from "@/components/auth/ActivateAccountView";
 export const Route = createFileRoute("/activar-cuenta")({
   head: () => ({
     meta: [
-      { title: "Activar cuenta · Sara Santos" },
+      { title: "Activar cuenta · Lucía García" },
       {
         name: "description",
         content: "Crea tu contraseña y activa tu acceso al portal de salud.",

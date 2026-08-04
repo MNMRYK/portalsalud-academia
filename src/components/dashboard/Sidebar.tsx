@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logoAsset from "../../assets/logo.png.asset.json";
+import logoAsset from "../../assets/logo.png";
 import {
   LayoutDashboard,
   GraduationCap,
@@ -75,7 +75,7 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
         <div className={styles.brand}>
           <img
             src={logoAsset.url}
-            alt="Sara Santos Salud Integrativa"
+            alt="Plataforma Salud Integrativa"
             className={styles.brandLogo}
           />
         </div>

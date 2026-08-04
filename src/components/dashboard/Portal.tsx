@@ -39,7 +39,7 @@ import styles from "./Portal.module.css";
 
 /** Datos de contacto de la especialista para reprogramar citas. */
 const SPECIALIST = {
-  name: "Sara Santos",
+  name: "Lucía García",
   phone: "+34 600 123 456",
   whatsapp: "https://wa.me/34600123456",
 };
@@ -230,7 +230,7 @@ export function PortalDashboard() {
             Tienes un nuevo formulario de seguimiento pendiente de rellenar
           </div>
           <p className={styles.formBannerText}>
-            «Seguimiento Julio» · enviado por Sara Santos
+            «Seguimiento Julio» · enviado por Lucía García
           </p>
         </div>
         <button
@@ -430,7 +430,7 @@ export function PortalPlan() {
                 Rellenar formulario «Seguimiento Julio»
               </div>
               <div className={styles.taskMeta}>
-                Enviado por Sara Santos · Prioridad Alta
+                Enviado por Lucía García · Prioridad Alta
               </div>
             </div>
             <span className={styles.pendingBadge}>

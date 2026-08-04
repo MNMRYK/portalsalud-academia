@@ -50,7 +50,7 @@ const STORAGE_KEY = "auth-mock-user";
  */
 const MOCK_USERS: (AuthUser & { password: string })[] = [
   {
-    name: "Sara Santos",
+    name: "Lucía García",
     email: "admin@salud.com",
     password: "123456",
     isAdmin: true,

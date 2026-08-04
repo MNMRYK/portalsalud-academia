@@ -4,7 +4,7 @@ import { RecoverPasswordView } from "@/components/auth/RecoverPasswordView";
 export const Route = createFileRoute("/recuperar-password")({
   head: () => ({
     meta: [
-      { title: "Recuperar contraseña · Sara Santos" },
+      { title: "Recuperar contraseña · Lucía García" },
       {
         name: "description",
         content: "Restablece la contraseña de tu portal de salud.",

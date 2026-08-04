@@ -172,7 +172,7 @@ function RootComponent() {
     setIsMounted(true); // Ya estamos en el navegador del cliente
 
     // Cambia esto a 10 * 1000 si quieres probarlo rápido (10 segundos)
-    const TIEMPO_LIMITE = 24 * 60 * 60 * 1000;
+    const TIEMPO_LIMITE = 10 * 1000;
     const inicioDemo = localStorage.getItem("demoStartTime_clinica");
 
     if (!inicioDemo) {
