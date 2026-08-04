@@ -69,23 +69,95 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
 
   return (
     <>
-      <aside
-        className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ""}`}
-      >
+      <aside className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ""}`}>
         <div className={styles.brand}>
-          <img
-            src={logoAsset.url}
-            alt="Plataforma Salud Integrativa"
-            className={styles.brandLogo}
-          />
+          <img src={logoAsset} alt="Plataforma Salud Integrativa" className={styles.brandLogo} />
         </div>
 
         <div className={styles.navScroll}>
-        {isAdmin ? (
-          <>
-            <span className={styles.navGroupLabel}>Espacio de trabajo</span>
+          {isAdmin ? (
+            <>
+              <span className={styles.navGroupLabel}>Espacio de trabajo</span>
+              <nav className={styles.nav}>
+                {adminNav.map(({ to, label, icon: Icon }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className={styles.navItem}
+                    activeProps={{
+                      className: `${styles.navItem} ${styles.navItemActive}`,
+                    }}
+                    activeOptions={{ exact: to === "/" }}
+                  >
+                    <Icon size={19} className={styles.navIcon} strokeWidth={2} />
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+            </>
+          ) : (
             <nav className={styles.nav}>
-              {adminNav.map(({ to, label, icon: Icon }) => (
+              {/* Bloque: Portal Clínico */}
+              <span className={styles.navGroupLabel}>Portal Clínico</span>
+              {hasClinicalAccess ? (
+                clinicalLinks.map(({ to, label, icon: Icon }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className={styles.navItem}
+                    activeProps={{
+                      className: `${styles.navItem} ${styles.navItemActive}`,
+                    }}
+                    activeOptions={{ exact: to === "/portal" }}
+                  >
+                    <Icon size={19} className={styles.navIcon} strokeWidth={2} />
+                    {label}
+                  </Link>
+                ))
+              ) : (
+                <button
+                  type="button"
+                  className={`${styles.navItem} ${styles.navItemLocked}`}
+                  onClick={() => setUpsell("clinical")}
+                >
+                  <Lock size={18} className={styles.navIcon} strokeWidth={2} />
+                  Portal de Salud
+                  <span className={styles.lockPill}>Bloqueado</span>
+                </button>
+              )}
+
+              {/* Bloque: Academia */}
+              <span className={styles.navGroupLabel}>Academia</span>
+              {hasAcademyAccess ? (
+                academyLinks.map(({ to, label, icon: Icon }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className={styles.navItem}
+                    activeProps={{
+                      className: `${styles.navItem} ${styles.navItemActive}`,
+                    }}
+                    activeOptions={{ exact: to === "/academia" }}
+                  >
+                    <Icon size={19} className={styles.navIcon} strokeWidth={2} />
+                    {label}
+                  </Link>
+                ))
+              ) : (
+                <button
+                  type="button"
+                  className={`${styles.navItem} ${styles.navItemLocked}`}
+                  onClick={() => setUpsell("academy")}
+                >
+                  <Lock size={18} className={styles.navIcon} strokeWidth={2} />
+                  Academia
+                  <span className={styles.lockPill}>Bloqueado</span>
+                </button>
+              )}
+
+              {/* Bloque: Ajustes */}
+              <span className={styles.navGroupLabel}>Ajustes</span>
+              {settingsLinks.map(({ to, label, icon: Icon }) => (
                 <Link
                   key={to}
                   to={to}
@@ -93,102 +165,18 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
                   activeProps={{
                     className: `${styles.navItem} ${styles.navItemActive}`,
                   }}
-                  activeOptions={{ exact: to === "/" }}
                 >
                   <Icon size={19} className={styles.navIcon} strokeWidth={2} />
                   {label}
                 </Link>
               ))}
+              <button type="button" className={styles.navItem} onClick={() => setSupportOpen(true)}>
+                <HelpCircle size={19} className={styles.navIcon} strokeWidth={2} />
+                Ayuda y Soporte
+              </button>
             </nav>
-          </>
-        ) : (
-          <nav className={styles.nav}>
-            {/* Bloque: Portal Clínico */}
-            <span className={styles.navGroupLabel}>Portal Clínico</span>
-            {hasClinicalAccess ? (
-              clinicalLinks.map(({ to, label, icon: Icon }) => (
-                <Link
-                  key={to}
-                  to={to}
-                  className={styles.navItem}
-                  activeProps={{
-                    className: `${styles.navItem} ${styles.navItemActive}`,
-                  }}
-                  activeOptions={{ exact: to === "/portal" }}
-                >
-                  <Icon size={19} className={styles.navIcon} strokeWidth={2} />
-                  {label}
-                </Link>
-              ))
-            ) : (
-              <button
-                type="button"
-                className={`${styles.navItem} ${styles.navItemLocked}`}
-                onClick={() => setUpsell("clinical")}
-              >
-                <Lock size={18} className={styles.navIcon} strokeWidth={2} />
-                Portal de Salud
-                <span className={styles.lockPill}>Bloqueado</span>
-              </button>
-            )}
-
-            {/* Bloque: Academia */}
-            <span className={styles.navGroupLabel}>Academia</span>
-            {hasAcademyAccess ? (
-              academyLinks.map(({ to, label, icon: Icon }) => (
-                <Link
-                  key={to}
-                  to={to}
-                  className={styles.navItem}
-                  activeProps={{
-                    className: `${styles.navItem} ${styles.navItemActive}`,
-                  }}
-                  activeOptions={{ exact: to === "/academia" }}
-                >
-                  <Icon size={19} className={styles.navIcon} strokeWidth={2} />
-                  {label}
-                </Link>
-              ))
-            ) : (
-              <button
-                type="button"
-                className={`${styles.navItem} ${styles.navItemLocked}`}
-                onClick={() => setUpsell("academy")}
-              >
-                <Lock size={18} className={styles.navIcon} strokeWidth={2} />
-                Academia
-                <span className={styles.lockPill}>Bloqueado</span>
-              </button>
-            )}
-
-            {/* Bloque: Ajustes */}
-            <span className={styles.navGroupLabel}>Ajustes</span>
-            {settingsLinks.map(({ to, label, icon: Icon }) => (
-              <Link
-                key={to}
-                to={to}
-                className={styles.navItem}
-                activeProps={{
-                  className: `${styles.navItem} ${styles.navItemActive}`,
-                }}
-              >
-                <Icon size={19} className={styles.navIcon} strokeWidth={2} />
-                {label}
-              </Link>
-            ))}
-            <button
-              type="button"
-              className={styles.navItem}
-              onClick={() => setSupportOpen(true)}
-            >
-              <HelpCircle size={19} className={styles.navIcon} strokeWidth={2} />
-              Ayuda y Soporte
-            </button>
-          </nav>
-        )}
+          )}
         </div>
-
-
 
         <div className={styles.footer}>
           <div className={styles.profile}>
@@ -197,9 +185,7 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
               <span className={styles.profileName}>
                 {isAdmin ? "Laura García" : "Elena Martín"}
               </span>
-              <span className={styles.profileRole}>
-                {isAdmin ? "Administradora" : "Paciente"}
-              </span>
+              <span className={styles.profileRole}>{isAdmin ? "Administradora" : "Paciente"}</span>
             </div>
             <button
               type="button"
