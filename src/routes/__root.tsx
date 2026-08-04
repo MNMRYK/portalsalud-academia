@@ -7,7 +7,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+// FÍJATE AQUÍ: He añadido useState
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import logoAsset from "../assets/logo.png.asset.json";
@@ -162,48 +163,29 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Añadimos isMounted para evitar que el servidor SSR explote
+  const [isMounted, setIsMounted] = useState(false);
   const [haCaducado, setHaCaducado] = useState(false);
 
   useEffect(() => {
-    // Definimos el límite: 24 horas en milisegundos
-    const TIEMPO_LIMITE = 24 * 60 * 60 * 1000;
+    setIsMounted(true); // Ya estamos en el navegador del cliente
 
-    // Buscamos si este navegador ya tiene un registro de cuándo empezó la demo
+    // Cambia esto a 10 * 1000 si quieres probarlo rápido (10 segundos)
+    const TIEMPO_LIMITE = 24 * 60 * 60 * 1000;
     const inicioDemo = localStorage.getItem("demoStartTime_clinica");
 
     if (!inicioDemo) {
-      // Si no existe, es la primera vez que entra.
-      // Guardamos el momento exacto actual.
       localStorage.setItem("demoStartTime_clinica", Date.now().toString());
     } else {
-      // Si ya existe, calculamos cuánto tiempo ha pasado
       const ahora = Date.now();
       const tiempoPasado = ahora - parseInt(inicioDemo, 10);
-
-      // Si el tiempo pasado es mayor a 24h, mostramos el bloqueo
       if (tiempoPasado > TIEMPO_LIMITE) {
         setHaCaducado(true);
       }
     }
   }, []);
 
-  // Si ha caducado, mostramos el bloqueo
-  if (haCaducado) {
-    return (
-      <div className="demo-caducada">
-        <h1>⏳ El acceso a esta demo ha finalizado</h1>
-        <p>
-          Para proteger la exclusividad de nuestros diseños, los enlaces de prueba tienen una
-          duración de 24 horas.
-        </p>
-        <a href="https://mndesignweb.es/" className="btn-contacto">
-          Contactar para reactivar
-        </a>
-      </div>
-    );
-  }
-
-  // Si NO ha caducado, devolvemos tu aplicación normal
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -215,8 +197,25 @@ function RootComponent() {
                   <AcademyProvider>
                     <AccessProvider>
                       <SymptomDiaryProvider>
-                        <Outlet />
-                        <DevSwitcher />
+                        {/* LÓGICA CONDICIONAL SEGURA PARA SSR */}
+                        {isMounted && haCaducado ? (
+                          <div className="demo-caducada">
+                            <h1>⏳ El acceso a esta demo ha finalizado</h1>
+                            <p>
+                              Para proteger la exclusividad de nuestros diseños, los enlaces de
+                              prueba tienen una duración de 24 horas.
+                            </p>
+                            <a href="https://mndesignweb.es/" className="btn-contacto">
+                              Contactar para reactivar
+                            </a>
+                          </div>
+                        ) : (
+                          <>
+                            <Outlet />
+                            <DevSwitcher />
+                          </>
+                        )}
+
                         <Toaster position="top-right" richColors />
                       </SymptomDiaryProvider>
                     </AccessProvider>
