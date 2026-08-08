@@ -14,6 +14,7 @@ import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-passwo
 import { Route as PacientesRouteImport } from './routes/pacientes'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FormulariosRouteImport } from './routes/formularios'
+import { Route as FacturacionRouteImport } from './routes/facturacion'
 import { Route as CalendarioRouteImport } from './routes/calendario'
 import { Route as AjustesRouteImport } from './routes/ajustes'
 import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
@@ -58,6 +59,11 @@ const LoginRoute = LoginRouteImport.update({
 const FormulariosRoute = FormulariosRouteImport.update({
   id: '/formularios',
   path: '/formularios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FacturacionRoute = FacturacionRouteImport.update({
+  id: '/facturacion',
+  path: '/facturacion',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalendarioRoute = CalendarioRouteImport.update({
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/calendario': typeof CalendarioRoute
+  '/facturacion': typeof FacturacionRoute
   '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/calendario': typeof CalendarioRoute
+  '/facturacion': typeof FacturacionRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
@@ -221,6 +229,7 @@ export interface FileRoutesById {
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
   '/calendario': typeof CalendarioRoute
+  '/facturacion': typeof FacturacionRoute
   '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/activar-cuenta'
     | '/ajustes'
     | '/calendario'
+    | '/facturacion'
     | '/formularios'
     | '/login'
     | '/pacientes'
@@ -276,6 +286,7 @@ export interface FileRouteTypes {
     | '/activar-cuenta'
     | '/ajustes'
     | '/calendario'
+    | '/facturacion'
     | '/login'
     | '/pacientes'
     | '/recuperar-password'
@@ -302,6 +313,7 @@ export interface FileRouteTypes {
     | '/activar-cuenta'
     | '/ajustes'
     | '/calendario'
+    | '/facturacion'
     | '/formularios'
     | '/login'
     | '/pacientes'
@@ -330,6 +342,7 @@ export interface RootRouteChildren {
   ActivarCuentaRoute: typeof ActivarCuentaRoute
   AjustesRoute: typeof AjustesRoute
   CalendarioRoute: typeof CalendarioRoute
+  FacturacionRoute: typeof FacturacionRoute
   FormulariosRoute: typeof FormulariosRouteWithChildren
   LoginRoute: typeof LoginRoute
   PacientesRoute: typeof PacientesRoute
@@ -378,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: '/formularios'
       fullPath: '/formularios'
       preLoaderRoute: typeof FormulariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/facturacion': {
+      id: '/facturacion'
+      path: '/facturacion'
+      fullPath: '/facturacion'
+      preLoaderRoute: typeof FacturacionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calendario': {
@@ -567,6 +587,7 @@ const rootRouteChildren: RootRouteChildren = {
   ActivarCuentaRoute: ActivarCuentaRoute,
   AjustesRoute: AjustesRoute,
   CalendarioRoute: CalendarioRoute,
+  FacturacionRoute: FacturacionRoute,
   FormulariosRoute: FormulariosRouteWithChildren,
   LoginRoute: LoginRoute,
   PacientesRoute: PacientesRoute,
@@ -582,13 +603,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
