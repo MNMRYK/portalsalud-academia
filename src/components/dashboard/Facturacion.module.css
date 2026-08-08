@@ -1,0 +1,513 @@
+/* ===== Módulo de Facturación y Finanzas ===== */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #ece4d8;
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #8c8290;
+  padding: 10px 16px;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.tab:hover {
+  background-color: #f5ede0;
+  color: #3d3540;
+}
+
+.tabActive {
+  color: #b25c40;
+  border-bottom-color: #d47f65;
+}
+
+/* ===== Summary cards ===== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1180px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summaryTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.summaryLabel {
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b3a898;
+}
+
+.summaryIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background-color: #fbeee7;
+  color: #b25c40;
+  flex-shrink: 0;
+}
+
+.summaryIconSage {
+  background-color: #eef3ea;
+  color: #6f8b63;
+}
+
+.summaryIconPlum {
+  background-color: #f3eef6;
+  color: #875c80;
+}
+
+.summaryIconSand {
+  background-color: #f7f0e0;
+  color: #a68a4e;
+}
+
+.summaryValue {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.55rem;
+  color: #2f2933;
+  line-height: 1.1;
+}
+
+.summaryHint {
+  font-size: 0.8rem;
+  color: #8c8290;
+}
+
+/* ===== Card contenedor ===== */
+.card {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.cardTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #2f2933;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cardTitle svg {
+  color: #b25c40;
+}
+
+.cardSub {
+  font-size: 0.82rem;
+  color: #8c8290;
+  margin-top: 3px;
+}
+
+/* ===== Filtros ===== */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.searchBox {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b3a898;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 12px 10px 38px;
+  border-radius: 10px;
+  border: 1px solid #ece4d8;
+  background-color: #fbf7f0;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.88rem;
+  color: #3d3540;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: #d9c4b3;
+  background-color: #ffffff;
+}
+
+.select,
+.dateInput {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ece4d8;
+  background-color: #fbf7f0;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #6b6270;
+  cursor: pointer;
+  outline: none;
+}
+
+.select:focus,
+.dateInput:focus {
+  border-color: #d9c4b3;
+  background-color: #ffffff;
+}
+
+.dateGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dateSep {
+  color: #b3a898;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.clearBtn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #f2d8cb;
+  background-color: #fbeee7;
+  color: #b25c40;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.clearBtn:hover {
+  background-color: #f6ddd1;
+}
+
+/* ===== Tabla ===== */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.table thead th {
+  text-align: left;
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #b3a898;
+  font-weight: 700;
+  padding: 0 14px 10px;
+  border-bottom: 1px solid #f0eae0;
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 14px;
+  border-bottom: 1px solid #f6f1e9;
+  font-size: 0.89rem;
+  color: #4a4350;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  background-color: #fbf7f0;
+}
+
+.amount {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  color: #2f2933;
+  white-space: nowrap;
+}
+
+.dateCell {
+  white-space: nowrap;
+  color: #6b6270;
+}
+
+.clientCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: #ffffff;
+  background: linear-gradient(140deg, #cdbad6, #875c80);
+  flex-shrink: 0;
+}
+
+.clientLink {
+  font-weight: 700;
+  color: #3d3540;
+  text-decoration: none;
+  display: block;
+}
+
+.clientLink:hover {
+  color: #b25c40;
+  text-decoration: underline;
+}
+
+.clientRole {
+  display: block;
+  font-size: 0.74rem;
+  color: #9a8fa0;
+  font-weight: 600;
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 5px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badgeClinica {
+  background-color: #eef3ea;
+  color: #56704b;
+}
+
+.badgeAcademia {
+  background-color: #f3eef6;
+  color: #7a5175;
+}
+
+.badgePagado {
+  background-color: #eef3ea;
+  color: #56704b;
+}
+
+.badgePendiente {
+  background-color: #f7f0e0;
+  color: #947a3d;
+}
+
+.badgeFallido {
+  background-color: #fbe8e4;
+  color: #a8442f;
+}
+
+.concept {
+  display: block;
+  color: #4a4350;
+}
+
+.conceptType {
+  display: block;
+  font-size: 0.74rem;
+  color: #9a8fa0;
+  font-weight: 600;
+}
+
+/* ===== Acciones ===== */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.iconBtn {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid #ece4d8;
+  background-color: #fbf7f0;
+  color: #6b6270;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.iconBtn:hover {
+  background-color: #f5ede0;
+  color: #3d3540;
+}
+
+.iconBtnPrimary {
+  border-color: #f2d8cb;
+  background-color: #fbeee7;
+  color: #b25c40;
+}
+
+.iconBtnPrimary:hover {
+  background-color: #f6ddd1;
+  color: #a04a30;
+}
+
+.empty {
+  text-align: center;
+  padding: 42px 16px;
+  color: #9a8fa0;
+  font-size: 0.9rem;
+}
+
+.tableFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  font-size: 0.84rem;
+  color: #8c8290;
+}
+
+.footTotal {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  color: #2f2933;
+}
+
+/* ===== Suscripciones ===== */
+.subGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.subCard {
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  padding: 18px;
+  background-color: #fbf7f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.subTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.subName {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #2f2933;
+}
+
+.subEmail {
+  font-size: 0.76rem;
+  color: #9a8fa0;
+}
+
+.subRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.84rem;
+  color: #6b6270;
+}
+
+.subRow strong {
+  color: #3d3540;
+  font-weight: 700;
+}
+
+.subDivider {
+  height: 1px;
+  background-color: #ece4d8;
+}
+
+.subSection {
+  margin-bottom: 22px;
+}
+
+.subSectionTitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #2f2933;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.subSectionSub {
+  font-size: 0.82rem;
+  color: #8c8290;
+  margin-bottom: 14px;
+}
