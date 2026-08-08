@@ -20,6 +20,7 @@ import {
   Lock,
   HelpCircle,
   CalendarDays,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -34,6 +35,7 @@ const adminNav = [
   { to: "/pacientes", label: "Gestión de Pacientes", icon: Users },
   { to: "/calendario", label: "Calendario y Videoconsulta", icon: CalendarDays },
   { to: "/formularios", label: "Formularios", icon: FileText },
+  { to: "/facturacion", label: "Facturación y Finanzas", icon: Wallet },
   { to: "/recursos", label: "Gestor de Recursos", icon: FolderOpen },
   { to: "/ajustes", label: "Ajustes y Roles", icon: Settings },
 ] as const;
