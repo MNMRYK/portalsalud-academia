@@ -511,3 +511,184 @@
   color: #8c8290;
   margin-bottom: 14px;
 }
+
+/* ===== Toolbar de acciones fiscales ===== */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btnGhost,
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  border: 1px solid #ece4d8;
+  background-color: #fbf7f0;
+  color: #6b6270;
+}
+
+.btnGhost:hover {
+  background-color: #f5ede0;
+  color: #3d3540;
+}
+
+.btnPrimary {
+  border-color: #d47f65;
+  background-color: #b25c40;
+  color: #ffffff;
+}
+
+.btnPrimary:hover {
+  background-color: #a04a30;
+}
+
+.btnPrimary:disabled,
+.btnGhost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Estados adicionales ===== */
+.badgeReembolsado {
+  background-color: #f0edf3;
+  color: #6f6478;
+}
+
+.badgeRectificativa {
+  background-color: #fbeee7;
+  color: #b25c40;
+}
+
+.negative {
+  color: #a8442f;
+}
+
+/* ===== KPI destacados ===== */
+.summaryIconTerracota {
+  background-color: #fbeee7;
+  color: #b25c40;
+}
+
+.summaryTrend {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6f8b63;
+}
+
+.summaryTrendDown {
+  color: #a8442f;
+}
+
+/* ===== Modales ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(45, 38, 48, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 60;
+  overflow-y: auto;
+}
+
+.modal {
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 22px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+/* ===== Formularios ===== */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b3a898;
+}
+
+.input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ece4d8;
+  background-color: #fbf7f0;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.88rem;
+  color: #3d3540;
+  outline: none;
+  width: 100%;
+}
+
+.input:focus {
+  border-color: #d9c4b3;
+  background-color: #ffffff;
+}
+
+.helper {
+  font-size: 0.78rem;
+  color: #8c8290;
+}
+
+/* ===== Gastos ===== */
+.expenseHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.catBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background-color: #f5ede0;
+  color: #8a7658;
+  white-space: nowrap;
+}
