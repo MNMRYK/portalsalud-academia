@@ -10,6 +10,16 @@ import {
   ExternalLink,
   CreditCard,
   X,
+  FileSpreadsheet,
+  FileMinus,
+  Undo2,
+  Mail,
+  TrendingDown,
+  Repeat,
+  PiggyBank,
+  Wallet2,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -21,14 +31,15 @@ import styles from "./Dashboard.module.css";
 import s from "./Facturacion.module.css";
 
 type Origen = "Clínica" | "Academia";
-type Estado = "Pagado" | "Pendiente" | "Fallido";
+type Estado = "Pagado" | "Pendiente" | "Fallido" | "Reembolsado";
 type Tipo =
   | "Consulta"
   | "Seguimiento"
   | "Suscripción clínica"
   | "Suscripción academia"
   | "Curso"
-  | "Recurso";
+  | "Recurso"
+  | "Rectificativa";
 
 interface Transaction {
   id: string;
@@ -45,7 +56,45 @@ interface Transaction {
   /** IVA aplicado según el tipo de producto/servicio. */
   vat: number;
   estado: Estado;
+  /** Número de serie para facturas rectificativas (REC-2026-00X). */
+  serie?: string;
+  /** Id de la factura original rectificada. */
+  rectifies?: string;
 }
+
+type ExpenseCategory =
+  | "Alquiler"
+  | "Cuota autónomos"
+  | "Software"
+  | "Formación"
+  | "Suministros"
+  | "Marketing"
+  | "Otros";
+
+interface Expense {
+  id: string;
+  concept: string;
+  date: string;
+  amount: number;
+  category: ExpenseCategory;
+}
+
+const EXPENSE_CATEGORIES: ExpenseCategory[] = [
+  "Alquiler",
+  "Cuota autónomos",
+  "Software",
+  "Formación",
+  "Suministros",
+  "Marketing",
+  "Otros",
+];
+
+const initialExpenses: Expense[] = [
+  { id: "exp-1", concept: "Alquiler de consulta", date: "2026-07-01", amount: 450, category: "Alquiler" },
+  { id: "exp-2", concept: "Cuota de autónomos julio", date: "2026-07-05", amount: 294, category: "Cuota autónomos" },
+  { id: "exp-3", concept: "Software de gestión de pacientes", date: "2026-07-03", amount: 39, category: "Software" },
+  { id: "exp-4", concept: "Campaña de captación en redes", date: "2026-07-08", amount: 120, category: "Marketing" },
+];
 
 const MONTHS = [
   "ene", "feb", "mar", "abr", "may", "jun",
@@ -77,15 +126,25 @@ function vatFor(tipo: Tipo): number {
   return 21;
 }
 
+function invoiceNumberOf(tx: Transaction) {
+  return tx.serie ?? `F-${tx.date.replace(/-/g, "")}-${tx.id.slice(-4).toUpperCase()}`;
+}
+
+function baseOf(tx: Transaction) {
+  return tx.vat > 0 ? tx.amount / (1 + tx.vat / 100) : tx.amount;
+}
+
 /** Genera un PDF mínimo válido (sin dependencias) con el desglose fiscal. */
 function buildInvoicePdf(tx: Transaction, invoiceNumber: string): Blob {
-  const base = tx.vat > 0 ? tx.amount / (1 + tx.vat / 100) : tx.amount;
+  const base = baseOf(tx);
   const vatAmount = tx.amount - base;
+  const isRect = tx.tipo === "Rectificativa";
   const lines = [
-    "FACTURA SIMPLIFICADA",
+    isRect ? "FACTURA RECTIFICATIVA (ABONO)" : "FACTURA SIMPLIFICADA",
     "",
     `Numero de factura: ${invoiceNumber}`,
     `Fecha de emision: ${fmtDate(tx.date)}`,
+    ...(isRect && tx.rectifies ? [`Rectifica a la factura: ${tx.rectifies}`] : []),
     "",
     "Emisor: Salud Integrativa - Plataforma Clinica y Academia",
     "NIF: B-00000000",
@@ -142,6 +201,17 @@ function buildInvoicePdf(tx: Transaction, invoiceNumber: string): Blob {
   return new Blob([pdf], { type: "application/pdf" });
 }
 
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 const COURSE_PRICES: Record<string, number> = {
   "Fundamentos de Nutrición Antiinflamatoria": 149,
   "Salud Hormonal Femenina": 179,
@@ -150,11 +220,18 @@ const COURSE_PRICES: Record<string, number> = {
   "Gestión del Estrés y Descanso": 89,
 };
 
+const QUARTERS: Record<string, [string, string]> = {
+  T1: ["01", "03"],
+  T2: ["04", "06"],
+  T3: ["07", "09"],
+  T4: ["10", "12"],
+};
+
 export function Facturacion() {
   const { records } = useAccess();
   const { consultations } = useConsultations();
 
-  const [tab, setTab] = useState<"transacciones" | "suscripciones">("transacciones");
+  const [tab, setTab] = useState<"transacciones" | "gastos" | "suscripciones">("transacciones");
   const [subTab, setSubTab] = useState<"clinica" | "academia">("clinica");
   const [query, setQuery] = useState("");
   const [estado, setEstado] = useState<"todos" | Estado>("todos");
@@ -162,9 +239,28 @@ export function Facturacion() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [detail, setDetail] = useState<Transaction | null>(null);
+  const [quarter, setQuarter] = useState<keyof typeof QUARTERS>("T3");
+
+  /** Cambios de estado aplicados sobre las transacciones base. */
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, Estado>>({});
+  /** Facturas rectificativas y abonos generados. */
+  const [credits, setCredits] = useState<Transaction[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
+
+  const [refundTarget, setRefundTarget] = useState<Transaction | null>(null);
+  const [refundAmount, setRefundAmount] = useState("");
+  const [rectifyTarget, setRectifyTarget] = useState<Transaction | null>(null);
+  const [rectifyReason, setRectifyReason] = useState("");
+  const [expenseOpen, setExpenseOpen] = useState(false);
+  const [expenseForm, setExpenseForm] = useState({
+    concept: "",
+    date: "2026-07-01",
+    amount: "",
+    category: "Alquiler" as ExpenseCategory,
+  });
 
   /** Unifica todos los flujos de ingreso de la plataforma. */
-  const transactions = useMemo<Transaction[]>(() => {
+  const baseTransactions = useMemo<Transaction[]>(() => {
     const byName = new Map(records.map((r) => [r.name, r]));
     const list: Transaction[] = [];
 
@@ -225,7 +321,7 @@ export function Facturacion() {
           concept: "Membresía Academia · Mensual",
           amount: 29,
           vat: vatFor("Suscripción academia"),
-          estado: "Pagado",
+          estado: idx === 4 ? "Fallido" : "Pagado",
         });
       }
 
@@ -267,8 +363,16 @@ export function Facturacion() {
       }
     });
 
-    return list.sort((a, b) => (a.date < b.date ? 1 : -1));
+    return list;
   }, [records, consultations]);
+
+  const transactions = useMemo<Transaction[]>(
+    () =>
+      [...baseTransactions.map((t) => ({ ...t, estado: statusOverrides[t.id] ?? t.estado })), ...credits].sort(
+        (a, b) => (a.date < b.date ? 1 : -1),
+      ),
+    [baseTransactions, statusOverrides, credits],
+  );
 
   const filtered = useMemo(
     () =>
@@ -284,43 +388,229 @@ export function Facturacion() {
   );
 
   const currentMonth = "2026-07";
+
   const summary = useMemo(() => {
     const monthIncome = transactions
       .filter((t) => t.estado === "Pagado" && t.date.startsWith(currentMonth))
       .reduce((acc, t) => acc + t.amount, 0);
+    const monthExpenses = expenses
+      .filter((e) => e.date.startsWith(currentMonth))
+      .reduce((acc, e) => acc + e.amount, 0);
     const pending = transactions
       .filter((t) => t.estado === "Pendiente" || t.estado === "Fallido")
       .reduce((acc, t) => acc + t.amount, 0);
     const pendingCount = transactions.filter(
       (t) => t.estado === "Pendiente" || t.estado === "Fallido",
     ).length;
+    const failedCount = transactions.filter((t) => t.estado === "Fallido").length;
+
+    const academyActive = records.filter((r) => r.academia).length;
+    const clinicalActive = records.filter((r) => r.portal).length;
+    const churnedAcademy = records.filter((r) => r.inAcademyList && !r.academia).length;
+    const mrr = academyActive * 29 + clinicalActive * 49;
+    const mrrAcademy = academyActive * 29;
+    const churn =
+      academyActive + churnedAcademy > 0
+        ? (churnedAcademy / (academyActive + churnedAcademy)) * 100
+        : 0;
+
     return {
       monthIncome,
+      monthExpenses,
+      net: monthIncome - monthExpenses,
       pending,
       pendingCount,
-      clinical: records.filter((r) => r.portal).length,
-      academy: records.filter((r) => r.academia).length,
+      failedCount,
+      clinical: clinicalActive,
+      academy: academyActive,
+      mrr,
+      mrrAcademy,
+      churn,
+      churnedAcademy,
     };
-  }, [transactions, records]);
+  }, [transactions, expenses, records]);
+
+  const showSubMetrics = tab === "suscripciones" || origen === "Academia";
 
   const filteredTotal = filtered
     .filter((t) => t.estado === "Pagado")
     .reduce((acc, t) => acc + t.amount, 0);
 
   const downloadInvoice = (tx: Transaction) => {
-    const num = `F-${tx.date.replace(/-/g, "")}-${tx.id.slice(-4).toUpperCase()}`;
-    const blob = buildInvoicePdf(tx, num);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${num}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    const num = invoiceNumberOf(tx);
+    downloadBlob(buildInvoicePdf(tx, num), `${num}.pdf`);
     toast.success(`Factura ${num} generada`, {
       description: `${tx.client} · ${fmtMoney(tx.amount)} · IVA ${tx.vat > 0 ? `${tx.vat}%` : "exento"}`,
     });
+  };
+
+  const resendInvoice = (tx: Transaction) => {
+    toast.success("Factura reenviada por email", {
+      description: `${invoiceNumberOf(tx)} enviada a ${tx.email}`,
+    });
+  };
+
+  const confirmRefund = () => {
+    if (!refundTarget) return;
+    const value = Number(refundAmount.replace(",", "."));
+    if (!Number.isFinite(value) || value <= 0 || value > refundTarget.amount) {
+      toast.error("Introduce un importe válido para el reembolso");
+      return;
+    }
+    const total = Math.abs(value - refundTarget.amount) < 0.005;
+    setStatusOverrides((prev) => ({ ...prev, [refundTarget.id]: total ? "Reembolsado" : prev[refundTarget.id] ?? "Pagado" }));
+    setCredits((prev) => [
+      {
+        ...refundTarget,
+        id: `rec-${refundTarget.id}-${prev.length + 1}`,
+        serie: `REC-2026-${String(prev.length + 1).padStart(3, "0")}`,
+        rectifies: invoiceNumberOf(refundTarget),
+        tipo: "Rectificativa",
+        concept: `Reembolso ${total ? "total" : "parcial"} · ${refundTarget.concept}`,
+        amount: -value,
+        estado: "Reembolsado",
+      },
+      ...prev,
+    ]);
+    toast.success(`Reembolso ${total ? "total" : "parcial"} emitido`, {
+      description: `${fmtMoney(value)} devueltos a ${refundTarget.client}`,
+    });
+    setRefundTarget(null);
+    setRefundAmount("");
+  };
+
+  const confirmRectify = () => {
+    if (!rectifyTarget) return;
+    const serie = `REC-2026-${String(credits.length + 1).padStart(3, "0")}`;
+    const credit: Transaction = {
+      ...rectifyTarget,
+      id: `rec-${rectifyTarget.id}-${credits.length + 1}`,
+      serie,
+      rectifies: invoiceNumberOf(rectifyTarget),
+      tipo: "Rectificativa",
+      concept: `Rectificativa de ${invoiceNumberOf(rectifyTarget)}${rectifyReason ? ` · ${rectifyReason}` : ""}`,
+      amount: -rectifyTarget.amount,
+      estado: "Reembolsado",
+    };
+    setCredits((prev) => [credit, ...prev]);
+    downloadBlob(buildInvoicePdf(credit, serie), `${serie}.pdf`);
+    toast.success(`Factura rectificativa ${serie} emitida`, {
+      description: `Abono de ${fmtMoney(Math.abs(credit.amount))} para ${credit.client}`,
+    });
+    setRectifyTarget(null);
+    setRectifyReason("");
+  };
+
+  const exportQuarter = () => {
+    const [startM, endM] = QUARTERS[quarter];
+    const rows = transactions.filter((t) => {
+      const m = t.date.slice(5, 7);
+      return t.date.startsWith("2026") && m >= startM && m <= endM && t.estado !== "Pendiente";
+    });
+    if (rows.length === 0) {
+      toast.error(`No hay operaciones registradas en ${quarter} 2026`);
+      return;
+    }
+    const header = [
+      "Fecha",
+      "Nº factura",
+      "Cliente",
+      "Email",
+      "Origen",
+      "Tipo",
+      "Concepto",
+      "Base exenta IVA (sanitario)",
+      "Base sujeta 21%",
+      "Cuota IVA 21%",
+      "Total",
+      "Estado",
+    ];
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const num = (n: number) => n.toFixed(2).replace(".", ",");
+    let exempt = 0;
+    let taxed = 0;
+    let vatSum = 0;
+    let total = 0;
+    const lines = rows.map((t) => {
+      const base = baseOf(t);
+      const isExempt = t.vat === 0;
+      const vatAmount = t.amount - base;
+      if (isExempt) exempt += base;
+      else {
+        taxed += base;
+        vatSum += vatAmount;
+      }
+      total += t.amount;
+      return [
+        t.date,
+        invoiceNumberOf(t),
+        t.client,
+        t.email,
+        t.origen,
+        t.tipo,
+        t.concept,
+        num(isExempt ? base : 0),
+        num(isExempt ? 0 : base),
+        num(isExempt ? 0 : vatAmount),
+        num(t.amount),
+        t.estado,
+      ]
+        .map((v) => esc(String(v)))
+        .join(";");
+    });
+    const totals = [
+      "",
+      "",
+      "TOTALES",
+      "",
+      "",
+      "",
+      `Resumen ${quarter} 2026`,
+      num(exempt),
+      num(taxed),
+      num(vatSum),
+      num(total),
+      "",
+    ]
+      .map((v) => esc(v))
+      .join(";");
+    const quarterExpenses = expenses.filter((e) => {
+      const m = e.date.slice(5, 7);
+      return e.date.startsWith("2026") && m >= startM && m <= endM;
+    });
+    const expenseLines = quarterExpenses.map((e) =>
+      ["", "", "GASTO", "", "", e.category, e.concept, "", "", "", num(-e.amount), "Gasto"]
+        .map((v) => esc(String(v)))
+        .join(";"),
+    );
+    const csv =
+      "\uFEFF" +
+      [header.map(esc).join(";"), ...lines, totals, ...expenseLines].join("\r\n");
+    downloadBlob(new Blob([csv], { type: "text/csv;charset=utf-8" }), `gestoria-${quarter}-2026.csv`);
+    toast.success(`Trimestre ${quarter} exportado`, {
+      description: `Base exenta ${fmtMoney(exempt)} · Base 21% ${fmtMoney(taxed)} · IVA ${fmtMoney(vatSum)}`,
+    });
+  };
+
+  const addExpense = () => {
+    const value = Number(expenseForm.amount.replace(",", "."));
+    if (!expenseForm.concept.trim() || !Number.isFinite(value) || value <= 0) {
+      toast.error("Indica un concepto y un importe válido");
+      return;
+    }
+    setExpenses((prev) => [
+      {
+        id: `exp-${Date.now()}`,
+        concept: expenseForm.concept.trim(),
+        date: expenseForm.date,
+        amount: value,
+        category: expenseForm.category,
+      },
+      ...prev,
+    ]);
+    toast.success("Gasto registrado", { description: `${expenseForm.concept} · ${fmtMoney(value)}` });
+    setExpenseForm({ concept: "", date: "2026-07-01", amount: "", category: "Alquiler" });
+    setExpenseOpen(false);
   };
 
   const resetFilters = () => {
@@ -333,6 +623,25 @@ export function Facturacion() {
 
   const clinicalSubs = records.filter((r) => r.portal);
   const academySubs = records.filter((r) => r.academia);
+
+  const failedSubIds = new Set(
+    transactions.filter((t) => t.estado === "Fallido").map((t) => t.client),
+  );
+  const pendingSubIds = new Set(
+    transactions.filter((t) => t.estado === "Pendiente").map((t) => t.client),
+  );
+
+  const badgeFor = (e: Estado) =>
+    e === "Pagado"
+      ? s.badgePagado
+      : e === "Pendiente"
+        ? s.badgePendiente
+        : e === "Fallido"
+          ? s.badgeFallido
+          : s.badgeReembolsado;
+
+  const sortedExpenses = [...expenses].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
 
   return (
     <div className={styles.page}>
@@ -361,6 +670,13 @@ export function Facturacion() {
           </button>
           <button
             type="button"
+            className={`${s.tab} ${tab === "gastos" ? s.tabActive : ""}`}
+            onClick={() => setTab("gastos")}
+          >
+            Gastos y rentabilidad
+          </button>
+          <button
+            type="button"
             className={`${s.tab} ${tab === "suscripciones" ? s.tabActive : ""}`}
             onClick={() => setTab("suscripciones")}
           >
@@ -371,7 +687,7 @@ export function Facturacion() {
         <section className={s.cards}>
           <article className={s.summary}>
             <div className={s.summaryTop}>
-              <span className={s.summaryLabel}>Ingresos totales</span>
+              <span className={s.summaryLabel}>Ingresos brutos</span>
               <span className={s.summaryIcon}>
                 <Wallet size={18} />
               </span>
@@ -382,39 +698,77 @@ export function Facturacion() {
 
           <article className={s.summary}>
             <div className={s.summaryTop}>
-              <span className={s.summaryLabel}>Pagos pendientes</span>
+              <span className={s.summaryLabel}>Gastos del mes</span>
               <span className={`${s.summaryIcon} ${s.summaryIconSand}`}>
-                <Clock size={18} />
+                <Wallet2 size={18} />
               </span>
             </div>
-            <span className={s.summaryValue}>{fmtMoney(summary.pending)}</span>
-            <span className={s.summaryHint}>{summary.pendingCount} transacciones por cobrar</span>
+            <span className={s.summaryValue}>{fmtMoney(summary.monthExpenses)}</span>
+            <span className={s.summaryHint}>{expenses.length} gastos registrados</span>
           </article>
 
           <article className={s.summary}>
             <div className={s.summaryTop}>
-              <span className={s.summaryLabel}>Suscripciones clínicas</span>
+              <span className={s.summaryLabel}>Beneficio neto</span>
               <span className={`${s.summaryIcon} ${s.summaryIconSage}`}>
-                <HeartPulse size={18} />
+                <PiggyBank size={18} />
               </span>
             </div>
-            <span className={s.summaryValue}>{summary.clinical}</span>
-            <span className={s.summaryHint}>Planes de salud activos</span>
+            <span className={`${s.summaryValue} ${summary.net < 0 ? s.negative : ""}`}>
+              {fmtMoney(summary.net)}
+            </span>
+            <span className={s.summaryHint}>Ingresos menos gastos · julio 2026</span>
           </article>
 
-          <article className={s.summary}>
-            <div className={s.summaryTop}>
-              <span className={s.summaryLabel}>Suscripciones academia</span>
-              <span className={`${s.summaryIcon} ${s.summaryIconPlum}`}>
-                <GraduationCap size={18} />
+          {showSubMetrics ? (
+            <>
+              <article className={s.summary}>
+                <div className={s.summaryTop}>
+                  <span className={s.summaryLabel}>MRR</span>
+                  <span className={`${s.summaryIcon} ${s.summaryIconPlum}`}>
+                    <Repeat size={18} />
+                  </span>
+                </div>
+                <span className={s.summaryValue}>{fmtMoney(summary.mrr)}</span>
+                <span className={s.summaryHint}>
+                  Academia {fmtMoney(summary.mrrAcademy)} · Clínica{" "}
+                  {fmtMoney(summary.mrr - summary.mrrAcademy)}
+                </span>
+              </article>
+
+              <article className={s.summary}>
+                <div className={s.summaryTop}>
+                  <span className={s.summaryLabel}>Churn rate</span>
+                  <span className={`${s.summaryIcon} ${s.summaryIconTerracota}`}>
+                    <TrendingDown size={18} />
+                  </span>
+                </div>
+                <span className={s.summaryValue}>
+                  {summary.churn.toFixed(1).replace(".", ",")} %
+                </span>
+                <span className={s.summaryHint}>
+                  {summary.churnedAcademy} bajas de {summary.academy + summary.churnedAcademy}{" "}
+                  membresías
+                </span>
+              </article>
+            </>
+          ) : (
+            <article className={s.summary}>
+              <div className={s.summaryTop}>
+                <span className={s.summaryLabel}>Pagos pendientes</span>
+                <span className={`${s.summaryIcon} ${s.summaryIconTerracota}`}>
+                  <Clock size={18} />
+                </span>
+              </div>
+              <span className={s.summaryValue}>{fmtMoney(summary.pending)}</span>
+              <span className={s.summaryHint}>
+                {summary.pendingCount} por cobrar · {summary.failedCount} fallidos
               </span>
-            </div>
-            <span className={s.summaryValue}>{summary.academy}</span>
-            <span className={s.summaryHint}>Membresías activas de alumnos</span>
-          </article>
+            </article>
+          )}
         </section>
 
-        {tab === "transacciones" ? (
+        {tab === "transacciones" && (
           <section className={s.card}>
             <div className={s.cardHeader}>
               <div>
@@ -423,8 +777,25 @@ export function Facturacion() {
                   Transacciones
                 </h2>
                 <p className={s.cardSub}>
-                  Consultas, seguimientos, suscripciones, cursos y recursos descargables.
+                  Consultas, seguimientos, suscripciones, cursos, recursos y rectificativas.
                 </p>
+              </div>
+              <div className={s.toolbar}>
+                <select
+                  className={s.select}
+                  value={quarter}
+                  onChange={(e) => setQuarter(e.target.value as keyof typeof QUARTERS)}
+                  aria-label="Trimestre fiscal"
+                >
+                  <option value="T1">T1 2026 (ene–mar)</option>
+                  <option value="T2">T2 2026 (abr–jun)</option>
+                  <option value="T3">T3 2026 (jul–sep)</option>
+                  <option value="T4">T4 2026 (oct–dic)</option>
+                </select>
+                <button type="button" className={s.btnPrimary} onClick={exportQuarter}>
+                  <FileSpreadsheet size={16} />
+                  Exportar trimestre a CSV
+                </button>
               </div>
             </div>
 
@@ -446,8 +817,9 @@ export function Facturacion() {
               >
                 <option value="todos">Todos los estados</option>
                 <option value="Pagado">Pagado</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Fallido">Fallido</option>
+                <option value="Pendiente">Pago pendiente</option>
+                <option value="Fallido">Pago fallido</option>
+                <option value="Reembolsado">Reembolsado</option>
               </select>
               <select
                 className={s.select}
@@ -526,22 +898,23 @@ export function Facturacion() {
                       <td>
                         <span className={s.concept}>{t.concept}</span>
                         <span className={s.conceptType}>
-                          {t.tipo} · IVA {t.vat > 0 ? `${t.vat}%` : "exento"}
+                          {invoiceNumberOf(t)} · IVA {t.vat > 0 ? `${t.vat}%` : "exento"}
                         </span>
                       </td>
-                      <td className={s.amount}>{fmtMoney(t.amount)}</td>
+                      <td className={`${s.amount} ${t.amount < 0 ? s.negative : ""}`}>
+                        {fmtMoney(t.amount)}
+                      </td>
                       <td>
-                        <span
-                          className={`${s.badge} ${
-                            t.estado === "Pagado"
-                              ? s.badgePagado
-                              : t.estado === "Pendiente"
-                                ? s.badgePendiente
-                                : s.badgeFallido
-                          }`}
-                        >
-                          {t.estado}
+                        <span className={`${s.badge} ${badgeFor(t.estado)}`}>
+                          {t.estado === "Pendiente"
+                            ? "Pago pendiente"
+                            : t.estado === "Fallido"
+                              ? "Pago fallido"
+                              : t.estado}
                         </span>
+                        {t.tipo === "Rectificativa" && (
+                          <span className={s.conceptType}>Rectifica {t.rectifies}</span>
+                        )}
                       </td>
                       <td>
                         <div className={s.actions}>
@@ -554,6 +927,45 @@ export function Facturacion() {
                           >
                             <ExternalLink size={16} />
                           </button>
+                          <button
+                            type="button"
+                            className={s.iconBtn}
+                            title="Reenviar factura por email"
+                            aria-label={`Reenviar factura a ${t.email}`}
+                            onClick={() => resendInvoice(t)}
+                          >
+                            <Mail size={16} />
+                          </button>
+                          {t.tipo !== "Rectificativa" && (
+                            <>
+                              <button
+                                type="button"
+                                className={s.iconBtn}
+                                title="Emitir factura rectificativa (abono)"
+                                aria-label={`Emitir rectificativa de ${invoiceNumberOf(t)}`}
+                                onClick={() => {
+                                  setRectifyTarget(t);
+                                  setRectifyReason("");
+                                }}
+                              >
+                                <FileMinus size={16} />
+                              </button>
+                              {t.estado === "Pagado" && (
+                                <button
+                                  type="button"
+                                  className={s.iconBtn}
+                                  title="Emitir reembolso"
+                                  aria-label={`Emitir reembolso a ${t.client}`}
+                                  onClick={() => {
+                                    setRefundTarget(t);
+                                    setRefundAmount(t.amount.toFixed(2));
+                                  }}
+                                >
+                                  <Undo2 size={16} />
+                                </button>
+                              )}
+                            </>
+                          )}
                           <button
                             type="button"
                             className={`${s.iconBtn} ${s.iconBtnPrimary}`}
@@ -582,7 +994,82 @@ export function Facturacion() {
               <span className={s.footTotal}>Total cobrado: {fmtMoney(filteredTotal)}</span>
             </div>
           </section>
-        ) : (
+        )}
+
+        {tab === "gastos" && (
+          <section className={s.card}>
+            <div className={s.expenseHead}>
+              <div>
+                <h2 className={s.cardTitle}>
+                  <Wallet2 size={19} strokeWidth={2.2} />
+                  Gastos y rentabilidad
+                </h2>
+                <p className={s.cardSub}>
+                  Alquiler, cuota de autónomos, software y demás gastos deducibles.
+                </p>
+              </div>
+              <button type="button" className={s.btnPrimary} onClick={() => setExpenseOpen(true)}>
+                <Plus size={16} />
+                Registrar gasto
+              </button>
+            </div>
+
+            <div className={s.tableWrap}>
+              <table className={s.table} style={{ minWidth: 620 }}>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Concepto</th>
+                    <th>Categoría</th>
+                    <th>Importe</th>
+                    <th style={{ textAlign: "right" }}>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedExpenses.map((e) => (
+                    <tr key={e.id}>
+                      <td className={s.dateCell}>{fmtDate(e.date)}</td>
+                      <td>{e.concept}</td>
+                      <td>
+                        <span className={s.catBadge}>{e.category}</span>
+                      </td>
+                      <td className={`${s.amount} ${s.negative}`}>-{fmtMoney(e.amount)}</td>
+                      <td>
+                        <div className={s.actions}>
+                          <button
+                            type="button"
+                            className={s.iconBtn}
+                            title="Eliminar gasto"
+                            aria-label={`Eliminar gasto ${e.concept}`}
+                            onClick={() => {
+                              setExpenses((prev) => prev.filter((x) => x.id !== e.id));
+                              toast.success("Gasto eliminado");
+                            }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {expenses.length === 0 && (
+                <p className={s.empty}>Todavía no has registrado ningún gasto.</p>
+              )}
+            </div>
+
+            <div className={s.tableFoot}>
+              <span>{expenses.length} gastos registrados</span>
+              <span className={s.footTotal}>
+                Total gastos: {fmtMoney(totalExpenses)} · Beneficio neto del mes:{" "}
+                {fmtMoney(summary.net)}
+              </span>
+            </div>
+          </section>
+        )}
+
+        {tab === "suscripciones" && (
           <section className={s.card}>
             <div className={s.cardHeader}>
               <div>
@@ -622,51 +1109,75 @@ export function Facturacion() {
               <p className={s.subSectionSub}>
                 {subTab === "clinica"
                   ? `${clinicalSubs.length} suscripciones · 49,00 € / mes`
-                  : `${academySubs.length} membresías · 29,00 € / mes`}
+                  : `${academySubs.length} membresías · 29,00 € / mes · MRR ${fmtMoney(summary.mrrAcademy)}`}
               </p>
 
               <div className={s.subGrid}>
-                {(subTab === "clinica" ? clinicalSubs : academySubs).map((r) => (
-                  <article key={r.id} className={s.subCard}>
-                    <div className={s.subTop}>
-                      <span className={s.avatar}>{r.initials}</span>
-                      <span>
-                        <span className={s.subName}>{r.name}</span>
-                        <br />
-                        <span className={s.subEmail}>{r.email}</span>
-                      </span>
-                    </div>
-                    <div className={s.subDivider} />
-                    <div className={s.subRow}>
-                      <span>Plan</span>
-                      <strong>
-                        {subTab === "clinica" ? "Salud Integrativa" : "Academia Premium"}
-                      </strong>
-                    </div>
-                    <div className={s.subRow}>
-                      <span>Importe</span>
-                      <strong>{subTab === "clinica" ? "49,00 €/mes" : "29,00 €/mes"}</strong>
-                    </div>
-                    <div className={s.subRow}>
-                      <span>Alta</span>
-                      <strong>{r.joinDate}</strong>
-                    </div>
-                    <div className={s.subRow}>
-                      <span>Último pago</span>
-                      <strong>{r.payment}</strong>
-                    </div>
-                    {subTab === "academia" && (
-                      <div className={s.subRow}>
-                        <span>Cursos inscritos</span>
-                        <strong>{r.coursesEnrolled}</strong>
+                {(subTab === "clinica" ? clinicalSubs : academySubs).map((r) => {
+                  const failed = failedSubIds.has(r.name);
+                  const pending = !failed && pendingSubIds.has(r.name);
+                  return (
+                    <article key={r.id} className={s.subCard}>
+                      <div className={s.subTop}>
+                        <span className={s.avatar}>{r.initials}</span>
+                        <span>
+                          <span className={s.subName}>{r.name}</span>
+                          <br />
+                          <span className={s.subEmail}>{r.email}</span>
+                        </span>
                       </div>
-                    )}
-                    <div className={s.subRow}>
-                      <span>Estado</span>
-                      <span className={`${s.badge} ${s.badgePagado}`}>Activa</span>
-                    </div>
-                  </article>
-                ))}
+                      <div className={s.subDivider} />
+                      <div className={s.subRow}>
+                        <span>Plan</span>
+                        <strong>
+                          {subTab === "clinica" ? "Salud Integrativa" : "Academia Premium"}
+                        </strong>
+                      </div>
+                      <div className={s.subRow}>
+                        <span>Importe</span>
+                        <strong>{subTab === "clinica" ? "49,00 €/mes" : "29,00 €/mes"}</strong>
+                      </div>
+                      <div className={s.subRow}>
+                        <span>Alta</span>
+                        <strong>{r.joinDate}</strong>
+                      </div>
+                      <div className={s.subRow}>
+                        <span>Último pago</span>
+                        <strong>{r.payment}</strong>
+                      </div>
+                      {subTab === "academia" && (
+                        <div className={s.subRow}>
+                          <span>Cursos inscritos</span>
+                          <strong>{r.coursesEnrolled}</strong>
+                        </div>
+                      )}
+                      <div className={s.subRow}>
+                        <span>Estado del cobro</span>
+                        <span
+                          className={`${s.badge} ${
+                            failed ? s.badgeFallido : pending ? s.badgePendiente : s.badgePagado
+                          }`}
+                        >
+                          {failed ? "Pago fallido" : pending ? "Pago pendiente" : "Al corriente"}
+                        </span>
+                      </div>
+                      {(failed || pending) && (
+                        <button
+                          type="button"
+                          className={s.btnGhost}
+                          onClick={() =>
+                            toast.success("Recordatorio de cobro enviado", {
+                              description: `Aviso enviado a ${r.email}`,
+                            })
+                          }
+                        >
+                          <Mail size={15} />
+                          Reclamar el cobro
+                        </button>
+                      )}
+                    </article>
+                  );
+                })}
               </div>
 
               {(subTab === "clinica" ? clinicalSubs : academySubs).length === 0 && (
@@ -678,23 +1189,8 @@ export function Facturacion() {
       </main>
 
       {detail && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(45,38,48,0.45)",
-            display: "grid",
-            placeItems: "center",
-            padding: 20,
-            zIndex: 60,
-          }}
-          onClick={() => setDetail(null)}
-        >
-          <div
-            className={s.card}
-            style={{ maxWidth: 460, width: "100%" }}
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className={s.overlay} onClick={() => setDetail(null)}>
+          <div className={s.modal} onClick={(e) => e.stopPropagation()}>
             <div className={s.cardHeader}>
               <h2 className={s.cardTitle}>
                 <Receipt size={18} /> Detalle de transacción
@@ -707,6 +1203,10 @@ export function Facturacion() {
               >
                 <X size={16} />
               </button>
+            </div>
+            <div className={s.subRow}>
+              <span>Nº de factura</span>
+              <strong>{invoiceNumberOf(detail)}</strong>
             </div>
             <div className={s.subRow}>
               <span>Cliente</span>
@@ -726,27 +1226,225 @@ export function Facturacion() {
             </div>
             <div className={s.subRow}>
               <span>Base imponible</span>
-              <strong>
-                {fmtMoney(detail.vat > 0 ? detail.amount / (1 + detail.vat / 100) : detail.amount)}
-              </strong>
+              <strong>{fmtMoney(baseOf(detail))}</strong>
             </div>
             <div className={s.subRow}>
               <span>IVA</span>
-              <strong>{detail.vat > 0 ? `${detail.vat}%` : "Exento"}</strong>
+              <strong>{detail.vat > 0 ? `${detail.vat}%` : "Exento (art. 20 LIVA)"}</strong>
             </div>
             <div className={s.subRow}>
               <span>Total</span>
               <strong>{fmtMoney(detail.amount)}</strong>
             </div>
-            <div className={s.subDivider} style={{ margin: "14px 0" }} />
-            <button
-              type="button"
-              className={s.clearBtn}
-              style={{ width: "100%" }}
-              onClick={() => downloadInvoice(detail)}
-            >
-              Descargar factura en PDF
-            </button>
+            <div className={s.modalActions}>
+              <button type="button" className={s.btnGhost} onClick={() => resendInvoice(detail)}>
+                <Mail size={15} />
+                Reenviar por email
+              </button>
+              <button type="button" className={s.btnPrimary} onClick={() => downloadInvoice(detail)}>
+                <Download size={15} />
+                Descargar PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {rectifyTarget && (
+        <div className={s.overlay} onClick={() => setRectifyTarget(null)}>
+          <div className={s.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={s.cardHeader}>
+              <h2 className={s.cardTitle}>
+                <FileMinus size={18} /> Factura rectificativa
+              </h2>
+              <button
+                type="button"
+                className={s.iconBtn}
+                onClick={() => setRectifyTarget(null)}
+                aria-label="Cerrar"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className={s.helper}>
+              Se emitirá un abono en negativo con serie propia, rectificando la factura{" "}
+              <strong>{invoiceNumberOf(rectifyTarget)}</strong> de {rectifyTarget.client}.
+            </p>
+            <div className={s.formGrid} style={{ marginTop: 14 }}>
+              <div className={`${s.field} ${s.fieldWide}`}>
+                <label className={s.label} htmlFor="rect-reason">
+                  Motivo de la rectificación
+                </label>
+                <input
+                  id="rect-reason"
+                  className={s.input}
+                  placeholder="Error en el importe, anulación del servicio…"
+                  value={rectifyReason}
+                  onChange={(e) => setRectifyReason(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className={s.subRow} style={{ marginTop: 14 }}>
+              <span>Importe del abono</span>
+              <strong className={s.negative}>{fmtMoney(-rectifyTarget.amount)}</strong>
+            </div>
+            <div className={s.subRow}>
+              <span>Serie</span>
+              <strong>REC-2026-{String(credits.length + 1).padStart(3, "0")}</strong>
+            </div>
+            <div className={s.modalActions}>
+              <button type="button" className={s.btnGhost} onClick={() => setRectifyTarget(null)}>
+                Cancelar
+              </button>
+              <button type="button" className={s.btnPrimary} onClick={confirmRectify}>
+                Emitir rectificativa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {refundTarget && (
+        <div className={s.overlay} onClick={() => setRefundTarget(null)}>
+          <div className={s.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={s.cardHeader}>
+              <h2 className={s.cardTitle}>
+                <Undo2 size={18} /> Emitir reembolso
+              </h2>
+              <button
+                type="button"
+                className={s.iconBtn}
+                onClick={() => setRefundTarget(null)}
+                aria-label="Cerrar"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className={s.helper}>
+              {refundTarget.client} · {refundTarget.concept} ·{" "}
+              <strong>{fmtMoney(refundTarget.amount)}</strong>
+            </p>
+            <div className={s.formGrid} style={{ marginTop: 14 }}>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="refund-amount">
+                  Importe a devolver (€)
+                </label>
+                <input
+                  id="refund-amount"
+                  className={s.input}
+                  inputMode="decimal"
+                  value={refundAmount}
+                  onChange={(e) => setRefundAmount(e.target.value)}
+                />
+              </div>
+              <div className={s.field}>
+                <span className={s.label}>Tipo</span>
+                <button
+                  type="button"
+                  className={s.btnGhost}
+                  onClick={() => setRefundAmount(refundTarget.amount.toFixed(2))}
+                >
+                  Reembolso total
+                </button>
+              </div>
+            </div>
+            <p className={s.helper} style={{ marginTop: 12 }}>
+              Se generará automáticamente la factura rectificativa correspondiente.
+            </p>
+            <div className={s.modalActions}>
+              <button type="button" className={s.btnGhost} onClick={() => setRefundTarget(null)}>
+                Cancelar
+              </button>
+              <button type="button" className={s.btnPrimary} onClick={confirmRefund}>
+                Confirmar reembolso
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {expenseOpen && (
+        <div className={s.overlay} onClick={() => setExpenseOpen(false)}>
+          <div className={s.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={s.cardHeader}>
+              <h2 className={s.cardTitle}>
+                <Wallet2 size={18} /> Registrar gasto
+              </h2>
+              <button
+                type="button"
+                className={s.iconBtn}
+                onClick={() => setExpenseOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className={s.formGrid}>
+              <div className={`${s.field} ${s.fieldWide}`}>
+                <label className={s.label} htmlFor="exp-concept">
+                  Concepto
+                </label>
+                <input
+                  id="exp-concept"
+                  className={s.input}
+                  placeholder="Alquiler de consulta, cuota de autónomos…"
+                  value={expenseForm.concept}
+                  onChange={(e) => setExpenseForm((f) => ({ ...f, concept: e.target.value }))}
+                />
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="exp-date">
+                  Fecha
+                </label>
+                <input
+                  id="exp-date"
+                  type="date"
+                  className={s.input}
+                  value={expenseForm.date}
+                  onChange={(e) => setExpenseForm((f) => ({ ...f, date: e.target.value }))}
+                />
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="exp-amount">
+                  Importe (€)
+                </label>
+                <input
+                  id="exp-amount"
+                  className={s.input}
+                  inputMode="decimal"
+                  placeholder="0,00"
+                  value={expenseForm.amount}
+                  onChange={(e) => setExpenseForm((f) => ({ ...f, amount: e.target.value }))}
+                />
+              </div>
+              <div className={`${s.field} ${s.fieldWide}`}>
+                <label className={s.label} htmlFor="exp-cat">
+                  Categoría
+                </label>
+                <select
+                  id="exp-cat"
+                  className={s.input}
+                  value={expenseForm.category}
+                  onChange={(e) =>
+                    setExpenseForm((f) => ({ ...f, category: e.target.value as ExpenseCategory }))
+                  }
+                >
+                  {EXPENSE_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className={s.modalActions}>
+              <button type="button" className={s.btnGhost} onClick={() => setExpenseOpen(false)}>
+                Cancelar
+              </button>
+              <button type="button" className={s.btnPrimary} onClick={addExpense}>
+                Guardar gasto
+              </button>
+            </div>
           </div>
         </div>
       )}
