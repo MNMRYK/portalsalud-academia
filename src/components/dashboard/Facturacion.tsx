@@ -684,7 +684,7 @@ export function Facturacion() {
           </button>
         </div>
 
-        <section className={s.cards}>
+        <section className={`${s.cards} ${showSubMetrics ? s.cardsFive : ""}`}>
           <article className={s.summary}>
             <div className={s.summaryTop}>
               <span className={s.summaryLabel}>Ingresos brutos</span>

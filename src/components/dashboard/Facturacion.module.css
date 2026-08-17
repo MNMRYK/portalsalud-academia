@@ -246,10 +246,32 @@
   overflow-x: auto;
 }
 
+.cardsFive {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@media (max-width: 1400px) {
+  .cardsFive {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .cardsFive {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .cardsFive {
+    grid-template-columns: 1fr;
+  }
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 900px;
+  min-width: 1080px;
 }
 
 .table thead th {
