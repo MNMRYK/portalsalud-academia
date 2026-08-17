@@ -246,6 +246,28 @@
   overflow-x: auto;
 }
 
+.cardsFive {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@media (max-width: 1400px) {
+  .cardsFive {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .cardsFive {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .cardsFive {
+    grid-template-columns: 1fr;
+  }
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -265,7 +287,7 @@
 }
 
 .table tbody td {
-  padding: 14px;
+  padding: 14px 10px;
   border-bottom: 1px solid #f6f1e9;
   font-size: 0.89rem;
   color: #4a4350;
@@ -380,16 +402,18 @@
 /* ===== Acciones ===== */
 .actions {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  min-width: 176px;
   justify-content: flex-end;
 }
 
 .iconBtn {
   display: inline-grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 9px;
   border: 1px solid #ece4d8;
   background-color: #fbf7f0;
