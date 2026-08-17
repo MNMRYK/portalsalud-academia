@@ -271,7 +271,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1080px;
+  min-width: 900px;
 }
 
 .table thead th {
@@ -287,7 +287,7 @@
 }
 
 .table tbody td {
-  padding: 14px;
+  padding: 14px 10px;
   border-bottom: 1px solid #f6f1e9;
   font-size: 0.89rem;
   color: #4a4350;
@@ -402,16 +402,17 @@
 /* ===== Acciones ===== */
 .actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   justify-content: flex-end;
 }
 
 .iconBtn {
   display: inline-grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 9px;
   border: 1px solid #ece4d8;
   background-color: #fbf7f0;
