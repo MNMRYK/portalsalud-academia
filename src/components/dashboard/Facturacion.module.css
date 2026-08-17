@@ -402,9 +402,10 @@
 /* ===== Acciones ===== */
 .actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 6px;
+  min-width: 176px;
   justify-content: flex-end;
 }
 
