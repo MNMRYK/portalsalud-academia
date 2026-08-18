@@ -21,6 +21,9 @@ import {
   Euro,
   Timer,
   Stethoscope,
+  Plus,
+  Pencil,
+  Trash2,
   X,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
