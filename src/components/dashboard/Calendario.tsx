@@ -17,10 +17,15 @@ import {
   VideoOff,
   PhoneOff,
   ScreenShare,
+  Clock,
+  Euro,
+  Timer,
+  Stethoscope,
   X,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { NotificationBell } from "./NotificationBell";
+import { ConsultaWorkspace } from "./ConsultaWorkspace";
 import { toast } from "sonner";
 import styles from "./Dashboard.module.css";
 import s from "./Calendario.module.css";
@@ -86,6 +91,42 @@ const seedAppointments: Appointment[] = [
 const availableSlots = [
   "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
   "12:00", "12:30", "16:00", "16:30", "17:00", "17:30",
+];
+
+interface ServiceType {
+  id: string;
+  name: string;
+  description: string;
+  duration: number;
+  price: number;
+  buffer: number;
+}
+
+const serviceTypes: ServiceType[] = [
+  {
+    id: "sv1",
+    name: "Primera visita",
+    description: "Historia clínica completa, valoración inicial y plan de fases.",
+    duration: 60,
+    price: 90,
+    buffer: 15,
+  },
+  {
+    id: "sv2",
+    name: "Revisión",
+    description: "Seguimiento de evolución, ajuste de pauta y métricas clínicas.",
+    duration: 45,
+    price: 65,
+    buffer: 10,
+  },
+  {
+    id: "sv3",
+    name: "Sesión rápida",
+    description: "Consulta breve para dudas puntuales o ajustes de suplementación.",
+    duration: 20,
+    price: 35,
+    buffer: 5,
+  },
 ];
 
 const monthNames = [
@@ -450,6 +491,43 @@ export function Calendario() {
             </section>
           </div>
         </div>
+
+        {/* ==== Servicios / tipos de cita ==== */}
+        <section className={`${s.card} ${s.automation}`}>
+          <div className={s.cardHeader}>
+            <div>
+              <div className={s.cardTitle}>
+                <Stethoscope size={18} strokeWidth={2} />
+                Servicios y tipos de cita
+              </div>
+              <div className={s.cardSub}>
+                Duración, precio y margen entre citas de cada servicio.
+              </div>
+            </div>
+          </div>
+          <div className={s.servicesGrid}>
+            {serviceTypes.map((sv) => (
+              <article key={sv.id} className={s.serviceCard}>
+                <div className={s.serviceName}>
+                  {sv.name}
+                  <span className={s.servicePrice}>{sv.price} €</span>
+                </div>
+                <p className={s.serviceDesc}>{sv.description}</p>
+                <div className={s.serviceMeta}>
+                  <span className={s.serviceChip}>
+                    <Clock size={12} /> {sv.duration} min
+                  </span>
+                  <span className={s.serviceChip}>
+                    <Timer size={12} /> Buffer {sv.buffer} min
+                  </span>
+                  <span className={s.serviceChip}>
+                    <Euro size={12} /> {sv.price} €
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
         {/* ==== Automatizaciones ==== */}
         <section className={`${s.card} ${s.automation}`}>
