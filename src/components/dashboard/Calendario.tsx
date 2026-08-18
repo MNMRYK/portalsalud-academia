@@ -608,6 +608,10 @@ export function Calendario() {
                 <PhoneOff size={20} />
               </button>
             </div>
+            </div>
+
+            <ConsultaWorkspace patient={activeCall.patient} />
+            </div>
 
             <div className={s.modalFooter}>
               Cifrado extremo a extremo con claves efímeras · Sin grabación por defecto · RGPD
