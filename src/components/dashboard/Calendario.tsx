@@ -560,6 +560,8 @@ export function Calendario() {
               </button>
             </div>
 
+            <div className={s.callSplit}>
+            <div className={s.videoCol}>
             <div className={s.videoStage}>
               <div className={s.recording}>
                 <span className={s.recDot} /> En directo
