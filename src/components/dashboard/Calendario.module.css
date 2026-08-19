@@ -865,3 +865,220 @@
   color: #3d3540;
   margin: 0 0 6px 8px;
 }
+
+/* ==== Acciones en tarjetas de servicio ==== */
+.serviceHeadRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.serviceAction {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 1px solid #ece4d8;
+  background-color: #ffffff;
+  color: #6b6270;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.serviceAction:hover {
+  background-color: #f7f0e4;
+  color: #b25c40;
+}
+
+.serviceActionDanger:hover {
+  background-color: #fbeaea;
+  color: #c14a4a;
+  border-color: #f0d2d2;
+}
+
+/* ==== Botones de formulario ==== */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(140deg, #d47f65, #b25c40);
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: linear-gradient(140deg, #cb7358, #a4502f);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  border-radius: 10px;
+  border: 1px solid #ece4d8;
+  background-color: #fbf7f0;
+  color: #6b6270;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.btnGhost:hover {
+  background-color: #f5ede0;
+}
+
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #c14a4a;
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.btnDanger:hover {
+  background-color: #a93e3e;
+}
+
+/* ==== Modales de formulario ==== */
+.formOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(46, 34, 44, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 220;
+  padding: 20px;
+}
+
+.formModal {
+  width: min(520px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 22px;
+  font-family: "Nunito", sans-serif;
+  color: #3d3540;
+  box-shadow: 0 24px 60px rgba(60, 40, 50, 0.22);
+}
+
+.formHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.formTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #2f2933;
+}
+
+.formTitle svg {
+  color: #b25c40;
+}
+
+.formClose {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  border: 1px solid #ece4d8;
+  background-color: #fbf7f0;
+  color: #6b6270;
+  cursor: pointer;
+}
+
+.formClose:hover {
+  background-color: #f5ede0;
+}
+
+.formHint {
+  font-size: 0.85rem;
+  color: #8c8290;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #8c8290;
+}
+
+.input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #ece4d8;
+  background-color: #fdfbf7;
+  padding: 10px 12px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.9rem;
+  color: #3d3540;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #d47f65;
+  background-color: #ffffff;
+}
+
+.textarea {
+  min-height: 84px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.formRow {
+  display: flex;
+  gap: 12px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
