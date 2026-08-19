@@ -533,11 +533,31 @@ export function Calendario() {
             </div>
           </div>
           <div className={s.servicesGrid}>
-            {serviceTypes.map((sv) => (
+            {services.map((sv) => (
               <article key={sv.id} className={s.serviceCard}>
                 <div className={s.serviceName}>
                   {sv.name}
-                  <span className={s.servicePrice}>{sv.price} €</span>
+                  <span className={s.serviceHeadRight}>
+                    <span className={s.servicePrice}>{sv.price} €</span>
+                    <button
+                      type="button"
+                      className={s.serviceAction}
+                      onClick={() => openEditService(sv)}
+                      aria-label={`Editar ${sv.name}`}
+                      title="Editar servicio"
+                    >
+                      <Pencil size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      className={`${s.serviceAction} ${s.serviceActionDanger}`}
+                      onClick={() => setDeleteServiceId(sv.id)}
+                      aria-label={`Eliminar ${sv.name}`}
+                      title="Eliminar servicio"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </span>
                 </div>
                 <p className={s.serviceDesc}>{sv.description}</p>
                 <div className={s.serviceMeta}>
