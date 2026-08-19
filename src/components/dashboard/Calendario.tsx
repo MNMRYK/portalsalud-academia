@@ -105,7 +105,31 @@ interface ServiceType {
   buffer: number;
 }
 
-const serviceTypes: ServiceType[] = [
+interface ServiceFormState {
+  name: string;
+  description: string;
+  duration: string;
+  price: string;
+  buffer: string;
+}
+
+const emptyServiceForm: ServiceFormState = {
+  name: "",
+  description: "",
+  duration: "45",
+  price: "65",
+  buffer: "10",
+};
+
+const mockPatients = [
+  { id: "p1", name: "Elena Martín" },
+  { id: "p2", name: "Lucía Fernández" },
+  { id: "p3", name: "Marcos Iglesias" },
+  { id: "p4", name: "Javier Morán" },
+  { id: "p5", name: "Carmen Ortiz" },
+];
+
+const initialServices: ServiceType[] = [
   {
     id: "sv1",
     name: "Primera visita",
