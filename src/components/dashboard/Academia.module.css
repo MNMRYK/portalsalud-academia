@@ -1269,3 +1269,206 @@
 }
 
 
+
+/* ============================================================
+   Hub del alumno (gamificación)
+   ============================================================ */
+.hubGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.hubCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 20px 18px;
+  border: 1px solid #ece3d8;
+  border-radius: 18px;
+  background-color: #fffdfa;
+  box-shadow: 0 6px 18px rgba(135, 92, 128, 0.05);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.hubCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(135, 92, 128, 0.1);
+}
+
+.hubCardWide {
+  grid-column: span 2;
+}
+
+.hubHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hubIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  flex-shrink: 0;
+}
+
+.hubTitle {
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1.02rem;
+  color: #4a3b45;
+}
+
+.hubBadge {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background-color: #f4ede4;
+  color: #875c80;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.hubDesc {
+  font-family: "Nunito", sans-serif;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: #8a7b83;
+}
+
+.hubBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.hubRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.83rem;
+  color: #5c4b55;
+}
+
+.hubRowMeta {
+  margin-left: auto;
+  font-size: 0.76rem;
+  color: #a2929b;
+  white-space: nowrap;
+}
+
+.hubProgressRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hubProgressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.8rem;
+  color: #5c4b55;
+}
+
+.hubBar {
+  height: 8px;
+  border-radius: 999px;
+  background-color: #f0e7dd;
+  overflow: hidden;
+}
+
+.hubBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #a3bca0, #875c80);
+}
+
+.hubCheck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.82rem;
+  color: #5c4b55;
+}
+
+.hubCheckDone {
+  color: #a2929b;
+  text-decoration: line-through;
+}
+
+.hubLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 12px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.83rem;
+  color: #875c80;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hubLink:hover {
+  color: #6d4867;
+}
+
+/* ============================================================
+   Roles del sistema (admin)
+   ============================================================ */
+.rolesPanel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #ece3d8;
+  border-radius: 18px;
+  background-color: #fffdfa;
+  margin-bottom: 28px;
+}
+
+.roleCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 14px;
+  background-color: #faf5ef;
+  border: 1px solid #f0e7dd;
+}
+
+.roleName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #4a3b45;
+}
+
+.roleDesc {
+  font-family: "Nunito", sans-serif;
+  font-size: 0.81rem;
+  line-height: 1.5;
+  color: #8a7b83;
+}
+
+@media (max-width: 900px) {
+  .hubCardWide {
+    grid-column: span 1;
+  }
+}
