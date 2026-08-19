@@ -190,6 +190,14 @@ export function Calendario() {
     useState<Appointment[]>(seedAppointments);
   const [activeCall, setActiveCall] = useState<Appointment | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [services, setServices] = useState<ServiceType[]>(initialServices);
+  const [serviceForm, setServiceForm] = useState<ServiceFormState | null>(null);
+  const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
+  const [deleteServiceId, setDeleteServiceId] = useState<string | null>(null);
+  const [bookingSlot, setBookingSlot] = useState<string | null>(null);
+  const [bookingPatient, setBookingPatient] = useState("");
+  const [bookingService, setBookingService] = useState("");
+  const [bookingMode, setBookingMode] = useState<"video" | "presencial">("video");
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
   const [automations, setAutomations] = useState({
