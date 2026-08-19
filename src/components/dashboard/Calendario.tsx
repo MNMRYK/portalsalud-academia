@@ -700,6 +700,254 @@ export function Calendario() {
           </div>
         </div>
       )}
+
+      {/* ==== Modal: nueva reserva ==== */}
+      {bookingSlot && (
+        <div className={s.formOverlay} role="dialog" aria-modal="true">
+          <div className={s.formModal}>
+            <div className={s.formHeader}>
+              <div className={s.formTitle}>
+                <CalendarDays size={17} /> Nueva reserva
+              </div>
+              <button
+                type="button"
+                className={s.formClose}
+                onClick={closeBooking}
+                aria-label="Cerrar"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <p className={s.formHint}>
+              {selectedDate} · {bookingSlot}
+            </p>
+
+            <div className={s.field}>
+              <label className={s.label} htmlFor="bk-patient">
+                Paciente
+              </label>
+              <select
+                id="bk-patient"
+                className={s.input}
+                value={bookingPatient}
+                onChange={(e) => setBookingPatient(e.target.value)}
+              >
+                <option value="">Selecciona un paciente…</option>
+                {mockPatients.map((p) => (
+                  <option key={p.id} value={p.name}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={s.field}>
+              <label className={s.label} htmlFor="bk-service">
+                Servicio
+              </label>
+              <select
+                id="bk-service"
+                className={s.input}
+                value={bookingService}
+                onChange={(e) => setBookingService(e.target.value)}
+              >
+                <option value="">Selecciona un servicio…</option>
+                {services.map((sv) => (
+                  <option key={sv.id} value={sv.id}>
+                    {sv.name} · {sv.duration} min · {sv.price} €
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={s.field}>
+              <label className={s.label} htmlFor="bk-mode">
+                Modalidad
+              </label>
+              <select
+                id="bk-mode"
+                className={s.input}
+                value={bookingMode}
+                onChange={(e) =>
+                  setBookingMode(e.target.value as "video" | "presencial")
+                }
+              >
+                <option value="video">Videoconsulta E2EE</option>
+                <option value="presencial">Presencial</option>
+              </select>
+            </div>
+
+            <div className={s.formActions}>
+              <button type="button" className={s.btnGhost} onClick={closeBooking}>
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={s.btnPrimary}
+                onClick={confirmBooking}
+                disabled={!bookingPatient || !bookingService}
+              >
+                Confirmar reserva
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==== Modal: crear / editar servicio ==== */}
+      {serviceForm && (
+        <div className={s.formOverlay} role="dialog" aria-modal="true">
+          <div className={s.formModal}>
+            <div className={s.formHeader}>
+              <div className={s.formTitle}>
+                <Stethoscope size={17} />
+                {editingServiceId ? "Editar servicio" : "Nuevo servicio"}
+              </div>
+              <button
+                type="button"
+                className={s.formClose}
+                onClick={closeServiceForm}
+                aria-label="Cerrar"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className={s.field}>
+              <label className={s.label} htmlFor="sv-name">
+                Nombre del servicio
+              </label>
+              <input
+                id="sv-name"
+                className={s.input}
+                value={serviceForm.name}
+                onChange={(e) => patchServiceForm({ name: e.target.value })}
+                placeholder="Ej. Revisión trimestral"
+              />
+            </div>
+
+            <div className={s.field}>
+              <label className={s.label} htmlFor="sv-desc">
+                Descripción breve
+              </label>
+              <textarea
+                id="sv-desc"
+                className={`${s.input} ${s.textarea}`}
+                value={serviceForm.description}
+                onChange={(e) =>
+                  patchServiceForm({ description: e.target.value })
+                }
+                placeholder="Qué incluye la sesión…"
+              />
+            </div>
+
+            <div className={s.formRow}>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="sv-dur">
+                  Duración (min)
+                </label>
+                <input
+                  id="sv-dur"
+                  className={s.input}
+                  type="number"
+                  min={5}
+                  value={serviceForm.duration}
+                  onChange={(e) =>
+                    patchServiceForm({ duration: e.target.value })
+                  }
+                />
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="sv-price">
+                  Precio (€)
+                </label>
+                <input
+                  id="sv-price"
+                  className={s.input}
+                  type="number"
+                  min={0}
+                  value={serviceForm.price}
+                  onChange={(e) => patchServiceForm({ price: e.target.value })}
+                />
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="sv-buffer">
+                  Buffer (min)
+                </label>
+                <input
+                  id="sv-buffer"
+                  className={s.input}
+                  type="number"
+                  min={0}
+                  value={serviceForm.buffer}
+                  onChange={(e) => patchServiceForm({ buffer: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className={s.formActions}>
+              <button
+                type="button"
+                className={s.btnGhost}
+                onClick={closeServiceForm}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={s.btnPrimary}
+                onClick={saveService}
+                disabled={!serviceForm.name.trim()}
+              >
+                {editingServiceId ? "Guardar cambios" : "Crear servicio"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==== Modal: eliminar servicio ==== */}
+      {deleteServiceId && (
+        <div className={s.formOverlay} role="dialog" aria-modal="true">
+          <div className={s.formModal}>
+            <div className={s.formHeader}>
+              <div className={s.formTitle}>
+                <Trash2 size={17} /> Eliminar servicio
+              </div>
+              <button
+                type="button"
+                className={s.formClose}
+                onClick={() => setDeleteServiceId(null)}
+                aria-label="Cerrar"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className={s.formHint}>
+              ¿Seguro que quieres eliminar «
+              {services.find((sv) => sv.id === deleteServiceId)?.name}»? Las
+              citas ya agendadas no se verán afectadas.
+            </p>
+            <div className={s.formActions}>
+              <button
+                type="button"
+                className={s.btnGhost}
+                onClick={() => setDeleteServiceId(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={s.btnDanger}
+                onClick={confirmDeleteService}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
