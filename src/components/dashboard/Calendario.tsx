@@ -238,22 +238,97 @@ export function Calendario() {
   const goNextMonth = () =>
     setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1));
 
-  const bookSlot = () => {
-    if (!selectedSlot) return;
+  const openBooking = (slot: string) => {
+    setSelectedSlot(slot);
+    setBookingSlot(slot);
+    setBookingPatient("");
+    setBookingService("");
+    setBookingMode("video");
+  };
+
+  const closeBooking = () => {
+    setBookingSlot(null);
+    setSelectedSlot(null);
+  };
+
+  const initialsOf = (name: string) =>
+    name
+      .split(" ")
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() ?? "")
+      .join("");
+
+  const confirmBooking = () => {
+    if (!bookingSlot || !bookingPatient || !bookingService) return;
+    const sv = services.find((x) => x.id === bookingService);
     const newAppt: Appointment = {
       id: `a-${Date.now()}`,
-      patient: "Nueva cita",
-      initials: "NC",
+      patient: bookingPatient,
+      initials: initialsOf(bookingPatient),
       date: selectedDate,
-      time: selectedSlot,
-      mode: "video",
-      reason: "Consulta agendada automáticamente",
+      time: bookingSlot,
+      mode: bookingMode,
+      reason: sv ? `${sv.name} · ${sv.duration} min` : "Consulta",
     };
     setAppointments((prev) => [...prev, newAppt]);
-    setSelectedSlot(null);
-    toast.success(`Cita creada · ${selectedDate} a las ${selectedSlot}`, {
-      description: "Se ha enviado confirmación cifrada al paciente.",
+    toast.success(`Cita creada · ${selectedDate} a las ${bookingSlot}`, {
+      description: `${bookingPatient} · ${sv?.name ?? "Consulta"}. Confirmación cifrada enviada.`,
     });
+    closeBooking();
+  };
+
+  const openNewService = () => {
+    setEditingServiceId(null);
+    setServiceForm({ ...emptyServiceForm });
+  };
+
+  const openEditService = (sv: ServiceType) => {
+    setEditingServiceId(sv.id);
+    setServiceForm({
+      name: sv.name,
+      description: sv.description,
+      duration: String(sv.duration),
+      price: String(sv.price),
+      buffer: String(sv.buffer),
+    });
+  };
+
+  const closeServiceForm = () => {
+    setServiceForm(null);
+    setEditingServiceId(null);
+  };
+
+  const patchServiceForm = (patch: Partial<ServiceFormState>) =>
+    setServiceForm((prev) => (prev ? { ...prev, ...patch } : prev));
+
+  const saveService = () => {
+    if (!serviceForm || !serviceForm.name.trim()) return;
+    const parsed: Omit<ServiceType, "id"> = {
+      name: serviceForm.name.trim(),
+      description: serviceForm.description.trim(),
+      duration: Number(serviceForm.duration) || 0,
+      price: Number(serviceForm.price) || 0,
+      buffer: Number(serviceForm.buffer) || 0,
+    };
+    if (editingServiceId) {
+      setServices((prev) =>
+        prev.map((sv) =>
+          sv.id === editingServiceId ? { ...sv, ...parsed } : sv,
+        ),
+      );
+      toast.success("Servicio actualizado", { description: parsed.name });
+    } else {
+      setServices((prev) => [...prev, { id: `sv-${Date.now()}`, ...parsed }]);
+      toast.success("Servicio creado", { description: parsed.name });
+    }
+    closeServiceForm();
+  };
+
+  const confirmDeleteService = () => {
+    const sv = services.find((x) => x.id === deleteServiceId);
+    setServices((prev) => prev.filter((x) => x.id !== deleteServiceId));
+    setDeleteServiceId(null);
+    toast.success("Servicio eliminado", { description: sv?.name });
   };
 
   const toggleAuto = (key: keyof typeof automations) => {
