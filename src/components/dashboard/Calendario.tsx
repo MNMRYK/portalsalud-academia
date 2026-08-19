@@ -599,6 +599,9 @@ export function Calendario() {
                 Duración, precio y margen entre citas de cada servicio.
               </div>
             </div>
+            <button type="button" className={s.btnPrimary} onClick={openNewService}>
+              <Plus size={15} /> Añadir nuevo servicio
+            </button>
           </div>
           <div className={s.servicesGrid}>
             {services.map((sv) => (
