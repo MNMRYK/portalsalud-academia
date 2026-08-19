@@ -490,25 +490,10 @@ export function Calendario() {
               <div className={s.cardHeader}>
                 <div>
                   <div className={s.cardTitle}>Huecos disponibles</div>
-                  <div className={s.cardSub}>{selectedDate}</div>
+                  <div className={s.cardSub}>
+                    {selectedDate} · pulsa un hueco para reservar
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  className={s.iconBtn + " " + s.iconBtnPrimary}
-                  onClick={bookSlot}
-                  disabled={!selectedSlot}
-                  style={{
-                    width: "auto",
-                    padding: "0 14px",
-                    fontFamily: "Nunito, sans-serif",
-                    fontWeight: 700,
-                    fontSize: "0.82rem",
-                    opacity: selectedSlot ? 1 : 0.5,
-                    cursor: selectedSlot ? "pointer" : "not-allowed",
-                  }}
-                >
-                  Reservar
-                </button>
               </div>
               <div className={s.slots}>
                 {availableSlots.map((t) => {
