@@ -512,7 +512,7 @@ export function Calendario() {
                       type="button"
                       className={cls}
                       disabled={booked}
-                      onClick={() => !booked && setSelectedSlot(t)}
+                      onClick={() => !booked && openBooking(t)}
                     >
                       {t}
                     </button>
