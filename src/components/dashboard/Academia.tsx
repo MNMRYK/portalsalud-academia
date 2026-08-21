@@ -20,8 +20,13 @@ import {
   Save,
   CheckCircle2,
   ArrowRight,
+  Trophy,
+  MessagesSquare,
+  ShieldCheck,
+  Stethoscope,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Sidebar } from "./Sidebar";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
@@ -373,15 +378,89 @@ function HomeView({
           <span className={`${styles.quickIcon} ${styles.iconSage}`}>
             <Video size={22} strokeWidth={2} />
           </span>
-          <span className={styles.quickCardTitle}>Crear Clase en Directo</span>
+          <span className={styles.quickCardTitle}>
+            Programar Clase en Directo / Taller
+          </span>
           <span className={styles.quickCardDesc}>
-            Programa una sesión en vivo y notifica a tus alumnos.
+            Programa una sesión en vivo o un taller práctico y notifica a tus alumnos.
           </span>
           <span className={styles.quickCardLink}>
             <Plus size={15} strokeWidth={2.5} /> Empezar
           </span>
         </button>
+        <button
+          type="button"
+          className={styles.quickCard}
+          onClick={() =>
+            toast.info("Creación de retos", {
+              description: "Pronto podrás diseñar retos con objetivos y duración.",
+            })
+          }
+        >
+          <span className={`${styles.quickIcon} ${styles.iconTerracota}`}>
+            <Trophy size={22} strokeWidth={2} />
+          </span>
+          <span className={styles.quickCardTitle}>Crear Reto</span>
+          <span className={styles.quickCardDesc}>
+            Diseña desafíos por etapas con objetivos claros para motivar a tus alumnos.
+          </span>
+          <span className={styles.quickCardLink}>
+            <Plus size={15} strokeWidth={2.5} /> Empezar
+          </span>
+        </button>
+        <button
+          type="button"
+          className={styles.quickCard}
+          onClick={() =>
+            toast.info("Moderación de comunidad", {
+              description: "3 reportes pendientes de revisión en el foro.",
+            })
+          }
+        >
+          <span className={`${styles.quickIcon} ${styles.iconPlum}`}>
+            <MessagesSquare size={22} strokeWidth={2} />
+          </span>
+          <span className={styles.quickCardTitle}>Moderación de Comunidad</span>
+          <span className={styles.quickCardDesc}>
+            Revisa reportes, modera debates y mantén el foro en buen ambiente.
+          </span>
+          <span className={styles.quickCardLink}>
+            <ArrowRight size={15} strokeWidth={2.5} /> Revisar
+          </span>
+        </button>
       </section>
+
+      <h2 className={styles.sectionTitle}>Ajustes y Roles</h2>
+      <section className={academia.rolesPanel}>
+        <div className={academia.roleCard}>
+          <span className={academia.roleName}>
+            <ShieldCheck size={16} strokeWidth={2.2} /> Administrador
+          </span>
+          <span className={academia.roleDesc}>
+            Control total: cursos, alumnos, facturación, roles y moderación.
+          </span>
+          <Link to="/ajustes" className={academia.hubLink}>
+            Gestionar roles <ArrowRight size={14} strokeWidth={2.5} />
+          </Link>
+        </div>
+        <div className={academia.roleCard}>
+          <span className={academia.roleName}>
+            <Stethoscope size={16} strokeWidth={2.2} /> Nutricionista
+          </span>
+          <span className={academia.roleDesc}>
+            Acceso clínico a pacientes, planes y consultas; lectura de la academia.
+          </span>
+        </div>
+        <div className={academia.roleCard}>
+          <span className={academia.roleName}>
+            <GraduationCap size={16} strokeWidth={2.2} /> Profesor
+          </span>
+          <span className={academia.roleDesc}>
+            Crea y publica contenidos, imparte clases en directo y talleres.
+          </span>
+        </div>
+      </section>
+
 
       <div className={styles.panelHead}>
         <h2 className={styles.sectionTitle}>Cursos de la academia</h2>
