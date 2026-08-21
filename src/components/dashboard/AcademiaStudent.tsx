@@ -11,6 +11,11 @@ import {
   Video,
   CalendarDays,
   Search,
+  Trophy,
+  Wrench,
+  Sparkles,
+  Circle,
+  MessagesSquare,
   type LucideIcon,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
