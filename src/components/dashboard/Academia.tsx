@@ -20,8 +20,13 @@ import {
   Save,
   CheckCircle2,
   ArrowRight,
+  Trophy,
+  MessagesSquare,
+  ShieldCheck,
+  Stethoscope,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Sidebar } from "./Sidebar";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
