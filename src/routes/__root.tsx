@@ -19,6 +19,7 @@ import { UserProvider } from "../context/UserContext";
 import { AuthProvider } from "../context/AuthContext";
 import { ResourcesProvider } from "../context/ResourcesContext";
 import { AcademyProvider } from "../context/AcademyContext";
+import { ChallengesProvider } from "../context/ChallengesContext";
 import { AccessProvider } from "../context/AccessContext";
 import { SymptomDiaryProvider } from "../context/SymptomDiaryContext";
 import { DevSwitcher } from "../components/dashboard/DevSwitcher";
@@ -172,13 +173,15 @@ function RootComponent() {
               <ConsultationsProvider>
                 <ResourcesProvider>
                   <AcademyProvider>
-                    <AccessProvider>
-                      <SymptomDiaryProvider>
+                    <ChallengesProvider>
+                      <AccessProvider>
+                        <SymptomDiaryProvider>
                         <Outlet />
                         <DevSwitcher />
                         <Toaster position="top-right" richColors />
-                      </SymptomDiaryProvider>
-                    </AccessProvider>
+                        </SymptomDiaryProvider>
+                      </AccessProvider>
+                    </ChallengesProvider>
                   </AcademyProvider>
                 </ResourcesProvider>
               </ConsultationsProvider>

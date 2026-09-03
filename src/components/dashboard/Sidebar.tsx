@@ -32,6 +32,8 @@ import styles from "./Sidebar.module.css";
 const adminNav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/academia", label: "Módulo Academia", icon: GraduationCap },
+  { to: "/academia/retos/gestion", label: "Gestión de Retos", icon: Trophy },
+  { to: "/academia/moderacion", label: "Moderación", icon: ShieldCheck },
   { to: "/pacientes", label: "Gestión de Pacientes", icon: Users },
   { to: "/calendario", label: "Calendario y Videoconsulta", icon: CalendarDays },
   { to: "/formularios", label: "Formularios", icon: FileText },
@@ -55,8 +57,11 @@ const clinicalLinks: PatientLink[] = [
 const academyLinks: PatientLink[] = [
   { to: "/academia", label: "Mis Cursos", icon: BookOpen },
   { to: "/academia/explorar", label: "Explorar Cursos", icon: Compass },
+  { to: "/academia/talleres", label: "Talleres Prácticos", icon: Wrench },
+  { to: "/academia/retos", label: "Retos", icon: Trophy },
   { to: "/academia/directo", label: "Clases en Directo", icon: Video },
   { to: "/academia/recursos", label: "Recursos Académicos", icon: Library },
+  { to: "/academia/comunidad", label: "Comunidad (Foro)", icon: MessagesSquare },
 ];
 
 const settingsLinks: PatientLink[] = [
