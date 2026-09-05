@@ -36,7 +36,7 @@ import styles from "./Sidebar.module.css";
 const adminNav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/academia", label: "Módulo Academia", icon: GraduationCap },
-  { to: "/academia/retos/gestion", label: "Gestión de Retos", icon: Trophy },
+  { to: "/academia/gestion-retos", label: "Gestión de Retos", icon: Trophy },
   { to: "/academia/moderacion", label: "Moderación", icon: ShieldCheck },
   { to: "/pacientes", label: "Gestión de Pacientes", icon: Users },
   { to: "/calendario", label: "Calendario y Videoconsulta", icon: CalendarDays },

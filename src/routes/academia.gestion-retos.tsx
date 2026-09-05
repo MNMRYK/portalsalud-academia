@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AcademiaRetosAdmin } from "@/components/dashboard/AcademiaRetosAdmin";
 import { AdminOnly } from "@/components/dashboard/AdminOnly";
 
-export const Route = createFileRoute("/academia/retos/gestion")({
+export const Route = createFileRoute("/academia/gestion-retos")({
   head: () => ({
     meta: [
       { title: "Gestión de Retos — Academia Nutralia" },
