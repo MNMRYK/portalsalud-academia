@@ -286,8 +286,6 @@ function MisCursos() {
         sub="Continúa tu formación desde donde lo dejaste."
       />
 
-      <StudentHub />
-
       <section className={academia.stats}>
         {stats.map(({ value, label, icon: Icon, cls }) => (
           <div key={label} className={academia.statCard}>
