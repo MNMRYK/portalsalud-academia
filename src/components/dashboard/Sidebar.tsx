@@ -44,6 +44,7 @@ const adminNav = [
   { to: "/facturacion", label: "Facturación y Finanzas", icon: Wallet },
   { to: "/recursos", label: "Gestor de Recursos", icon: FolderOpen },
   { to: "/ajustes", label: "Ajustes y Roles", icon: Settings },
+  { to: "/portal/perfil", label: "Mi Perfil", icon: UserRound },
 ] as const;
 
 interface PatientLink {

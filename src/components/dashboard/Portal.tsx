@@ -824,13 +824,21 @@ export function PortalSuscripciones() {
    Mi Perfil
    ============================================================ */
 export function PortalPerfil() {
-  const { logout } = useUser();
+  const { logout, isAdmin } = useUser();
 
-  const [profile, setProfile] = useState({
-    name: "Elena Martín García",
-    email: "elena.martin@email.com",
-    phone: "+34 600 987 654",
-  });
+  const [profile, setProfile] = useState(
+    isAdmin
+      ? {
+          name: "Laura García",
+          email: "laura.garcia@clinica.com",
+          phone: "+34 600 123 456",
+        }
+      : {
+          name: "Elena Martín García",
+          email: "elena.martin@email.com",
+          phone: "+34 600 987 654",
+        }
+  );
 
   const [notifyReminders, setNotifyReminders] = useState(true);
   const [notifyAcademy, setNotifyAcademy] = useState(false);
