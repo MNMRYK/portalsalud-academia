@@ -21,6 +21,10 @@ import {
   HelpCircle,
   CalendarDays,
   Wallet,
+  Trophy,
+  ShieldCheck,
+  Wrench,
+  MessagesSquare,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
