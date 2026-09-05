@@ -1472,3 +1472,701 @@
     grid-column: span 1;
   }
 }
+
+/* ===== Vistas Retos / Talleres / Comunidad / Moderación ===== */
+
+.retEmpty {
+  background: #fffdf9;
+  border: 1px dashed #e5d9cc;
+  border-radius: 14px;
+  padding: 32px 28px;
+  color: #8a7f72;
+  font-size: 0.92rem;
+  text-align: center;
+}
+
+.retLayout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.retList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.retListItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.retListItem:hover {
+  border-color: #e0c9b8;
+}
+
+.retListItemActive {
+  border-color: #d47f65;
+  background-color: #fdf3ee;
+}
+
+.retListTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #3d3540;
+}
+
+.retListTitle svg {
+  color: #d47f65;
+  flex-shrink: 0;
+}
+
+.retListMeta {
+  font-size: 0.78rem;
+  color: #9a8fa0;
+}
+
+.retBar {
+  height: 8px;
+  border-radius: 999px;
+  background: #f0e9df;
+  overflow: hidden;
+}
+
+.retBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e8a58c, #d47f65);
+  transition: width 0.25s ease;
+}
+
+.retDetail {
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 24px 26px;
+}
+
+.retDetailHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.retDetailTitle {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.25rem;
+  color: #3d3540;
+}
+
+.retDetailDesc {
+  margin: 8px 0 14px;
+  color: #6b6270;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.retChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.retChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f7f1ea;
+  border: 1px solid #ece4d8;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6b6270;
+}
+
+.retProgressBlock {
+  margin: 18px 0 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.retProgressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #3d3540;
+}
+
+.retProgressHint {
+  font-size: 0.76rem;
+  color: #9a8fa0;
+}
+
+.retStepsTitle {
+  margin: 18px 0 10px;
+  font-size: 0.95rem;
+  color: #3d3540;
+}
+
+.retSteps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.retStep {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: #faf6f0;
+  border: 1px solid #ece4d8;
+  border-radius: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b6270;
+  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.retStep svg {
+  color: #b3a898;
+  flex-shrink: 0;
+}
+
+.retStep:hover {
+  border-color: #e0c9b8;
+}
+
+.retStepDone {
+  background: #eef7ef;
+  border-color: #cbe3cf;
+  color: #3f7a4d;
+}
+
+.retStepDone svg {
+  color: #4d9b5f;
+}
+
+.retSuccess {
+  margin-top: 18px;
+  background: #eef7ef;
+  border: 1px solid #cbe3cf;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-weight: 700;
+  color: #3f7a4d;
+  font-size: 0.9rem;
+}
+
+.retReset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid #ece4d8;
+  border-radius: 9px;
+  padding: 7px 12px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #8a7f72;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.retReset:hover {
+  background: #f5f0e8;
+  color: #3d3540;
+}
+
+/* Botones reutilizados en vistas nuevas */
+.retPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #b25c40;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.retPrimary:hover {
+  background: #a04a30;
+}
+
+.retPrimary:disabled {
+  background: #d8ccc0;
+  cursor: not-allowed;
+}
+
+.retGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6b6270;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.retGhost:hover {
+  background: #f5f0e8;
+}
+
+.retDanger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #c04545;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.retDanger:hover {
+  background: #a83a3a;
+}
+
+/* Tabla Gestión de Retos (Admin) */
+.retTableWrap {
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  overflow-x: auto;
+}
+
+.retTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.88rem;
+}
+
+.retTable th {
+  text-align: left;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #b3a898;
+  font-weight: 700;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0eae0;
+}
+
+.retTable td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f7f1ea;
+  color: #6b6270;
+  vertical-align: top;
+}
+
+.retTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.retCellTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #3d3540;
+}
+
+.retCellTitle svg {
+  color: #d47f65;
+  flex-shrink: 0;
+}
+
+.retCellDesc {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: #9a8fa0;
+}
+
+.retState {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.retStateOn {
+  background: #eef7ef;
+  color: #3f7a4d;
+}
+
+.retStateOff {
+  background: #f5f0e8;
+  color: #8a7f72;
+}
+
+.retActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.retIconBtn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: #faf6f0;
+  border: 1px solid #ece4d8;
+  border-radius: 9px;
+  color: #8a7f72;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.retIconBtn:hover {
+  background: #f5f0e8;
+  color: #3d3540;
+}
+
+.retIconBtnDanger:hover {
+  background: #fbecec;
+  color: #c04545;
+  border-color: #f0d2d2;
+}
+
+/* Modales */
+.retOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(61, 53, 64, 0.38);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 60;
+}
+
+.retModal {
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 24px 26px;
+}
+
+.retModalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.retModalTitle {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.15rem;
+  color: #3d3540;
+}
+
+.retField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-family: "Nunito", sans-serif;
+}
+
+.retField span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6b6270;
+}
+
+.retFieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.retInput,
+.retTextarea {
+  border: 1px solid #ece4d8;
+  border-radius: 10px;
+  background: #faf6f0;
+  padding: 10px 12px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.9rem;
+  color: #3d3540;
+  outline: none;
+  transition: border-color 0.18s ease;
+}
+
+.retInput:focus,
+.retTextarea:focus {
+  border-color: #d47f65;
+}
+
+.retTextarea {
+  resize: vertical;
+}
+
+.retCheckRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b6270;
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+
+.retModalFoot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Talleres */
+.wkGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.wkCard {
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wkIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #fdf3ee;
+  color: #b25c40;
+  display: grid;
+  place-items: center;
+}
+
+.wkTitle {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.05rem;
+  color: #3d3540;
+}
+
+.wkDesc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #6b6270;
+  line-height: 1.5;
+}
+
+.wkMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #9a8fa0;
+}
+
+.wkMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wkFoot {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #f0eae0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Comunidad / Foro */
+.comFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.comFilter {
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #6b6270;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.comFilter:hover {
+  border-color: #e0c9b8;
+}
+
+.comFilterActive {
+  background: #fbeee7;
+  border-color: #f2d8cb;
+  color: #b25c40;
+}
+
+.comList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comThread {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  padding: 14px 18px;
+  transition: border-color 0.18s ease;
+}
+
+.comThread:hover {
+  border-color: #e0c9b8;
+}
+
+.comThreadIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fdf3ee;
+  color: #b25c40;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.comThreadBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.comThreadTitle {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #3d3540;
+}
+
+.comThreadMeta {
+  font-size: 0.76rem;
+  color: #9a8fa0;
+}
+
+.comThreadReplies {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #9a8fa0;
+  flex-shrink: 0;
+}
+
+/* Moderación */
+.modCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.modExcerpt {
+  font-size: 0.86rem;
+  color: #6b6270;
+  font-style: italic;
+}
+
+.modReason {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #c04545;
+}
+
+@media (max-width: 900px) {
+  .retLayout {
+    grid-template-columns: 1fr;
+  }
+  .retFieldRow {
+    grid-template-columns: 1fr;
+  }
+  .modCard {
+    flex-direction: column;
+  }
+}

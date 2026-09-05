@@ -33,11 +33,11 @@ import { Route as AcademiaTalleresRouteImport } from './routes/academia.talleres
 import { Route as AcademiaRetosRouteImport } from './routes/academia.retos'
 import { Route as AcademiaRecursosRouteImport } from './routes/academia.recursos'
 import { Route as AcademiaModeracionRouteImport } from './routes/academia.moderacion'
+import { Route as AcademiaGestionRetosRouteImport } from './routes/academia.gestion-retos'
 import { Route as AcademiaExplorarRouteImport } from './routes/academia.explorar'
 import { Route as AcademiaDirectoRouteImport } from './routes/academia.directo'
 import { Route as AcademiaComunidadRouteImport } from './routes/academia.comunidad'
 import { Route as AcademiaAlumnosRouteImport } from './routes/academia.alumnos'
-import { Route as AcademiaRetosGestionRouteImport } from './routes/academia.retos.gestion'
 import { Route as AcademiaCursoCourseIdRouteImport } from './routes/academia.curso.$courseId'
 import { Route as AcademiaLeccionCourseIdLessonIdRouteImport } from './routes/academia.leccion.$courseId.$lessonId'
 
@@ -161,6 +161,11 @@ const AcademiaModeracionRoute = AcademiaModeracionRouteImport.update({
   path: '/moderacion',
   getParentRoute: () => AcademiaRoute,
 } as any)
+const AcademiaGestionRetosRoute = AcademiaGestionRetosRouteImport.update({
+  id: '/gestion-retos',
+  path: '/gestion-retos',
+  getParentRoute: () => AcademiaRoute,
+} as any)
 const AcademiaExplorarRoute = AcademiaExplorarRouteImport.update({
   id: '/explorar',
   path: '/explorar',
@@ -180,11 +185,6 @@ const AcademiaAlumnosRoute = AcademiaAlumnosRouteImport.update({
   id: '/alumnos',
   path: '/alumnos',
   getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaRetosGestionRoute = AcademiaRetosGestionRouteImport.update({
-  id: '/gestion',
-  path: '/gestion',
-  getParentRoute: () => AcademiaRetosRoute,
 } as any)
 const AcademiaCursoCourseIdRoute = AcademiaCursoCourseIdRouteImport.update({
   id: '/curso/$courseId',
@@ -214,9 +214,10 @@ export interface FileRoutesByFullPath {
   '/academia/comunidad': typeof AcademiaComunidadRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
+  '/academia/gestion-retos': typeof AcademiaGestionRetosRoute
   '/academia/moderacion': typeof AcademiaModeracionRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
-  '/academia/retos': typeof AcademiaRetosRouteWithChildren
+  '/academia/retos': typeof AcademiaRetosRoute
   '/academia/talleres': typeof AcademiaTalleresRoute
   '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
@@ -228,7 +229,6 @@ export interface FileRoutesByFullPath {
   '/formularios/': typeof FormulariosIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
-  '/academia/retos/gestion': typeof AcademiaRetosGestionRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
 }
 export interface FileRoutesByTo {
@@ -245,9 +245,10 @@ export interface FileRoutesByTo {
   '/academia/comunidad': typeof AcademiaComunidadRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
+  '/academia/gestion-retos': typeof AcademiaGestionRetosRoute
   '/academia/moderacion': typeof AcademiaModeracionRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
-  '/academia/retos': typeof AcademiaRetosRouteWithChildren
+  '/academia/retos': typeof AcademiaRetosRoute
   '/academia/talleres': typeof AcademiaTalleresRoute
   '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
@@ -259,7 +260,6 @@ export interface FileRoutesByTo {
   '/formularios': typeof FormulariosIndexRoute
   '/portal': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
-  '/academia/retos/gestion': typeof AcademiaRetosGestionRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
 }
 export interface FileRoutesById {
@@ -279,9 +279,10 @@ export interface FileRoutesById {
   '/academia/comunidad': typeof AcademiaComunidadRoute
   '/academia/directo': typeof AcademiaDirectoRoute
   '/academia/explorar': typeof AcademiaExplorarRoute
+  '/academia/gestion-retos': typeof AcademiaGestionRetosRoute
   '/academia/moderacion': typeof AcademiaModeracionRoute
   '/academia/recursos': typeof AcademiaRecursosRoute
-  '/academia/retos': typeof AcademiaRetosRouteWithChildren
+  '/academia/retos': typeof AcademiaRetosRoute
   '/academia/talleres': typeof AcademiaTalleresRoute
   '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
@@ -293,7 +294,6 @@ export interface FileRoutesById {
   '/formularios/': typeof FormulariosIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/academia/curso/$courseId': typeof AcademiaCursoCourseIdRoute
-  '/academia/retos/gestion': typeof AcademiaRetosGestionRoute
   '/academia/leccion/$courseId/$lessonId': typeof AcademiaLeccionCourseIdLessonIdRoute
 }
 export interface FileRouteTypes {
@@ -314,6 +314,7 @@ export interface FileRouteTypes {
     | '/academia/comunidad'
     | '/academia/directo'
     | '/academia/explorar'
+    | '/academia/gestion-retos'
     | '/academia/moderacion'
     | '/academia/recursos'
     | '/academia/retos'
@@ -328,7 +329,6 @@ export interface FileRouteTypes {
     | '/formularios/'
     | '/portal/'
     | '/academia/curso/$courseId'
-    | '/academia/retos/gestion'
     | '/academia/leccion/$courseId/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -345,6 +345,7 @@ export interface FileRouteTypes {
     | '/academia/comunidad'
     | '/academia/directo'
     | '/academia/explorar'
+    | '/academia/gestion-retos'
     | '/academia/moderacion'
     | '/academia/recursos'
     | '/academia/retos'
@@ -359,7 +360,6 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/portal'
     | '/academia/curso/$courseId'
-    | '/academia/retos/gestion'
     | '/academia/leccion/$courseId/$lessonId'
   id:
     | '__root__'
@@ -378,6 +378,7 @@ export interface FileRouteTypes {
     | '/academia/comunidad'
     | '/academia/directo'
     | '/academia/explorar'
+    | '/academia/gestion-retos'
     | '/academia/moderacion'
     | '/academia/recursos'
     | '/academia/retos'
@@ -392,7 +393,6 @@ export interface FileRouteTypes {
     | '/formularios/'
     | '/portal/'
     | '/academia/curso/$courseId'
-    | '/academia/retos/gestion'
     | '/academia/leccion/$courseId/$lessonId'
   fileRoutesById: FileRoutesById
 }
@@ -586,6 +586,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademiaModeracionRouteImport
       parentRoute: typeof AcademiaRoute
     }
+    '/academia/gestion-retos': {
+      id: '/academia/gestion-retos'
+      path: '/gestion-retos'
+      fullPath: '/academia/gestion-retos'
+      preLoaderRoute: typeof AcademiaGestionRetosRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
     '/academia/explorar': {
       id: '/academia/explorar'
       path: '/explorar'
@@ -614,13 +621,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademiaAlumnosRouteImport
       parentRoute: typeof AcademiaRoute
     }
-    '/academia/retos/gestion': {
-      id: '/academia/retos/gestion'
-      path: '/gestion'
-      fullPath: '/academia/retos/gestion'
-      preLoaderRoute: typeof AcademiaRetosGestionRouteImport
-      parentRoute: typeof AcademiaRetosRoute
-    }
     '/academia/curso/$courseId': {
       id: '/academia/curso/$courseId'
       path: '/curso/$courseId'
@@ -638,26 +638,15 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AcademiaRetosRouteChildren {
-  AcademiaRetosGestionRoute: typeof AcademiaRetosGestionRoute
-}
-
-const AcademiaRetosRouteChildren: AcademiaRetosRouteChildren = {
-  AcademiaRetosGestionRoute: AcademiaRetosGestionRoute,
-}
-
-const AcademiaRetosRouteWithChildren = AcademiaRetosRoute._addFileChildren(
-  AcademiaRetosRouteChildren,
-)
-
 interface AcademiaRouteChildren {
   AcademiaAlumnosRoute: typeof AcademiaAlumnosRoute
   AcademiaComunidadRoute: typeof AcademiaComunidadRoute
   AcademiaDirectoRoute: typeof AcademiaDirectoRoute
   AcademiaExplorarRoute: typeof AcademiaExplorarRoute
+  AcademiaGestionRetosRoute: typeof AcademiaGestionRetosRoute
   AcademiaModeracionRoute: typeof AcademiaModeracionRoute
   AcademiaRecursosRoute: typeof AcademiaRecursosRoute
-  AcademiaRetosRoute: typeof AcademiaRetosRouteWithChildren
+  AcademiaRetosRoute: typeof AcademiaRetosRoute
   AcademiaTalleresRoute: typeof AcademiaTalleresRoute
   AcademiaIndexRoute: typeof AcademiaIndexRoute
   AcademiaCursoCourseIdRoute: typeof AcademiaCursoCourseIdRoute
@@ -669,9 +658,10 @@ const AcademiaRouteChildren: AcademiaRouteChildren = {
   AcademiaComunidadRoute: AcademiaComunidadRoute,
   AcademiaDirectoRoute: AcademiaDirectoRoute,
   AcademiaExplorarRoute: AcademiaExplorarRoute,
+  AcademiaGestionRetosRoute: AcademiaGestionRetosRoute,
   AcademiaModeracionRoute: AcademiaModeracionRoute,
   AcademiaRecursosRoute: AcademiaRecursosRoute,
-  AcademiaRetosRoute: AcademiaRetosRouteWithChildren,
+  AcademiaRetosRoute: AcademiaRetosRoute,
   AcademiaTalleresRoute: AcademiaTalleresRoute,
   AcademiaIndexRoute: AcademiaIndexRoute,
   AcademiaCursoCourseIdRoute: AcademiaCursoCourseIdRoute,
