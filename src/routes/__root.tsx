@@ -22,6 +22,7 @@ import { AcademyProvider } from "../context/AcademyContext";
 import { ChallengesProvider } from "../context/ChallengesContext";
 import { AccessProvider } from "../context/AccessContext";
 import { SymptomDiaryProvider } from "../context/SymptomDiaryContext";
+import { ForumProvider } from "../context/ForumContext";
 import { DevSwitcher } from "../components/dashboard/DevSwitcher";
 import { Toaster } from "../components/ui/sonner";
 
