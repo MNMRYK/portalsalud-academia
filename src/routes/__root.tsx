@@ -177,9 +177,11 @@ function RootComponent() {
                     <ChallengesProvider>
                       <AccessProvider>
                         <SymptomDiaryProvider>
-                        <Outlet />
-                        <DevSwitcher />
-                        <Toaster position="top-right" richColors />
+                          <ForumProvider>
+                            <Outlet />
+                            <DevSwitcher />
+                            <Toaster position="top-right" richColors />
+                          </ForumProvider>
                         </SymptomDiaryProvider>
                       </AccessProvider>
                     </ChallengesProvider>
