@@ -2428,3 +2428,11 @@
     gap: 10px;
   }
 }
+
+/* El hilo del foro ahora es un botón: normalizamos estilos nativos */
+button.comThread {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
