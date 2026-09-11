@@ -29,6 +29,7 @@ import { Route as PortalPlanRouteImport } from './routes/portal.plan'
 import { Route as PortalPerfilRouteImport } from './routes/portal.perfil'
 import { Route as PortalFormularioRouteImport } from './routes/portal.formulario'
 import { Route as FormulariosNuevaRouteImport } from './routes/formularios.nueva'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AcademiaTalleresRouteImport } from './routes/academia.talleres'
 import { Route as AcademiaRetosRouteImport } from './routes/academia.retos'
 import { Route as AcademiaRecursosRouteImport } from './routes/academia.recursos'
@@ -141,6 +142,11 @@ const FormulariosNuevaRoute = FormulariosNuevaRouteImport.update({
   path: '/nueva',
   getParentRoute: () => FormulariosRoute,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AcademiaTalleresRoute = AcademiaTalleresRouteImport.update({
   id: '/talleres',
   path: '/talleres',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/academia/recursos': typeof AcademiaRecursosRoute
   '/academia/retos': typeof AcademiaRetosRoute
   '/academia/talleres': typeof AcademiaTalleresRoute
+  '/api/chat': typeof ApiChatRoute
   '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
   '/portal/perfil': typeof PortalPerfilRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/academia/recursos': typeof AcademiaRecursosRoute
   '/academia/retos': typeof AcademiaRetosRoute
   '/academia/talleres': typeof AcademiaTalleresRoute
+  '/api/chat': typeof ApiChatRoute
   '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
   '/portal/perfil': typeof PortalPerfilRoute
@@ -284,6 +292,7 @@ export interface FileRoutesById {
   '/academia/recursos': typeof AcademiaRecursosRoute
   '/academia/retos': typeof AcademiaRetosRoute
   '/academia/talleres': typeof AcademiaTalleresRoute
+  '/api/chat': typeof ApiChatRoute
   '/formularios/nueva': typeof FormulariosNuevaRoute
   '/portal/formulario': typeof PortalFormularioRoute
   '/portal/perfil': typeof PortalPerfilRoute
@@ -319,6 +328,7 @@ export interface FileRouteTypes {
     | '/academia/recursos'
     | '/academia/retos'
     | '/academia/talleres'
+    | '/api/chat'
     | '/formularios/nueva'
     | '/portal/formulario'
     | '/portal/perfil'
@@ -350,6 +360,7 @@ export interface FileRouteTypes {
     | '/academia/recursos'
     | '/academia/retos'
     | '/academia/talleres'
+    | '/api/chat'
     | '/formularios/nueva'
     | '/portal/formulario'
     | '/portal/perfil'
@@ -383,6 +394,7 @@ export interface FileRouteTypes {
     | '/academia/recursos'
     | '/academia/retos'
     | '/academia/talleres'
+    | '/api/chat'
     | '/formularios/nueva'
     | '/portal/formulario'
     | '/portal/perfil'
@@ -408,6 +420,7 @@ export interface RootRouteChildren {
   PacientesRoute: typeof PacientesRoute
   RecuperarPasswordRoute: typeof RecuperarPasswordRoute
   RecursosRoute: typeof RecursosRoute
+  ApiChatRoute: typeof ApiChatRoute
   PortalFormularioRoute: typeof PortalFormularioRoute
   PortalPerfilRoute: typeof PortalPerfilRoute
   PortalPlanRoute: typeof PortalPlanRoute
@@ -558,6 +571,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormulariosNuevaRouteImport
       parentRoute: typeof FormulariosRoute
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/academia/talleres': {
       id: '/academia/talleres'
       path: '/talleres'
@@ -698,6 +718,7 @@ const rootRouteChildren: RootRouteChildren = {
   PacientesRoute: PacientesRoute,
   RecuperarPasswordRoute: RecuperarPasswordRoute,
   RecursosRoute: RecursosRoute,
+  ApiChatRoute: ApiChatRoute,
   PortalFormularioRoute: PortalFormularioRoute,
   PortalPerfilRoute: PortalPerfilRoute,
   PortalPlanRoute: PortalPlanRoute,
