@@ -2170,3 +2170,261 @@
     flex-direction: column;
   }
 }
+
+/* ===================== Foro: hilos, mensajes y adjuntos ===================== */
+.fmBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0 0 6px;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #b25c40;
+}
+
+.fmBack:hover {
+  color: #8f4530;
+}
+
+.fmPosts {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.fmPost {
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+
+.fmPostHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.fmAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fdf3ee;
+  color: #b25c40;
+  display: grid;
+  place-items: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.fmAuthor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.92rem;
+  color: #3d3540;
+}
+
+.fmStaff {
+  font-family: "Nunito", sans-serif;
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #6b8f5c;
+  background: #eef5e9;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.fmPostActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fmIconBtn {
+  border: 1px solid #ece4d8;
+  background: #faf6f0;
+  border-radius: 9px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: #6b6270;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.fmIconBtn:hover {
+  background: #fdf3ee;
+  color: #b25c40;
+}
+
+.fmBody {
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #4c4550;
+  white-space: pre-wrap;
+}
+
+.fmAttachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.fmImage {
+  max-width: 260px;
+  border-radius: 12px;
+  border: 1px solid #ece4d8;
+}
+
+.fmVideo {
+  max-width: 320px;
+  border-radius: 12px;
+  border: 1px solid #ece4d8;
+}
+
+.fmAudio {
+  width: 280px;
+}
+
+.fmLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #faf6f0;
+  border: 1px solid #ece4d8;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #b25c40;
+  text-decoration: none;
+}
+
+.fmLink:hover {
+  background: #fdf3ee;
+}
+
+/* Composer */
+.fmComposer {
+  background: #fffdf9;
+  border: 1px solid #ece4d8;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.fmTextarea {
+  width: 100%;
+  border: 1px solid #ece4d8;
+  border-radius: 12px;
+  background: #faf6f0;
+  padding: 10px 12px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.9rem;
+  color: #3d3540;
+  outline: none;
+  resize: vertical;
+}
+
+.fmTextarea:focus {
+  border-color: #d47f65;
+}
+
+.fmChips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.fmChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #faf6f0;
+  border: 1px solid #ece4d8;
+  border-radius: 999px;
+  padding: 4px 8px 4px 10px;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.78rem;
+  color: #6b6270;
+}
+
+.fmChip button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #9a8fa0;
+  display: grid;
+  place-items: center;
+}
+
+.fmChip button:hover {
+  color: #c04545;
+}
+
+.fmLinkRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.fmLinkRow .retInput {
+  flex: 1;
+}
+
+.fmComposerFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.fmTools {
+  display: flex;
+  gap: 8px;
+}
+
+.fmTools button {
+  border: 1px solid #ece4d8;
+  background: #faf6f0;
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #6b6270;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.fmTools button:hover {
+  background: #fdf3ee;
+  color: #b25c40;
+}
+
+@media (max-width: 720px) {
+  .fmComposerFoot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+}
