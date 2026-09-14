@@ -1,8 +1,18 @@
 .page {
   display: flex;
+  min-height: 100vh;
+  background-color: #f7f3ee;
+  font-family: "Nunito", system-ui, sans-serif;
+  color: #3d3540;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
+  overflow: hidden;
   background: var(--color-bg, #faf7f2);
 }
 
