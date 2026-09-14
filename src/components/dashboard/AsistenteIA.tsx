@@ -195,7 +195,11 @@ export function AsistenteIA() {
                 >
                   {m.role === "assistant" ? (
                     m.content ? (
-                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                      <div className={styles.markdown}>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {m.content}
+                        </ReactMarkdown>
+                      </div>
                     ) : (
                       <span className={styles.thinking}>
                         Pensando
@@ -297,6 +301,7 @@ export function AsistenteIA() {
           información clínicamente antes de aplicarla con un paciente.
         </p>
       </div>
+      </main>
     </div>
   );
 }
