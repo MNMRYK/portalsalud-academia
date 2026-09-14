@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as FormulariosRouteImport } from './routes/formularios'
 import { Route as FacturacionRouteImport } from './routes/facturacion'
 import { Route as CalendarioRouteImport } from './routes/calendario'
+import { Route as AsistenteIaRouteImport } from './routes/asistente-ia'
 import { Route as AjustesRouteImport } from './routes/ajustes'
 import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
 import { Route as AcademiaRouteImport } from './routes/academia'
@@ -75,6 +76,11 @@ const FacturacionRoute = FacturacionRouteImport.update({
 const CalendarioRoute = CalendarioRouteImport.update({
   id: '/calendario',
   path: '/calendario',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AsistenteIaRoute = AsistenteIaRouteImport.update({
+  id: '/asistente-ia',
+  path: '/asistente-ia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AjustesRoute = AjustesRouteImport.update({
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/academia': typeof AcademiaRouteWithChildren
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
+  '/asistente-ia': typeof AsistenteIaRoute
   '/calendario': typeof CalendarioRoute
   '/facturacion': typeof FacturacionRoute
   '/formularios': typeof FormulariosRouteWithChildren
@@ -242,6 +249,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
+  '/asistente-ia': typeof AsistenteIaRoute
   '/calendario': typeof CalendarioRoute
   '/facturacion': typeof FacturacionRoute
   '/login': typeof LoginRoute
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   '/academia': typeof AcademiaRouteWithChildren
   '/activar-cuenta': typeof ActivarCuentaRoute
   '/ajustes': typeof AjustesRoute
+  '/asistente-ia': typeof AsistenteIaRoute
   '/calendario': typeof CalendarioRoute
   '/facturacion': typeof FacturacionRoute
   '/formularios': typeof FormulariosRouteWithChildren
@@ -312,6 +321,7 @@ export interface FileRouteTypes {
     | '/academia'
     | '/activar-cuenta'
     | '/ajustes'
+    | '/asistente-ia'
     | '/calendario'
     | '/facturacion'
     | '/formularios'
@@ -345,6 +355,7 @@ export interface FileRouteTypes {
     | '/'
     | '/activar-cuenta'
     | '/ajustes'
+    | '/asistente-ia'
     | '/calendario'
     | '/facturacion'
     | '/login'
@@ -378,6 +389,7 @@ export interface FileRouteTypes {
     | '/academia'
     | '/activar-cuenta'
     | '/ajustes'
+    | '/asistente-ia'
     | '/calendario'
     | '/facturacion'
     | '/formularios'
@@ -413,6 +425,7 @@ export interface RootRouteChildren {
   AcademiaRoute: typeof AcademiaRouteWithChildren
   ActivarCuentaRoute: typeof ActivarCuentaRoute
   AjustesRoute: typeof AjustesRoute
+  AsistenteIaRoute: typeof AsistenteIaRoute
   CalendarioRoute: typeof CalendarioRoute
   FacturacionRoute: typeof FacturacionRoute
   FormulariosRoute: typeof FormulariosRouteWithChildren
@@ -478,6 +491,13 @@ declare module '@tanstack/react-router' {
       path: '/calendario'
       fullPath: '/calendario'
       preLoaderRoute: typeof CalendarioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asistente-ia': {
+      id: '/asistente-ia'
+      path: '/asistente-ia'
+      fullPath: '/asistente-ia'
+      preLoaderRoute: typeof AsistenteIaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ajustes': {
@@ -711,6 +731,7 @@ const rootRouteChildren: RootRouteChildren = {
   AcademiaRoute: AcademiaRouteWithChildren,
   ActivarCuentaRoute: ActivarCuentaRoute,
   AjustesRoute: AjustesRoute,
+  AsistenteIaRoute: AsistenteIaRoute,
   CalendarioRoute: CalendarioRoute,
   FacturacionRoute: FacturacionRoute,
   FormulariosRoute: FormulariosRouteWithChildren,
