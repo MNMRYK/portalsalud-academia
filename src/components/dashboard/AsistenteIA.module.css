@@ -1,8 +1,18 @@
 .page {
   display: flex;
+  min-height: 100vh;
+  background-color: #f7f3ee;
+  font-family: "Nunito", system-ui, sans-serif;
+  color: #3d3540;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
+  overflow: hidden;
   background: var(--color-bg, #faf7f2);
 }
 
@@ -35,7 +45,7 @@
 
 .headerSubtitle {
   font-size: 13px;
-  color: var(--color-muted, #8a7a68);
+  color: #8a7a68;
   margin: 2px 0 0;
 }
 
@@ -89,7 +99,7 @@
 
 .emptySubtitle {
   font-size: 14px;
-  color: var(--color-muted, #8a7a68);
+  color: #8a7a68;
   margin: 6px 0 0;
   max-width: 460px;
   line-height: 1.5;
@@ -200,7 +210,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--color-muted, #8a7a68);
+  color: #8a7a68;
   font-size: 14px;
 }
 
@@ -289,7 +299,7 @@
   border-radius: 12px;
   border: none;
   background: transparent;
-  color: var(--color-muted, #8a7a68);
+  color: #8a7a68;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -363,6 +373,60 @@
   font-size: 11.5px;
   color: #b3a48f;
   text-align: center;
+}
+
+/* Markdown inside assistant bubbles */
+.markdown > *:first-child {
+  margin-top: 0;
+}
+.markdown > *:last-child {
+  margin-bottom: 0;
+}
+.markdown p {
+  margin: 0 0 10px;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  margin: 14px 0 8px;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--color-text, #3d3229);
+}
+.markdown ul,
+.markdown ol {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+.markdown li {
+  margin-bottom: 4px;
+}
+.markdown strong {
+  color: #8a5a22;
+}
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 13.5px;
+}
+.markdown th,
+.markdown td {
+  border: 1px solid #e8e0d5;
+  padding: 7px 10px;
+  text-align: left;
+}
+.markdown th {
+  background: #f6ecdd;
+  font-weight: 700;
+  color: #8a6a3f;
+}
+.markdown code {
+  background: #f6ecdd;
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 13px;
 }
 
 @media (max-width: 640px) {

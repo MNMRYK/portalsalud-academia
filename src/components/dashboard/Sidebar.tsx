@@ -25,6 +25,7 @@ import {
   ShieldCheck,
   Wrench,
   MessagesSquare,
+  BotMessageSquare,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -43,6 +44,7 @@ const adminNav = [
   { to: "/formularios", label: "Formularios", icon: FileText },
   { to: "/facturacion", label: "Facturación y Finanzas", icon: Wallet },
   { to: "/recursos", label: "Gestor de Recursos", icon: FolderOpen },
+  { to: "/asistente-ia", label: "Asistente IA", icon: BotMessageSquare },
   { to: "/ajustes", label: "Ajustes y Roles", icon: Settings },
   { to: "/portal/perfil", label: "Mi Perfil", icon: UserRound },
 ] as const;
