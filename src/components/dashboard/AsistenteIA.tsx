@@ -10,6 +10,8 @@ import {
   X,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Sidebar } from "./Sidebar";
 import styles from "./AsistenteIA.module.css";
 
 interface ChatMessage {
@@ -129,6 +131,8 @@ export function AsistenteIA() {
 
   return (
     <div className={styles.page}>
+      <Sidebar />
+      <main className={styles.main}>
       <header className={styles.header}>
         <div className={styles.headerIcon}>
           <BotMessageSquare size={22} />
