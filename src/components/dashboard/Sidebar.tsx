@@ -26,6 +26,8 @@ import {
   Wrench,
   MessagesSquare,
   BotMessageSquare,
+  Menu,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -80,15 +82,48 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean } = {}) {
   const { isAdmin, hasClinicalAccess, hasAcademyAccess, logout } = useUser();
   const [upsell, setUpsell] = useState<UpsellVariant | null>(null);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <>
-      <aside className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ""}`}>
+      <header className={styles.mobileBar} data-mobile-topbar="true">
+        <button
+          type="button"
+          className={styles.mobileToggle}
+          onClick={() => setMobileOpen(true)}
+          aria-label="Abrir menú"
+        >
+          <Menu size={22} strokeWidth={2.2} />
+        </button>
+        <img src={logoAsset} alt="Plataforma Salud Integrativa" className={styles.mobileLogo} />
+      </header>
+
+      {mobileOpen ? (
+        <div
+          className={styles.mobileOverlay}
+          role="presentation"
+          onClick={() => setMobileOpen(false)}
+        />
+      ) : null}
+
+      <aside
+        className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ""} ${
+          mobileOpen ? styles.sidebarOpen : ""
+        }`}
+      >
         <div className={styles.brand}>
           <img src={logoAsset} alt="Plataforma Salud Integrativa" className={styles.brandLogo} />
+          <button
+            type="button"
+            className={styles.mobileClose}
+            onClick={() => setMobileOpen(false)}
+            aria-label="Cerrar menú"
+          >
+            <X size={20} strokeWidth={2.2} />
+          </button>
         </div>
 
-        <div className={styles.navScroll}>
+        <div className={styles.navScroll} onClick={() => setMobileOpen(false)}>
           {isAdmin ? (
             <>
               <span className={styles.navGroupLabel}>Espacio de trabajo</span>
