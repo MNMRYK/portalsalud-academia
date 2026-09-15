@@ -981,3 +981,19 @@
   color: #875c80;
   background-color: #f3eef6;
 }
+
+@media (max-width: 900px) {
+  .main {
+    padding: 18px 14px 36px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .rail {
+    position: static;
+  }
+  .search {
+    width: 100%;
+    max-width: none;
+  }
+}

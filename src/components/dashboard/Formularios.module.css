@@ -875,3 +875,9 @@
   color: #8c8290;
   margin: 0 0 20px;
 }
+
+@media (max-width: 900px) {
+  .main {
+    padding: 18px 14px 36px;
+  }
+}

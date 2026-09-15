@@ -716,3 +716,29 @@
   color: #8a7658;
   white-space: nowrap;
 }
+
+@media (max-width: 900px) {
+  .main {
+    padding: 18px 14px 36px;
+  }
+}
+
+@media (max-width: 640px) {
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    white-space: nowrap;
+  }
+}
+
+.tableWrap {
+  min-width: 0;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}

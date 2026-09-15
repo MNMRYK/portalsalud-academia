@@ -184,3 +184,9 @@
   background-color: #cccccc;
   transform: translateY(-2px);
 }
+/* --- Responsive global: hueco para la barra superior móvil --- */
+@media (max-width: 900px) {
+  body:has([data-mobile-topbar]) {
+    padding-top: 56px;
+  }
+}
