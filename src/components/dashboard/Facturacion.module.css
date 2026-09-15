@@ -736,3 +736,9 @@
     white-space: nowrap;
   }
 }
+
+.tableWrap {
+  min-width: 0;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
