@@ -2211,3 +2211,15 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+@media (max-width: 900px) {
+  .headerRight {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .headerRight .search {
+    flex: 1 1 100%;
+    order: -1;
+    width: 100%;
+  }
+}
