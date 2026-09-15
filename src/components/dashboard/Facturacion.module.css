@@ -716,3 +716,9 @@
   color: #8a7658;
   white-space: nowrap;
 }
+
+@media (max-width: 900px) {
+  .main {
+    padding: 18px 14px 36px;
+  }
+}

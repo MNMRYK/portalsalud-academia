@@ -1082,3 +1082,12 @@
   gap: 10px;
   margin-top: 6px;
 }
+
+@media (max-width: 900px) {
+  .main {
+    padding: 18px 14px 36px;
+  }
+  .slots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -2175,3 +2175,39 @@
   background-color: #fbeaea;
   color: #c0564a;
 }
+
+@media (max-width: 900px) {
+  .main {
+    padding: 18px 14px 36px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .rail {
+    position: static;
+  }
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .search {
+    width: 100%;
+    max-width: none;
+  }
+  .summaryGrid,
+  .kpiGrid,
+  .workGrid,
+  .assigneeOptions {
+    grid-template-columns: 1fr;
+  }
+  table {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

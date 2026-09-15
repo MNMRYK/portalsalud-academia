@@ -1312,3 +1312,17 @@
 .legal-modal {
   max-width: 520px;
 }
+
+@media (max-width: 900px) {
+  .main {
+    padding: 18px 14px 36px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .formGrid,
+  .identity-grid,
+  .metricGrid {
+    grid-template-columns: 1fr;
+  }
+}
