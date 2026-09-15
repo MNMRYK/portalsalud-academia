@@ -403,3 +403,9 @@
     min-width: 560px;
   }
 }
+
+@media (max-width: 900px) {
+  .page {
+    overflow-x: hidden;
+  }
+}
