@@ -51,6 +51,10 @@ export interface LiveClass {
   date: string;
   time: string;
   status: "upcoming" | "live" | "recorded";
+  /** Curso al que pertenece el directo (opcional). */
+  courseId?: string;
+  roomUrl?: string;
+  agenda?: string;
 }
 
 const cover = {
@@ -439,7 +443,7 @@ const lessonsByCourse: Record<string, AcademyLesson[]> = {
   ],
 };
 
-const liveClasses: LiveClass[] = [
+const initialLiveClasses: LiveClass[] = [
   {
     id: "lv1",
     title: "Taller en directo: Menús antiinflamatorios de verano",
@@ -447,6 +451,9 @@ const liveClasses: LiveClass[] = [
     date: "2026-07-15",
     time: "18:00",
     status: "upcoming",
+    courseId: "c1",
+    roomUrl: "https://meet.google.com/abc-defg-hij",
+    agenda: "Planificación de menús de temporada y dudas del módulo 3.",
   },
   {
     id: "lv2",
@@ -455,6 +462,9 @@ const liveClasses: LiveClass[] = [
     date: "2026-07-22",
     time: "19:30",
     status: "upcoming",
+    courseId: "c2",
+    roomUrl: "https://meet.google.com/xyz-hormo-nal",
+    agenda: "Resolución de dudas sobre ciclo menstrual y menopausia.",
   },
   {
     id: "lv3",
@@ -463,6 +473,7 @@ const liveClasses: LiveClass[] = [
     date: "2026-06-28",
     time: "18:00",
     status: "recorded",
+    courseId: "c3",
   },
 ];
 
@@ -508,6 +519,12 @@ interface AcademyContextValue {
   nextLessonId: (courseId: string, lessonId: string) => string | null;
   prevLessonId: (courseId: string, lessonId: string) => string | null;
   resumeLessonId: (courseId: string) => string;
+  /** Crea o actualiza una lección (vídeo, texto, PDFs). */
+  saveLesson: (lesson: AcademyLesson) => void;
+  deleteLesson: (lessonId: string) => void;
+  liveClassesOf: (courseId: string) => LiveClass[];
+  addLiveClass: (lc: LiveClass) => void;
+  deleteLiveClass: (id: string) => void;
 }
 
 const AcademyContext = createContext<AcademyContextValue | null>(null);
@@ -519,6 +536,10 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
     () => new Set(initialCompleted),
   );
 
+  const [lessonsMap, setLessonsMap] =
+    useState<Record<string, AcademyLesson[]>>(lessonsByCourse);
+  const [liveClasses, setLiveClasses] = useState<LiveClass[]>(initialLiveClasses);
+
   const value = useMemo<AcademyContextValue>(() => {
     const isEnrolled = (id: string) => enrolledIds.includes(id);
 
@@ -527,10 +548,10 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
 
     const getCourse = (id: string) => catalog.find((c) => c.id === id);
 
-    const lessonsOf = (courseId: string) => lessonsByCourse[courseId] ?? [];
+    const lessonsOf = (courseId: string) => lessonsMap[courseId] ?? [];
 
     const getLesson = (lessonId: string) =>
-      Object.values(lessonsByCourse)
+      Object.values(lessonsMap)
         .flat()
         .find((l) => l.id === lessonId);
 
@@ -590,7 +611,46 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
       return (firstPending ?? list[0])?.id ?? "";
     };
 
+    const saveLesson = (lesson: AcademyLesson) =>
+      setLessonsMap((prev) => {
+        const next: Record<string, AcademyLesson[]> = {};
+        for (const [cid, list] of Object.entries(prev)) {
+          next[cid] = list.filter((l) => l.id !== lesson.id || cid === lesson.courseId);
+        }
+        const list = next[lesson.courseId] ?? [];
+        const exists = list.some((l) => l.id === lesson.id);
+        next[lesson.courseId] = exists
+          ? list.map((l) => (l.id === lesson.id ? lesson : l))
+          : [...list, lesson];
+        return next;
+      });
+
+    const deleteLesson = (lessonId: string) =>
+      setLessonsMap((prev) => {
+        const next: Record<string, AcademyLesson[]> = {};
+        for (const [cid, list] of Object.entries(prev)) {
+          next[cid] = list.filter((l) => l.id !== lessonId);
+        }
+        return next;
+      });
+
+    const liveClassesOf = (courseId: string) =>
+      liveClasses.filter((lc) => lc.courseId === courseId);
+
+    const addLiveClass = (lc: LiveClass) =>
+      setLiveClasses((prev) =>
+        [...prev, lc].sort((a, b) => a.date.localeCompare(b.date)),
+      );
+
+    const deleteLiveClass = (id: string) =>
+      setLiveClasses((prev) => prev.filter((lc) => lc.id !== id));
+
     return {
+      saveLesson,
+      deleteLesson,
+      liveClassesOf,
+      addLiveClass,
+      deleteLiveClass,
       catalog,
       liveClasses,
       enrolledIds,
@@ -609,7 +669,7 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
       prevLessonId,
       resumeLessonId,
     };
-  }, [enrolledIds, completed]);
+  }, [enrolledIds, completed, lessonsMap, liveClasses]);
 
   return (
     <AcademyContext.Provider value={value}>{children}</AcademyContext.Provider>

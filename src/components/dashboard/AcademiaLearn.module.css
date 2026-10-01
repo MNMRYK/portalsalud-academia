@@ -860,3 +860,17 @@
     padding: 18px 14px 36px;
   }
 }
+
+.liveJoin {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #b5735a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.liveJoin:hover {
+  background: #9c5f48;
+}

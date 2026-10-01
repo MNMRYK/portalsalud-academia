@@ -10,6 +10,7 @@ import {
   Circle,
   Plus,
   RotateCcw,
+  Video,
 } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { useAcademy, type AcademyLesson } from "../../context/AcademyContext";
@@ -66,6 +67,7 @@ export function CourseDetail({ courseId }: { courseId: string }) {
   const {
     getCourse,
     lessonsOf,
+    liveClassesOf,
     isEnrolled,
     isCompleted,
     progressOf,
@@ -94,6 +96,7 @@ export function CourseDetail({ courseId }: { courseId: string }) {
   const enrolled = isEnrolled(course.id);
   const lessons = lessonsOf(course.id);
   const progress = progressOf(course.id);
+  const lives = liveClassesOf(course.id);
 
   const openLesson = (lesson: AcademyLesson) => {
     if (!enrolled) return;
@@ -141,7 +144,7 @@ export function CourseDetail({ courseId }: { courseId: string }) {
           <p className={learn.heroExcerpt}>{course.excerpt}</p>
           <div className={learn.heroMeta}>
             <span className={learn.heroMetaItem}>
-              <Layers size={16} /> {course.lessons} lecciones
+              <Layers size={16} /> {lessons.length} lecciones
             </span>
             <span className={learn.heroMetaItem}>
               <Clock size={16} /> {course.duration} de contenido
@@ -197,6 +200,49 @@ export function CourseDetail({ courseId }: { courseId: string }) {
                 );
               })}
             </div>
+
+            {lives.length > 0 && (
+              <>
+                <h2 className={`${learn.sectionHeading} ${learn.sectionHeadingSpaced}`}>
+                  Clases en directo del curso
+                </h2>
+                <div className={learn.lessonAccordion}>
+                  {lives.map((lc) => (
+                    <div key={lc.id} className={learn.lessonRow}>
+                      <span className={learn.lessonNum}>
+                        <Video size={14} />
+                      </span>
+                      <span className={learn.lessonRowInfo}>
+                        <span className={learn.lessonRowTitle}>{lc.title}</span>
+                        <span className={learn.lessonRowMeta}>
+                          <Clock size={13} />
+                          {new Date(`${lc.date}T00:00:00`).toLocaleDateString("es-ES", {
+                            weekday: "short",
+                            day: "numeric",
+                            month: "long",
+                          })}{" "}
+                          · {lc.time} h ·{" "}
+                          {lc.status === "recorded" ? "grabación disponible" : `con ${lc.host}`}
+                        </span>
+                        {lc.agenda && (
+                          <span className={learn.lessonRowMeta}>{lc.agenda}</span>
+                        )}
+                      </span>
+                      {enrolled && lc.roomUrl && lc.status !== "recorded" ? (
+                        <a
+                          href={lc.roomUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={learn.liveJoin}
+                        >
+                          Unirse
+                        </a>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Columna derecha 35% (sticky) */}

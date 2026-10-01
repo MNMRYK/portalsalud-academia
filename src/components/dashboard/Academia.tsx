@@ -38,6 +38,11 @@ import {
 import { CategoryDropdown } from "./academia/CategoryDropdown";
 import { RichTextEditor } from "./academia/RichTextEditor";
 import { useUser } from "../../context/UserContext";
+import {
+  useAcademy,
+  type AcademyLesson,
+  type LessonResource,
+} from "../../context/AcademyContext";
 import { AcademiaStudent, type StudentSection } from "./AcademiaStudent";
 import styles from "./Dashboard.module.css";
 import academia from "./Academia.module.css";
@@ -61,12 +66,7 @@ interface Course {
   published: boolean;
 }
 
-interface Lesson {
-  id: string;
-  courseId: string;
-  title: string;
-  duration: string;
-}
+type Lesson = AcademyLesson;
 
 const stats = [
   { value: "12", label: "Cursos publicados", icon: Layers, iconClass: styles.iconPlum },
@@ -129,14 +129,7 @@ const initialCourses: Course[] = [
   },
 ];
 
-const initialLessons: Lesson[] = [
-  { id: "l1", courseId: "c1", title: "¿Qué es la inflamación crónica?", duration: "12 min" },
-  { id: "l2", courseId: "c1", title: "Alimentos proinflamatorios a evitar", duration: "18 min" },
-  { id: "l3", courseId: "c1", title: "Diseño de un plato antiinflamatorio", duration: "22 min" },
-  { id: "l4", courseId: "c2", title: "El ciclo menstrual y la nutrición", duration: "16 min" },
-  { id: "l5", courseId: "c2", title: "Menopausia: cambios y estrategias", duration: "20 min" },
-  { id: "l6", courseId: "c3", title: "Eje intestino-cerebro", duration: "14 min" },
-];
+
 
 
 
@@ -145,7 +138,7 @@ export function Academia({ studentSection }: { studentSection?: StudentSection }
   const initialView = (useLocation().state as { view?: View })?.view;
   const [view, setView] = useState<View>(initialView ?? "home");
   const [courses, setCourses] = useState<Course[]>(initialCourses);
-  const [lessons, setLessons] = useState<Lesson[]>(initialLessons);
+  const { lessonsOf, deleteLesson: removeLesson } = useAcademy();
   const [categories, setCategories] = useState<string[]>([
     "Nutrición",
     "Hormonal",
@@ -196,7 +189,8 @@ export function Academia({ studentSection }: { studentSection?: StudentSection }
   };
 
   const deleteLesson = (id: string) => {
-    setLessons((prev) => prev.filter((l) => l.id !== id));
+    removeLesson(id);
+    toast.success("Lección eliminada");
   };
 
   // Vista de alumno (paciente): reutiliza el diseño de la academia en modo lectura.
@@ -248,13 +242,20 @@ export function Academia({ studentSection }: { studentSection?: StudentSection }
           />
         )}
 
-        {view === "liveClassForm" && <LiveClassFormView onBack={goHome} />}
+        {view === "liveClassForm" && (
+          <LiveClassFormView
+            courses={courses}
+            defaultCourseId={selectedCourse?.id}
+            onBack={selectedCourse ? backToDetail : goHome}
+          />
+        )}
 
         {view === "courseDetail" && selectedCourse && (
           <CourseDetailView
             course={selectedCourse}
-            lessons={lessons.filter((l) => l.courseId === selectedCourse.id)}
+            lessons={lessonsOf(selectedCourse.id)}
             onBack={goHome}
+            onAddLive={() => setView("liveClassForm")}
             onAddLesson={() => openLessonForm(null, selectedCourse.id)}
             onEditLesson={(lesson) => openLessonForm(lesson)}
             onDeleteLesson={deleteLesson}
@@ -695,13 +696,46 @@ function LessonFormView({
   );
   const [title, setTitle] = useState(lesson?.title ?? "");
   const [duration, setDuration] = useState(lesson?.duration ?? "");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [files, setFiles] = useState<string[]>([]);
+  const { saveLesson } = useAcademy();
+  const [videoUrl, setVideoUrl] = useState(lesson?.videoUrl ?? "");
+  const [readingTime, setReadingTime] = useState(lesson?.readingTime ?? "");
+  const [content, setContent] = useState(lesson?.content ?? "");
+  const [files, setFiles] = useState<LessonResource[]>(lesson?.resources ?? []);
   const [category, setCategory] = useState("");
 
   const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const list = Array.from(e.target.files ?? []).map((f) => f.name);
+    const list: LessonResource[] = Array.from(e.target.files ?? []).map((f) => ({
+      id: `r-${Date.now()}-${f.name}`,
+      name: f.name.replace(/\.pdf$/i, ""),
+      type: "pdf",
+      size:
+        f.size > 1024 * 1024
+          ? `${(f.size / 1024 / 1024).toFixed(1)} MB`
+          : `${Math.max(1, Math.round(f.size / 1024))} KB`,
+    }));
     setFiles((prev) => [...prev, ...list]);
+    e.target.value = "";
+  };
+
+  const handleSave = () => {
+    if (!title.trim() || !courseId) {
+      toast.error("Indica el curso y el título de la lección");
+      return;
+    }
+    saveLesson({
+      id: lesson?.id ?? `${courseId}-l${Date.now()}`,
+      courseId,
+      title: title.trim(),
+      duration: duration.trim() || "10 min",
+      videoUrl: videoUrl.trim() || undefined,
+      readingTime: videoUrl.trim() ? undefined : readingTime.trim() || undefined,
+      content: content || "<p></p>",
+      resources: files,
+    });
+    toast.success(lesson ? "Lección actualizada" : "Lección creada", {
+      description: "Los alumnos ya ven el contenido en el curso.",
+    });
+    onBack();
   };
 
 
@@ -755,15 +789,27 @@ function LessonFormView({
 
         <div className={academia.formGroup}>
           <label className={academia.formLabel}>
-            ID o URL del vídeo (Bunny.net)
+            URL del vídeo (MP4, Bunny.net…) · déjalo vacío para lección de lectura
           </label>
           <input
             className={academia.formInput}
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}
-            placeholder="Ej. 76979871 o https://iframe.mediadelivery.net/…"
+            placeholder="https://…/video.mp4"
           />
         </div>
+
+        {!videoUrl.trim() && (
+          <div className={academia.formGroup}>
+            <label className={academia.formLabel}>Tiempo de lectura</label>
+            <input
+              className={academia.formInput}
+              value={readingTime}
+              onChange={(e) => setReadingTime(e.target.value)}
+              placeholder="Ej. Lectura de 8 min"
+            />
+          </div>
+        )}
 
         <div className={academia.formGroup}>
           <label className={academia.formLabel}>Etiquetas / Categorías</label>
@@ -780,24 +826,24 @@ function LessonFormView({
 
         <div className={academia.formGroup}>
           <label className={academia.formLabel}>Contenido de la lección</label>
-          <RichTextEditor />
+          <RichTextEditor initialHtml={lesson?.content ?? ""} onChange={setContent} />
         </div>
 
         <div className={academia.formGroup}>
           <label className={academia.formLabel}>Material adjunto (PDFs)</label>
           {files.length > 0 && (
             <div className={academia.attachList}>
-              {files.map((name, i) => (
-                <div key={`${name}-${i}`} className={academia.attachItem}>
+              {files.map((f) => (
+                <div key={f.id} className={academia.attachItem}>
                   <span className={academia.attachName}>
-                    <FileText size={16} /> {name}
+                    <FileText size={16} /> {f.name} · {f.size}
                   </span>
                   <button
                     type="button"
                     className={academia.attachRemove}
-                    aria-label={`Quitar ${name}`}
+                    aria-label={`Quitar ${f.name}`}
                     onClick={() =>
-                      setFiles((prev) => prev.filter((_, idx) => idx !== i))
+                      setFiles((prev) => prev.filter((x) => x.id !== f.id))
                     }
                   >
                     <Trash2 size={15} />
@@ -818,7 +864,7 @@ function LessonFormView({
           <button type="button" className={academia.ghostButton} onClick={onBack}>
             Cancelar
           </button>
-          <button type="button" className={academia.primaryButton} onClick={onBack}>
+          <button type="button" className={academia.primaryButton} onClick={handleSave}>
             <Save size={16} /> Guardar Lección
           </button>
         </div>
@@ -840,7 +886,17 @@ const mockPatients = [
   "Nuria Castaño",
 ];
 
-function LiveClassFormView({ onBack }: { onBack: () => void }) {
+function LiveClassFormView({
+  courses,
+  defaultCourseId,
+  onBack,
+}: {
+  courses: Course[];
+  defaultCourseId?: string;
+  onBack: () => void;
+}) {
+  const { addLiveClass } = useAcademy();
+  const [courseId, setCourseId] = useState(defaultCourseId ?? "");
   const [title, setTitle] = useState("");
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState("");
@@ -880,6 +936,29 @@ function LiveClassFormView({ onBack }: { onBack: () => void }) {
 
   const availablePatients = mockPatients.filter((p) => !recipients.includes(p));
 
+  const handleSchedule = () => {
+    if (!title.trim() || !date || !time) {
+      toast.error("Completa título, fecha y hora del directo");
+      return;
+    }
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    addLiveClass({
+      id: `lv-${Date.now()}`,
+      title: title.trim(),
+      host: "Laura García",
+      date: `${y}-${m}-${d}`,
+      time,
+      status: "upcoming",
+      courseId: courseId || undefined,
+      roomUrl: roomUrl.trim() || undefined,
+      agenda: agenda.trim() || undefined,
+    });
+    toast.success("Clase en directo programada");
+    onBack();
+  };
+
 
   return (
     <>
@@ -898,6 +977,22 @@ function LiveClassFormView({ onBack }: { onBack: () => void }) {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Ej. Sesión de dudas: menús antiinflamatorios"
           />
+        </div>
+
+        <div className={academia.formGroup}>
+          <label className={academia.formLabel}>Curso vinculado</label>
+          <select
+            className={academia.formSelect}
+            value={courseId}
+            onChange={(e) => setCourseId(e.target.value)}
+          >
+            <option value="">Clase general (sin curso)</option>
+            {courses.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className={academia.formRow}>
@@ -1078,7 +1173,7 @@ function LiveClassFormView({ onBack }: { onBack: () => void }) {
           <button type="button" className={academia.ghostButton} onClick={onBack}>
             Cancelar
           </button>
-          <button type="button" className={academia.primaryButton} onClick={onBack}>
+          <button type="button" className={academia.primaryButton} onClick={handleSchedule}>
             <Video size={16} /> Programar Clase
           </button>
         </div>
@@ -1094,6 +1189,7 @@ function CourseDetailView({
   course,
   lessons,
   onBack,
+  onAddLive,
   onAddLesson,
   onEditLesson,
   onDeleteLesson,
@@ -1101,10 +1197,13 @@ function CourseDetailView({
   course: Course;
   lessons: Lesson[];
   onBack: () => void;
+  onAddLive: () => void;
   onAddLesson: () => void;
   onEditLesson: (lesson: Lesson) => void;
   onDeleteLesson: (id: string) => void;
 }) {
+  const { liveClassesOf, deleteLiveClass } = useAcademy();
+  const lives = liveClassesOf(course.id);
   return (
     <>
       <ViewHeader onBack={onBack} title={course.title} />
@@ -1133,6 +1232,22 @@ function CourseDetailView({
                 <span className={academia.lessonTitle}>{l.title}</span>
                 <span className={academia.lessonMeta}>
                   <Clock size={13} /> {l.duration}
+                  <span className={academia.contentBadge}>
+                    {l.videoUrl ? (
+                      <>
+                        <PlayCircle size={12} /> Vídeo
+                      </>
+                    ) : (
+                      <>
+                        <BookOpen size={12} /> Lectura
+                      </>
+                    )}
+                  </span>
+                  {l.resources.length > 0 && (
+                    <span className={academia.contentBadge}>
+                      <FileText size={12} /> {l.resources.length} PDF
+                    </span>
+                  )}
                 </span>
               </div>
               <div className={academia.lessonActions}>
@@ -1161,6 +1276,51 @@ function CourseDetailView({
         <div className={academia.emptyState}>
           Este curso todavía no tiene lecciones publicadas.
         </div>
+      )}
+
+      <div className={academia.lessonListHeader}>
+        <h2 className={styles.sectionTitle}>Directos programados</h2>
+        <button type="button" className={academia.secondaryButton} onClick={onAddLive}>
+          <Video size={15} strokeWidth={2.5} /> Programar directo
+        </button>
+      </div>
+      {lives.length > 0 ? (
+        <div className={academia.lessonList}>
+          {lives.map((lc) => (
+            <div key={lc.id} className={academia.lessonItem}>
+              <span className={academia.lessonIndex}>
+                <Video size={15} />
+              </span>
+              <div className={academia.lessonInfo}>
+                <span className={academia.lessonTitle}>{lc.title}</span>
+                <span className={academia.lessonMeta}>
+                  <CalendarIcon size={13} />{" "}
+                  {new Date(`${lc.date}T00:00:00`).toLocaleDateString("es-ES", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}{" "}
+                  · {lc.time}
+                  <span className={academia.contentBadge}>
+                    {lc.status === "recorded" ? "Grabado" : "Próximo"}
+                  </span>
+                </span>
+              </div>
+              <div className={academia.lessonActions}>
+                <button
+                  type="button"
+                  className={`${academia.cardActionBtn} ${academia.cardActionDanger}`}
+                  aria-label={`Eliminar ${lc.title}`}
+                  onClick={() => deleteLiveClass(lc.id)}
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className={academia.emptyState}>No hay directos programados para este curso.</div>
       )}
     </>
 
