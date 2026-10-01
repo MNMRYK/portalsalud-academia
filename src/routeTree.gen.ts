@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RecursosRouteImport } from './routes/recursos'
 import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-password'
+import { Route as ProfesoresRouteImport } from './routes/profesores'
 import { Route as PacientesRouteImport } from './routes/pacientes'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FormulariosRouteImport } from './routes/formularios'
@@ -51,6 +52,11 @@ const RecursosRoute = RecursosRouteImport.update({
 const RecuperarPasswordRoute = RecuperarPasswordRouteImport.update({
   id: '/recuperar-password',
   path: '/recuperar-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfesoresRoute = ProfesoresRouteImport.update({
+  id: '/profesores',
+  path: '/profesores',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PacientesRoute = PacientesRouteImport.update({
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
+  '/profesores': typeof ProfesoresRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
@@ -254,6 +261,7 @@ export interface FileRoutesByTo {
   '/facturacion': typeof FacturacionRoute
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
+  '/profesores': typeof ProfesoresRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/formularios': typeof FormulariosRouteWithChildren
   '/login': typeof LoginRoute
   '/pacientes': typeof PacientesRoute
+  '/profesores': typeof ProfesoresRoute
   '/recuperar-password': typeof RecuperarPasswordRoute
   '/recursos': typeof RecursosRoute
   '/academia/alumnos': typeof AcademiaAlumnosRoute
@@ -327,6 +336,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/login'
     | '/pacientes'
+    | '/profesores'
     | '/recuperar-password'
     | '/recursos'
     | '/academia/alumnos'
@@ -360,6 +370,7 @@ export interface FileRouteTypes {
     | '/facturacion'
     | '/login'
     | '/pacientes'
+    | '/profesores'
     | '/recuperar-password'
     | '/recursos'
     | '/academia/alumnos'
@@ -395,6 +406,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/login'
     | '/pacientes'
+    | '/profesores'
     | '/recuperar-password'
     | '/recursos'
     | '/academia/alumnos'
@@ -431,6 +443,7 @@ export interface RootRouteChildren {
   FormulariosRoute: typeof FormulariosRouteWithChildren
   LoginRoute: typeof LoginRoute
   PacientesRoute: typeof PacientesRoute
+  ProfesoresRoute: typeof ProfesoresRoute
   RecuperarPasswordRoute: typeof RecuperarPasswordRoute
   RecursosRoute: typeof RecursosRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -456,6 +469,13 @@ declare module '@tanstack/react-router' {
       path: '/recuperar-password'
       fullPath: '/recuperar-password'
       preLoaderRoute: typeof RecuperarPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profesores': {
+      id: '/profesores'
+      path: '/profesores'
+      fullPath: '/profesores'
+      preLoaderRoute: typeof ProfesoresRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pacientes': {
@@ -737,6 +757,7 @@ const rootRouteChildren: RootRouteChildren = {
   FormulariosRoute: FormulariosRouteWithChildren,
   LoginRoute: LoginRoute,
   PacientesRoute: PacientesRoute,
+  ProfesoresRoute: ProfesoresRoute,
   RecuperarPasswordRoute: RecuperarPasswordRoute,
   RecursosRoute: RecursosRoute,
   ApiChatRoute: ApiChatRoute,
