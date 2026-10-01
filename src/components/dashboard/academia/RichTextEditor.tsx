@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
   Bold,
   Italic,
@@ -16,14 +16,25 @@ import styles from "../Academia.module.css";
  */
 export function RichTextEditor({
   placeholder = "Escribe el contenido de la lección…",
+  initialHtml = "",
+  onChange,
 }: {
   placeholder?: string;
+  initialHtml?: string;
+  onChange?: (html: string) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current) ref.current.innerHTML = initialHtml;
+    // Solo al montar: el contenido posterior lo controla el usuario.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const exec = (command: string, value?: string) => {
     ref.current?.focus();
     document.execCommand(command, false, value);
+    onChange?.(ref.current?.innerHTML ?? "");
   };
 
   const block = (tag: string) => exec("formatBlock", tag);
@@ -101,6 +112,7 @@ export function RichTextEditor({
         contentEditable
         suppressContentEditableWarning
         data-placeholder={placeholder}
+        onInput={(e) => onChange?.(e.currentTarget.innerHTML)}
       />
     </div>
   );
