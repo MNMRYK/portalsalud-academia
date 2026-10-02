@@ -233,6 +233,56 @@ export function Calendario() {
     [appointments],
   );
 
+  type Block = {
+    id: string;
+    kind: "days" | "hours";
+    from: string;
+    to: string;
+    startTime: string;
+    endTime: string;
+    reason: string;
+  };
+  const [blocks, setBlocks] = useState<Block[]>([]);
+  const [blockForm, setBlockForm] = useState<Omit<Block, "id">>({
+    kind: "days",
+    from: iso(today),
+    to: iso(today),
+    startTime: "14:00",
+    endTime: "16:00",
+    reason: "",
+  });
+  const [blockError, setBlockError] = useState("");
+
+  const isDayFullyBlocked = (d: string) =>
+    blocks.some((b) => b.kind === "days" && d >= b.from && d <= b.to);
+  const blockReasonFor = (d: string) =>
+    blocks.find((b) => b.kind === "days" && d >= b.from && d <= b.to)?.reason ?? "";
+  const isSlotBlocked = (d: string, t: string) =>
+    isDayFullyBlocked(d) ||
+    blocks.some(
+      (b) => b.kind === "hours" && b.from === d && t >= b.startTime && t < b.endTime,
+    );
+
+  const addBlock = () => {
+    const f = blockForm;
+    if (!f.from) return setBlockError("Indica una fecha.");
+    if (f.kind === "days" && (!f.to || f.to < f.from))
+      return setBlockError("La fecha final debe ser igual o posterior a la inicial.");
+    if (f.kind === "hours" && f.endTime <= f.startTime)
+      return setBlockError("La hora final debe ser posterior a la inicial.");
+    setBlockError("");
+    setBlocks((p) => [
+      ...p,
+      {
+        ...f,
+        to: f.kind === "days" ? f.to : f.from,
+        reason: f.reason.trim() || (f.kind === "days" ? "Vacaciones" : "No disponible"),
+        id: `blk-${Date.now()}`,
+      },
+    ]);
+    setBlockForm({ ...f, reason: "" });
+  };
+
   const goPrevMonth = () =>
     setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1));
   const goNextMonth = () =>
@@ -441,10 +491,14 @@ export function Calendario() {
                 const isToday = key === iso(today);
                 const isSelected = key === selectedDate;
                 const hasAppt = daysWithAppointments.has(key);
+                const fullBlock = isDayFullyBlocked(key);
+                const partBlock = !fullBlock && blocks.some((b) => b.kind === "hours" && b.from === key);
                 const cls = [
                   s.day,
                   !inMonth ? s.dayMuted : "",
                   isToday ? s.dayToday : "",
+                  fullBlock ? s.dayBlocked : "",
+                  partBlock ? s.dayPartBlocked : "",
                   isSelected ? s.daySelected : "",
                 ]
                   .filter(Boolean)
@@ -481,6 +535,10 @@ export function Calendario() {
                 />
                 Día seleccionado
               </div>
+              <div className={s.legendItem}>
+                <span className={`${s.legendDot} ${s.legendBlocked}`} />
+                Bloqueado
+              </div>
             </div>
           </section>
 
@@ -495,13 +553,20 @@ export function Calendario() {
                   </div>
                 </div>
               </div>
+              {isDayFullyBlocked(selectedDate) && (
+                <div className={s.blockNotice}>
+                  Día bloqueado: {blockReasonFor(selectedDate)}
+                </div>
+              )}
               <div className={s.slots}>
                 {availableSlots.map((t) => {
                   const booked = bookedTimes.has(t);
+                  const blocked = isSlotBlocked(selectedDate, t);
                   const selected = selectedSlot === t;
                   const cls = [
                     s.slot,
                     booked ? s.slotBooked : "",
+                    blocked ? s.slotBlocked : "",
                     selected ? s.slotSelected : "",
                   ]
                     .filter(Boolean)
@@ -511,14 +576,122 @@ export function Calendario() {
                       key={t}
                       type="button"
                       className={cls}
-                      disabled={booked}
-                      onClick={() => !booked && openBooking(t)}
+                      disabled={booked || blocked}
+                      title={blocked ? "Bloqueado" : undefined}
+                      onClick={() => !booked && !blocked && openBooking(t)}
                     >
                       {t}
                     </button>
                   );
                 })}
               </div>
+            </section>
+
+            <section className={s.card}>
+              <div className={s.cardHeader}>
+                <div>
+                  <div className={s.cardTitle}>Bloqueos y vacaciones</div>
+                  <div className={s.cardSub}>
+                    Bloquea días completos o franjas horarias
+                  </div>
+                </div>
+              </div>
+              <div className={s.blockForm}>
+                <div className={s.blockTabs}>
+                  <button
+                    type="button"
+                    className={blockForm.kind === "days" ? s.blockTabActive : s.blockTab}
+                    onClick={() => setBlockForm({ ...blockForm, kind: "days" })}
+                  >
+                    Días completos
+                  </button>
+                  <button
+                    type="button"
+                    className={blockForm.kind === "hours" ? s.blockTabActive : s.blockTab}
+                    onClick={() => setBlockForm({ ...blockForm, kind: "hours" })}
+                  >
+                    Por horas
+                  </button>
+                </div>
+                <div className={s.blockRow}>
+                  <label className={s.blockField}>
+                    {blockForm.kind === "days" ? "Desde" : "Día"}
+                    <input
+                      type="date"
+                      value={blockForm.from}
+                      onChange={(e) => setBlockForm({ ...blockForm, from: e.target.value })}
+                    />
+                  </label>
+                  {blockForm.kind === "days" ? (
+                    <label className={s.blockField}>
+                      Hasta
+                      <input
+                        type="date"
+                        value={blockForm.to}
+                        onChange={(e) => setBlockForm({ ...blockForm, to: e.target.value })}
+                      />
+                    </label>
+                  ) : (
+                    <>
+                      <label className={s.blockField}>
+                        De
+                        <input
+                          type="time"
+                          value={blockForm.startTime}
+                          onChange={(e) => setBlockForm({ ...blockForm, startTime: e.target.value })}
+                        />
+                      </label>
+                      <label className={s.blockField}>
+                        A
+                        <input
+                          type="time"
+                          value={blockForm.endTime}
+                          onChange={(e) => setBlockForm({ ...blockForm, endTime: e.target.value })}
+                        />
+                      </label>
+                    </>
+                  )}
+                </div>
+                <label className={s.blockField}>
+                  Motivo
+                  <input
+                    type="text"
+                    placeholder="Vacaciones, formación, asuntos propios…"
+                    value={blockForm.reason}
+                    onChange={(e) => setBlockForm({ ...blockForm, reason: e.target.value })}
+                  />
+                </label>
+                {blockError && <div className={s.blockError}>{blockError}</div>}
+                <button type="button" className={s.blockAdd} onClick={addBlock}>
+                  Añadir bloqueo
+                </button>
+              </div>
+              {blocks.length > 0 && (
+                <ul className={s.blockList}>
+                  {blocks.map((b) => (
+                    <li key={b.id} className={s.blockItem}>
+                      <div>
+                        <strong>{b.reason}</strong>
+                        <span>
+                          {b.kind === "days"
+                            ? b.from === b.to
+                              ? b.from
+                              : `${b.from} → ${b.to}`
+                            : `${b.from} · ${b.startTime}–${b.endTime}`}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className={s.blockRemove}
+                        onClick={() => setBlocks((p) => p.filter((x) => x.id !== b.id))}
+                        aria-label="Quitar bloqueo"
+                      >
+                        Quitar
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
 
             <section className={s.card}>
