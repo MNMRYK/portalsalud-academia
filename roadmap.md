@@ -8,3 +8,5 @@
 - [x] Foro de comunidad con hilos abribles, respuestas y adjuntos (imagen, vídeo, audio, enlaces).
 - [x] Reportes de comentarios por parte de los usuarios y cola de moderación para el administrador.
 - [x] Creación de foros (categorías) e hilos desde la vista de administrador.
+- [x] Contenido real por curso (vídeos, PDFs, textos, directos) editable desde admin.
+- [x] Vista Profesores (CRUD + perfil) en el menú del administrador.

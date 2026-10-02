@@ -27,6 +27,7 @@ import {
   MessagesSquare,
   BotMessageSquare,
   Menu,
+  Presentation,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -41,6 +42,7 @@ const adminNav = [
   { to: "/academia", label: "Módulo Academia", icon: GraduationCap },
   { to: "/academia/gestion-retos", label: "Gestión de Retos", icon: Trophy },
   { to: "/academia/moderacion", label: "Moderación", icon: ShieldCheck },
+  { to: "/profesores", label: "Profesores", icon: Presentation },
   { to: "/pacientes", label: "Gestión de Pacientes", icon: Users },
   { to: "/calendario", label: "Calendario y Videoconsulta", icon: CalendarDays },
   { to: "/formularios", label: "Formularios", icon: FileText },
