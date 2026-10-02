@@ -9,94 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AcademiaRouteImport } from './routes/academia'
-import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
-import { Route as AjustesRouteImport } from './routes/ajustes'
-import { Route as AsistenteIaRouteImport } from './routes/asistente-ia'
-import { Route as CalendarioRouteImport } from './routes/calendario'
-import { Route as FacturacionRouteImport } from './routes/facturacion'
-import { Route as FormulariosRouteImport } from './routes/formularios'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as PacientesRouteImport } from './routes/pacientes'
-import { Route as ProfesoresRouteImport } from './routes/profesores'
-import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-password'
 import { Route as RecursosRouteImport } from './routes/recursos'
-import { Route as AcademiaIndexRouteImport } from './routes/academia.index'
-import { Route as AcademiaAlumnosRouteImport } from './routes/academia.alumnos'
-import { Route as AcademiaComunidadRouteImport } from './routes/academia.comunidad'
-import { Route as AcademiaDirectoRouteImport } from './routes/academia.directo'
-import { Route as AcademiaExplorarRouteImport } from './routes/academia.explorar'
-import { Route as AcademiaGestionRetosRouteImport } from './routes/academia.gestion-retos'
-import { Route as AcademiaModeracionRouteImport } from './routes/academia.moderacion'
-import { Route as AcademiaRecursosRouteImport } from './routes/academia.recursos'
-import { Route as AcademiaRetosRouteImport } from './routes/academia.retos'
-import { Route as AcademiaTalleresRouteImport } from './routes/academia.talleres'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as FormulariosIndexRouteImport } from './routes/formularios.index'
-import { Route as FormulariosNuevaRouteImport } from './routes/formularios.nueva'
+import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-password'
+import { Route as ProfesoresRouteImport } from './routes/profesores'
+import { Route as PacientesRouteImport } from './routes/pacientes'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as FormulariosRouteImport } from './routes/formularios'
+import { Route as FacturacionRouteImport } from './routes/facturacion'
+import { Route as CalendarioRouteImport } from './routes/calendario'
+import { Route as AsistenteIaRouteImport } from './routes/asistente-ia'
+import { Route as AjustesRouteImport } from './routes/ajustes'
+import { Route as ActivarCuentaRouteImport } from './routes/activar-cuenta'
+import { Route as AcademiaRouteImport } from './routes/academia'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
-import { Route as PortalFormularioRouteImport } from './routes/portal.formulario'
-import { Route as PortalPerfilRouteImport } from './routes/portal.perfil'
-import { Route as PortalPlanRouteImport } from './routes/portal.plan'
-import { Route as PortalRecursosClinicosRouteImport } from './routes/portal.recursos-clinicos'
+import { Route as FormulariosIndexRouteImport } from './routes/formularios.index'
+import { Route as AcademiaIndexRouteImport } from './routes/academia.index'
 import { Route as PortalSuscripcionesRouteImport } from './routes/portal.suscripciones'
+import { Route as PortalRecursosClinicosRouteImport } from './routes/portal.recursos-clinicos'
+import { Route as PortalPlanRouteImport } from './routes/portal.plan'
+import { Route as PortalPerfilRouteImport } from './routes/portal.perfil'
+import { Route as PortalFormularioRouteImport } from './routes/portal.formulario'
+import { Route as FormulariosNuevaRouteImport } from './routes/formularios.nueva'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AcademiaTalleresRouteImport } from './routes/academia.talleres'
+import { Route as AcademiaRetosRouteImport } from './routes/academia.retos'
+import { Route as AcademiaRecursosRouteImport } from './routes/academia.recursos'
+import { Route as AcademiaModeracionRouteImport } from './routes/academia.moderacion'
+import { Route as AcademiaGestionRetosRouteImport } from './routes/academia.gestion-retos'
+import { Route as AcademiaExplorarRouteImport } from './routes/academia.explorar'
+import { Route as AcademiaDirectoRouteImport } from './routes/academia.directo'
+import { Route as AcademiaComunidadRouteImport } from './routes/academia.comunidad'
+import { Route as AcademiaAlumnosRouteImport } from './routes/academia.alumnos'
 import { Route as AcademiaCursoCourseIdRouteImport } from './routes/academia.curso.$courseId'
 import { Route as AcademiaLeccionCourseIdLessonIdRouteImport } from './routes/academia.leccion.$courseId.$lessonId'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AcademiaRoute = AcademiaRouteImport.update({
-  id: '/academia',
-  path: '/academia',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ActivarCuentaRoute = ActivarCuentaRouteImport.update({
-  id: '/activar-cuenta',
-  path: '/activar-cuenta',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AjustesRoute = AjustesRouteImport.update({
-  id: '/ajustes',
-  path: '/ajustes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AsistenteIaRoute = AsistenteIaRouteImport.update({
-  id: '/asistente-ia',
-  path: '/asistente-ia',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CalendarioRoute = CalendarioRouteImport.update({
-  id: '/calendario',
-  path: '/calendario',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FacturacionRoute = FacturacionRouteImport.update({
-  id: '/facturacion',
-  path: '/facturacion',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FormulariosRoute = FormulariosRouteImport.update({
-  id: '/formularios',
-  path: '/formularios',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PacientesRoute = PacientesRouteImport.update({
-  id: '/pacientes',
-  path: '/pacientes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfesoresRoute = ProfesoresRouteImport.update({
-  id: '/profesores',
-  path: '/profesores',
+const RecursosRoute = RecursosRouteImport.update({
+  id: '/recursos',
+  path: '/recursos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecuperarPasswordRoute = RecuperarPasswordRouteImport.update({
@@ -104,64 +54,64 @@ const RecuperarPasswordRoute = RecuperarPasswordRouteImport.update({
   path: '/recuperar-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RecursosRoute = RecursosRouteImport.update({
-  id: '/recursos',
-  path: '/recursos',
+const ProfesoresRoute = ProfesoresRouteImport.update({
+  id: '/profesores',
+  path: '/profesores',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AcademiaIndexRoute = AcademiaIndexRouteImport.update({
+const PacientesRoute = PacientesRouteImport.update({
+  id: '/pacientes',
+  path: '/pacientes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormulariosRoute = FormulariosRouteImport.update({
+  id: '/formularios',
+  path: '/formularios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FacturacionRoute = FacturacionRouteImport.update({
+  id: '/facturacion',
+  path: '/facturacion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarioRoute = CalendarioRouteImport.update({
+  id: '/calendario',
+  path: '/calendario',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AsistenteIaRoute = AsistenteIaRouteImport.update({
+  id: '/asistente-ia',
+  path: '/asistente-ia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AjustesRoute = AjustesRouteImport.update({
+  id: '/ajustes',
+  path: '/ajustes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivarCuentaRoute = ActivarCuentaRouteImport.update({
+  id: '/activar-cuenta',
+  path: '/activar-cuenta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcademiaRoute = AcademiaRouteImport.update({
+  id: '/academia',
+  path: '/academia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AcademiaRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AcademiaAlumnosRoute = AcademiaAlumnosRouteImport.update({
-  id: '/alumnos',
-  path: '/alumnos',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaComunidadRoute = AcademiaComunidadRouteImport.update({
-  id: '/comunidad',
-  path: '/comunidad',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaDirectoRoute = AcademiaDirectoRouteImport.update({
-  id: '/directo',
-  path: '/directo',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaExplorarRoute = AcademiaExplorarRouteImport.update({
-  id: '/explorar',
-  path: '/explorar',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaGestionRetosRoute = AcademiaGestionRetosRouteImport.update({
-  id: '/gestion-retos',
-  path: '/gestion-retos',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaModeracionRoute = AcademiaModeracionRouteImport.update({
-  id: '/moderacion',
-  path: '/moderacion',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaRecursosRoute = AcademiaRecursosRouteImport.update({
-  id: '/recursos',
-  path: '/recursos',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaRetosRoute = AcademiaRetosRouteImport.update({
-  id: '/retos',
-  path: '/retos',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const AcademiaTalleresRoute = AcademiaTalleresRouteImport.update({
-  id: '/talleres',
-  path: '/talleres',
-  getParentRoute: () => AcademiaRoute,
-} as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/portal/',
+  path: '/portal/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FormulariosIndexRoute = FormulariosIndexRouteImport.update({
@@ -169,29 +119,14 @@ const FormulariosIndexRoute = FormulariosIndexRouteImport.update({
   path: '/',
   getParentRoute: () => FormulariosRoute,
 } as any)
-const FormulariosNuevaRoute = FormulariosNuevaRouteImport.update({
-  id: '/nueva',
-  path: '/nueva',
-  getParentRoute: () => FormulariosRoute,
+const AcademiaIndexRoute = AcademiaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AcademiaRoute,
 } as any)
-const PortalIndexRoute = PortalIndexRouteImport.update({
-  id: '/portal/',
-  path: '/portal/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortalFormularioRoute = PortalFormularioRouteImport.update({
-  id: '/portal/formulario',
-  path: '/portal/formulario',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortalPerfilRoute = PortalPerfilRouteImport.update({
-  id: '/portal/perfil',
-  path: '/portal/perfil',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortalPlanRoute = PortalPlanRouteImport.update({
-  id: '/portal/plan',
-  path: '/portal/plan',
+const PortalSuscripcionesRoute = PortalSuscripcionesRouteImport.update({
+  id: '/portal/suscripciones',
+  path: '/portal/suscripciones',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortalRecursosClinicosRoute = PortalRecursosClinicosRouteImport.update({
@@ -199,10 +134,75 @@ const PortalRecursosClinicosRoute = PortalRecursosClinicosRouteImport.update({
   path: '/portal/recursos-clinicos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PortalSuscripcionesRoute = PortalSuscripcionesRouteImport.update({
-  id: '/portal/suscripciones',
-  path: '/portal/suscripciones',
+const PortalPlanRoute = PortalPlanRouteImport.update({
+  id: '/portal/plan',
+  path: '/portal/plan',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PortalPerfilRoute = PortalPerfilRouteImport.update({
+  id: '/portal/perfil',
+  path: '/portal/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalFormularioRoute = PortalFormularioRouteImport.update({
+  id: '/portal/formulario',
+  path: '/portal/formulario',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormulariosNuevaRoute = FormulariosNuevaRouteImport.update({
+  id: '/nueva',
+  path: '/nueva',
+  getParentRoute: () => FormulariosRoute,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcademiaTalleresRoute = AcademiaTalleresRouteImport.update({
+  id: '/talleres',
+  path: '/talleres',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaRetosRoute = AcademiaRetosRouteImport.update({
+  id: '/retos',
+  path: '/retos',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaRecursosRoute = AcademiaRecursosRouteImport.update({
+  id: '/recursos',
+  path: '/recursos',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaModeracionRoute = AcademiaModeracionRouteImport.update({
+  id: '/moderacion',
+  path: '/moderacion',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaGestionRetosRoute = AcademiaGestionRetosRouteImport.update({
+  id: '/gestion-retos',
+  path: '/gestion-retos',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaExplorarRoute = AcademiaExplorarRouteImport.update({
+  id: '/explorar',
+  path: '/explorar',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaDirectoRoute = AcademiaDirectoRouteImport.update({
+  id: '/directo',
+  path: '/directo',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaComunidadRoute = AcademiaComunidadRouteImport.update({
+  id: '/comunidad',
+  path: '/comunidad',
+  getParentRoute: () => AcademiaRoute,
+} as any)
+const AcademiaAlumnosRoute = AcademiaAlumnosRouteImport.update({
+  id: '/alumnos',
+  path: '/alumnos',
+  getParentRoute: () => AcademiaRoute,
 } as any)
 const AcademiaCursoCourseIdRoute = AcademiaCursoCourseIdRouteImport.update({
   id: '/curso/$courseId',
@@ -457,81 +457,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/academia': {
-      id: '/academia'
-      path: '/academia'
-      fullPath: '/academia'
-      preLoaderRoute: typeof AcademiaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/activar-cuenta': {
-      id: '/activar-cuenta'
-      path: '/activar-cuenta'
-      fullPath: '/activar-cuenta'
-      preLoaderRoute: typeof ActivarCuentaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ajustes': {
-      id: '/ajustes'
-      path: '/ajustes'
-      fullPath: '/ajustes'
-      preLoaderRoute: typeof AjustesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/asistente-ia': {
-      id: '/asistente-ia'
-      path: '/asistente-ia'
-      fullPath: '/asistente-ia'
-      preLoaderRoute: typeof AsistenteIaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/calendario': {
-      id: '/calendario'
-      path: '/calendario'
-      fullPath: '/calendario'
-      preLoaderRoute: typeof CalendarioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/facturacion': {
-      id: '/facturacion'
-      path: '/facturacion'
-      fullPath: '/facturacion'
-      preLoaderRoute: typeof FacturacionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/formularios': {
-      id: '/formularios'
-      path: '/formularios'
-      fullPath: '/formularios'
-      preLoaderRoute: typeof FormulariosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pacientes': {
-      id: '/pacientes'
-      path: '/pacientes'
-      fullPath: '/pacientes'
-      preLoaderRoute: typeof PacientesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profesores': {
-      id: '/profesores'
-      path: '/profesores'
-      fullPath: '/profesores'
-      preLoaderRoute: typeof ProfesoresRouteImport
+    '/recursos': {
+      id: '/recursos'
+      path: '/recursos'
+      fullPath: '/recursos'
+      preLoaderRoute: typeof RecursosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recuperar-password': {
@@ -541,88 +471,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecuperarPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/recursos': {
-      id: '/recursos'
-      path: '/recursos'
-      fullPath: '/recursos'
-      preLoaderRoute: typeof RecursosRouteImport
+    '/profesores': {
+      id: '/profesores'
+      path: '/profesores'
+      fullPath: '/profesores'
+      preLoaderRoute: typeof ProfesoresRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/academia/': {
-      id: '/academia/'
+    '/pacientes': {
+      id: '/pacientes'
+      path: '/pacientes'
+      fullPath: '/pacientes'
+      preLoaderRoute: typeof PacientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/formularios': {
+      id: '/formularios'
+      path: '/formularios'
+      fullPath: '/formularios'
+      preLoaderRoute: typeof FormulariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/facturacion': {
+      id: '/facturacion'
+      path: '/facturacion'
+      fullPath: '/facturacion'
+      preLoaderRoute: typeof FacturacionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendario': {
+      id: '/calendario'
+      path: '/calendario'
+      fullPath: '/calendario'
+      preLoaderRoute: typeof CalendarioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asistente-ia': {
+      id: '/asistente-ia'
+      path: '/asistente-ia'
+      fullPath: '/asistente-ia'
+      preLoaderRoute: typeof AsistenteIaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ajustes': {
+      id: '/ajustes'
+      path: '/ajustes'
+      fullPath: '/ajustes'
+      preLoaderRoute: typeof AjustesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activar-cuenta': {
+      id: '/activar-cuenta'
+      path: '/activar-cuenta'
+      fullPath: '/activar-cuenta'
+      preLoaderRoute: typeof ActivarCuentaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/academia': {
+      id: '/academia'
+      path: '/academia'
+      fullPath: '/academia'
+      preLoaderRoute: typeof AcademiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
       path: '/'
-      fullPath: '/academia/'
-      preLoaderRoute: typeof AcademiaIndexRouteImport
-      parentRoute: typeof AcademiaRoute
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/academia/alumnos': {
-      id: '/academia/alumnos'
-      path: '/alumnos'
-      fullPath: '/academia/alumnos'
-      preLoaderRoute: typeof AcademiaAlumnosRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/academia/comunidad': {
-      id: '/academia/comunidad'
-      path: '/comunidad'
-      fullPath: '/academia/comunidad'
-      preLoaderRoute: typeof AcademiaComunidadRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/academia/directo': {
-      id: '/academia/directo'
-      path: '/directo'
-      fullPath: '/academia/directo'
-      preLoaderRoute: typeof AcademiaDirectoRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/academia/explorar': {
-      id: '/academia/explorar'
-      path: '/explorar'
-      fullPath: '/academia/explorar'
-      preLoaderRoute: typeof AcademiaExplorarRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/academia/gestion-retos': {
-      id: '/academia/gestion-retos'
-      path: '/gestion-retos'
-      fullPath: '/academia/gestion-retos'
-      preLoaderRoute: typeof AcademiaGestionRetosRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/academia/moderacion': {
-      id: '/academia/moderacion'
-      path: '/moderacion'
-      fullPath: '/academia/moderacion'
-      preLoaderRoute: typeof AcademiaModeracionRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/academia/recursos': {
-      id: '/academia/recursos'
-      path: '/recursos'
-      fullPath: '/academia/recursos'
-      preLoaderRoute: typeof AcademiaRecursosRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/academia/retos': {
-      id: '/academia/retos'
-      path: '/retos'
-      fullPath: '/academia/retos'
-      preLoaderRoute: typeof AcademiaRetosRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/academia/talleres': {
-      id: '/academia/talleres'
-      path: '/talleres'
-      fullPath: '/academia/talleres'
-      preLoaderRoute: typeof AcademiaTalleresRouteImport
-      parentRoute: typeof AcademiaRoute
-    }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
+    '/portal/': {
+      id: '/portal/'
+      path: '/portal'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/formularios/': {
@@ -632,39 +562,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormulariosIndexRouteImport
       parentRoute: typeof FormulariosRoute
     }
-    '/formularios/nueva': {
-      id: '/formularios/nueva'
-      path: '/nueva'
-      fullPath: '/formularios/nueva'
-      preLoaderRoute: typeof FormulariosNuevaRouteImport
-      parentRoute: typeof FormulariosRoute
+    '/academia/': {
+      id: '/academia/'
+      path: '/'
+      fullPath: '/academia/'
+      preLoaderRoute: typeof AcademiaIndexRouteImport
+      parentRoute: typeof AcademiaRoute
     }
-    '/portal/': {
-      id: '/portal/'
-      path: '/portal'
-      fullPath: '/portal/'
-      preLoaderRoute: typeof PortalIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal/formulario': {
-      id: '/portal/formulario'
-      path: '/portal/formulario'
-      fullPath: '/portal/formulario'
-      preLoaderRoute: typeof PortalFormularioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal/perfil': {
-      id: '/portal/perfil'
-      path: '/portal/perfil'
-      fullPath: '/portal/perfil'
-      preLoaderRoute: typeof PortalPerfilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal/plan': {
-      id: '/portal/plan'
-      path: '/portal/plan'
-      fullPath: '/portal/plan'
-      preLoaderRoute: typeof PortalPlanRouteImport
+    '/portal/suscripciones': {
+      id: '/portal/suscripciones'
+      path: '/portal/suscripciones'
+      fullPath: '/portal/suscripciones'
+      preLoaderRoute: typeof PortalSuscripcionesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portal/recursos-clinicos': {
@@ -674,12 +583,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalRecursosClinicosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/portal/suscripciones': {
-      id: '/portal/suscripciones'
-      path: '/portal/suscripciones'
-      fullPath: '/portal/suscripciones'
-      preLoaderRoute: typeof PortalSuscripcionesRouteImport
+    '/portal/plan': {
+      id: '/portal/plan'
+      path: '/portal/plan'
+      fullPath: '/portal/plan'
+      preLoaderRoute: typeof PortalPlanRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/portal/perfil': {
+      id: '/portal/perfil'
+      path: '/portal/perfil'
+      fullPath: '/portal/perfil'
+      preLoaderRoute: typeof PortalPerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/formulario': {
+      id: '/portal/formulario'
+      path: '/portal/formulario'
+      fullPath: '/portal/formulario'
+      preLoaderRoute: typeof PortalFormularioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/formularios/nueva': {
+      id: '/formularios/nueva'
+      path: '/nueva'
+      fullPath: '/formularios/nueva'
+      preLoaderRoute: typeof FormulariosNuevaRouteImport
+      parentRoute: typeof FormulariosRoute
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/academia/talleres': {
+      id: '/academia/talleres'
+      path: '/talleres'
+      fullPath: '/academia/talleres'
+      preLoaderRoute: typeof AcademiaTalleresRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/retos': {
+      id: '/academia/retos'
+      path: '/retos'
+      fullPath: '/academia/retos'
+      preLoaderRoute: typeof AcademiaRetosRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/recursos': {
+      id: '/academia/recursos'
+      path: '/recursos'
+      fullPath: '/academia/recursos'
+      preLoaderRoute: typeof AcademiaRecursosRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/moderacion': {
+      id: '/academia/moderacion'
+      path: '/moderacion'
+      fullPath: '/academia/moderacion'
+      preLoaderRoute: typeof AcademiaModeracionRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/gestion-retos': {
+      id: '/academia/gestion-retos'
+      path: '/gestion-retos'
+      fullPath: '/academia/gestion-retos'
+      preLoaderRoute: typeof AcademiaGestionRetosRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/explorar': {
+      id: '/academia/explorar'
+      path: '/explorar'
+      fullPath: '/academia/explorar'
+      preLoaderRoute: typeof AcademiaExplorarRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/directo': {
+      id: '/academia/directo'
+      path: '/directo'
+      fullPath: '/academia/directo'
+      preLoaderRoute: typeof AcademiaDirectoRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/comunidad': {
+      id: '/academia/comunidad'
+      path: '/comunidad'
+      fullPath: '/academia/comunidad'
+      preLoaderRoute: typeof AcademiaComunidadRouteImport
+      parentRoute: typeof AcademiaRoute
+    }
+    '/academia/alumnos': {
+      id: '/academia/alumnos'
+      path: '/alumnos'
+      fullPath: '/academia/alumnos'
+      preLoaderRoute: typeof AcademiaAlumnosRouteImport
+      parentRoute: typeof AcademiaRoute
     }
     '/academia/curso/$courseId': {
       id: '/academia/curso/$courseId'
