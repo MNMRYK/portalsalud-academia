@@ -23,6 +23,7 @@ import { ChallengesProvider } from "../context/ChallengesContext";
 import { AccessProvider } from "../context/AccessContext";
 import { SymptomDiaryProvider } from "../context/SymptomDiaryContext";
 import { ForumProvider } from "../context/ForumContext";
+import { TeachersProvider } from "../context/TeachersContext";
 import { DevSwitcher } from "../components/dashboard/DevSwitcher";
 import { Toaster } from "../components/ui/sonner";
 
@@ -48,7 +49,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -178,10 +179,12 @@ function RootComponent() {
                       <AccessProvider>
                         <SymptomDiaryProvider>
                           <ForumProvider>
+<TeachersProvider>
                             <Outlet />
                             <DevSwitcher />
                             <Toaster position="top-right" richColors />
-                          </ForumProvider>
+                          </TeachersProvider>
+</ForumProvider>
                         </SymptomDiaryProvider>
                       </AccessProvider>
                     </ChallengesProvider>
