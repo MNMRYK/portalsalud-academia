@@ -12,6 +12,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Sidebar } from "./Sidebar";
+import { SaveToRecord } from "./SaveToRecord";
 import styles from "./AsistenteIA.module.css";
 
 interface ChatMessage {
@@ -214,6 +215,14 @@ export function AsistenteIA() {
                     m.content
                   )}
                 </div>
+                {m.role === "assistant" &&
+                  m.content &&
+                  !(loading && i === messages.length - 1) && (
+                    <SaveToRecord
+                      content={m.content}
+                      prompt={messages[i - 1]?.content ?? ""}
+                    />
+                  )}
                 {m.role === "user" && (
                   <div className={`${styles.avatar} ${styles.avatarUser}`}>
                     LG
