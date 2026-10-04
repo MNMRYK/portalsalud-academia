@@ -78,7 +78,7 @@ import styles from "./Pacientes.module.css";
 type TabId = "datos" | "diario" | "plan" | "documentos" | "historial";
 
 
-const patientList = [
+export const patientList = [
   { name: "Elena Martín", meta: "Fase 2 · Activo", initials: "EM", avClass: styles.avPlum },
   { name: "Lucía Fernández", meta: "Fase 1 · Activo", initials: "LF", avClass: styles.avTerracota },
   { name: "Marcos Iglesias", meta: "Mantenimiento", initials: "MI", avClass: styles.avSage },
@@ -563,6 +563,8 @@ export function Pacientes() {
 
   const patient = patientList.find((p) => p.name === selectedPatient) ?? null;
   const patientTasks = selectedPatient ? tasksForPatient(selectedPatient) : [];
+  const aiDocs = selectedPatient ? documentsForPatient(selectedPatient) : [];
+  const aiNotes = selectedPatient ? notesForPatient(selectedPatient) : [];
   const patientConsultations = selectedPatient
     ? consultationsForPatient(selectedPatient)
     : [];
