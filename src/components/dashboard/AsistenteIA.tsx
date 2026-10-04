@@ -200,6 +200,12 @@ export function AsistenteIA() {
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {m.content}
                         </ReactMarkdown>
+                        {!(loading && i === messages.length - 1) && (
+                          <SaveToRecord
+                            content={m.content}
+                            prompt={messages[i - 1]?.content ?? ""}
+                          />
+                        )}
                       </div>
                     ) : (
                       <span className={styles.thinking}>
@@ -215,14 +221,6 @@ export function AsistenteIA() {
                     m.content
                   )}
                 </div>
-                {m.role === "assistant" &&
-                  m.content &&
-                  !(loading && i === messages.length - 1) && (
-                    <SaveToRecord
-                      content={m.content}
-                      prompt={messages[i - 1]?.content ?? ""}
-                    />
-                  )}
                 {m.role === "user" && (
                   <div className={`${styles.avatar} ${styles.avatarUser}`}>
                     LG
