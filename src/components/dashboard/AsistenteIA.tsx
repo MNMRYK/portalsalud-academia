@@ -12,6 +12,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Sidebar } from "./Sidebar";
+import { SaveToRecord } from "./SaveToRecord";
 import styles from "./AsistenteIA.module.css";
 
 interface ChatMessage {
@@ -199,6 +200,12 @@ export function AsistenteIA() {
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {m.content}
                         </ReactMarkdown>
+                        {!(loading && i === messages.length - 1) && (
+                          <SaveToRecord
+                            content={m.content}
+                            prompt={messages[i - 1]?.content ?? ""}
+                          />
+                        )}
                       </div>
                     ) : (
                       <span className={styles.thinking}>
