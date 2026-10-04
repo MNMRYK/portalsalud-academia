@@ -10,3 +10,4 @@
 - [x] Creación de foros (categorías) e hilos desde la vista de administrador.
 - [x] Contenido real por curso (vídeos, PDFs, textos, directos) editable desde admin.
 - [x] Vista Profesores (CRUD + perfil) en el menú del administrador.
+- [x] Bloqueos de agenda: días completos (vacaciones) y franjas por horas en Calendario.
