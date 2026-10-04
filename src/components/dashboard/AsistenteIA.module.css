@@ -455,3 +455,46 @@
     padding: 12px 16px 16px;
   }
 }
+
+.savePanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #e4d8c8;
+  white-space: normal;
+}
+
+.saveSelect {
+  flex: 1 1 160px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #e4d8c8;
+  border-radius: 10px;
+  background: #fffdf9;
+  color: #4a3b2c;
+  font: inherit;
+  font-size: 13px;
+}
+
+.saveButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #8b6a4a;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.saveButton:disabled {
+  background: #7c9070;
+  cursor: default;
+}
