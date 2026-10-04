@@ -62,6 +62,7 @@ import {
   useSymptomDiary,
   intensityLabel,
 } from "@/context/SymptomDiaryContext";
+import { usePatientRecords, downloadTextDocument } from "@/context/PatientRecordsContext";
 import {
   LineChart,
   Line,
@@ -353,6 +354,8 @@ export function Pacientes() {
     consultationsForPatient,
   } = useConsultations();
   const { entriesForPatient: symptomEntriesForPatient } = useSymptomDiary();
+  const { documentsForPatient, removeDocument, notesForPatient, removeEvolutionNote } =
+    usePatientRecords();
 
   const incomingPatient = (
     useLocation().state as { selectedPatient?: string | null }
@@ -915,6 +918,36 @@ export function Pacientes() {
                     </button>
                   </div>
 
+                  {aiNotes.length > 0 && (
+                    <div className={styles.folder}>
+                      <div className={styles.folderTitle}>
+                        <FileText size={18} className={styles.folderIcon} />
+                        <span className={styles.folderName}>Interpretaciones de analítica</span>
+                      </div>
+                      <div className={styles.docList}>
+                        {aiNotes.map((n) => (
+                          <details key={n.id} className={styles.docItem} style={{ display: "block" }}>
+                            <summary style={{ cursor: "pointer" }}>
+                              <span className={styles.docName}>{n.title}</span>{" "}
+                              <span className={styles.docMeta}>· {n.date}</span>
+                              <button
+                                type="button"
+                                className={styles.deleteAction}
+                                aria-label={`Eliminar ${n.title}`}
+                                onClick={() => removeEvolutionNote(n.id)}
+                                style={{ float: "right" }}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </summary>
+                            <p style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>{n.content}</p>
+                          </details>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+
                   <div className={styles.summaryGrid}>
                     <div className={styles.summaryCard}>
                       <span className={styles.summaryLabel}>Peso actual</span>
@@ -1291,6 +1324,44 @@ export function Pacientes() {
                       </button>
                     </div>
                   </div>
+
+                  {aiDocs.length > 0 && (
+                    <div className={styles.folder}>
+                      <div className={styles.folderTitle}>
+                        <Folder size={18} className={styles.folderIcon} />
+                        <span className={styles.folderName}>Generados por Asistente IA</span>
+                      </div>
+                      <div className={styles.docList}>
+                        {aiDocs.map((d) => (
+                          <div key={d.id} className={styles.docItem}>
+                            <span className={styles.docIcon}>
+                              <FileText size={20} />
+                            </span>
+                            <div className={styles.docInfo}>
+                              <div className={styles.docName}>{d.name}</div>
+                              <div className={styles.docMeta}>TXT · {d.date}</div>
+                            </div>
+                            <button
+                              type="button"
+                              className={styles.docAction}
+                              aria-label={`Descargar ${d.name}`}
+                              onClick={() => downloadTextDocument(d.name, d.content)}
+                            >
+                              <Download size={18} />
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.deleteAction}
+                              aria-label={`Eliminar ${d.name}`}
+                              onClick={() => removeDocument(d.id)}
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {Object.entries(documents).map(([folder, files]) => (
                     <div key={folder} className={styles.folder}>

@@ -24,6 +24,7 @@ import { AccessProvider } from "../context/AccessContext";
 import { SymptomDiaryProvider } from "../context/SymptomDiaryContext";
 import { ForumProvider } from "../context/ForumContext";
 import { TeachersProvider } from "../context/TeachersContext";
+import { PatientRecordsProvider } from "../context/PatientRecordsContext";
 import { DevSwitcher } from "../components/dashboard/DevSwitcher";
 import { Toaster } from "../components/ui/sonner";
 
@@ -179,11 +180,11 @@ function RootComponent() {
                       <AccessProvider>
                         <SymptomDiaryProvider>
                           <ForumProvider>
-<TeachersProvider>
+<TeachersProvider><PatientRecordsProvider>
                             <Outlet />
                             <DevSwitcher />
                             <Toaster position="top-right" richColors />
-                          </TeachersProvider>
+                          </PatientRecordsProvider></TeachersProvider>
 </ForumProvider>
                         </SymptomDiaryProvider>
                       </AccessProvider>
