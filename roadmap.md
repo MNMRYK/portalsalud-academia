@@ -11,3 +11,4 @@
 - [x] Contenido real por curso (vídeos, PDFs, textos, directos) editable desde admin.
 - [x] Vista Profesores (CRUD + perfil) en el menú del administrador.
 - [x] Bloqueos de agenda: días completos (vacaciones) y franjas por horas en Calendario.
+- [x] Asistente IA: guardar respuestas en ficha (Documentos, Plan de Trabajo, Datos y Evolución).
