@@ -12,3 +12,8 @@
 - [x] Vista Profesores (CRUD + perfil) en el menú del administrador.
 - [x] Bloqueos de agenda: días completos (vacaciones) y franjas por horas en Calendario.
 - [x] Asistente IA: guardar respuestas en ficha (Documentos, Plan de Trabajo, Datos y Evolución).
+
+- [x] Facturación fase 1: facturas manuales (Bizum, efectivo, transferencia), sin guardar
+- [ ] Facturación fase 2: datos fiscales y varios emisores
+- [ ] Facturación fase 3: justificante en gastos
+- [ ] Facturación fase 4: resumen trimestral de impuestos

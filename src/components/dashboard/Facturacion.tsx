@@ -60,7 +60,15 @@ interface Transaction {
   serie?: string;
   /** Id de la factura original rectificada. */
   rectifies?: string;
+  /** Forma de pago. Las transacciones sin valor proceden de Stripe (tarjeta). */
+  metodo?: MetodoPago;
+  /** Factura emitida manualmente desde el panel. */
+  manual?: boolean;
 }
+
+type MetodoPago = "Tarjeta (Stripe)" | "Bizum" | "Efectivo" | "Transferencia";
+const MANUAL_METHODS: Exclude<MetodoPago, "Tarjeta (Stripe)">[] = ["Bizum", "Efectivo", "Transferencia"];
+const MANUAL_TIPOS: Tipo[] = ["Consulta", "Seguimiento", "Suscripción clínica", "Suscripción academia", "Curso", "Recurso"];
 
 type ExpenseCategory =
   | "Alquiler"
@@ -106,8 +114,20 @@ function fmtDate(isoDate: string) {
   return `${String(d).padStart(2, "0")} ${MONTHS[m - 1]} ${y}`;
 }
 
-function fmtMoney(n: number) {
-  return `${n.toFixed(2).replace(".", ",")} €`;
+/** Formato español: 1.234,56 € (agrupa miles también en importes de 4 cifras). */
+export function fmtMoney(n: number) {
+  const [int, dec] = Math.abs(n).toFixed(2).split(".");
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${n < 0 ? "-" : ""}${grouped},${dec} €`;
+}
+
+/** Siguiente número de la serie de facturas manuales: M-AAAA-0001. */
+export function nextManualNumber(existing: string[], year: number) {
+  const prefix = `M-${year}-`;
+  const max = existing
+    .filter((n) => n.startsWith(prefix))
+    .reduce((m, n) => Math.max(m, Number(n.slice(prefix.length)) || 0), 0);
+  return `${prefix}${String(max + 1).padStart(4, "0")}`;
 }
 
 function initialsOf(name: string) {
@@ -164,6 +184,7 @@ function buildInvoicePdf(tx: Transaction, invoiceNumber: string): Blob {
     `TOTAL: ${tx.amount.toFixed(2)} EUR`,
     "----------------------------------------------",
     "",
+    `Forma de pago: ${tx.metodo ?? "Tarjeta (Stripe)"}`,
     `Estado del pago: ${tx.estado}`,
     "",
     "Documento generado automaticamente por el modulo",
@@ -252,6 +273,21 @@ export function Facturacion() {
   const [rectifyTarget, setRectifyTarget] = useState<Transaction | null>(null);
   const [rectifyReason, setRectifyReason] = useState("");
   const [expenseOpen, setExpenseOpen] = useState(false);
+  /** Facturas emitidas manualmente (Bizum, efectivo, transferencia). */
+  const [manualInvoices, setManualInvoices] = useState<Transaction[]>([]);
+  const [manualOpen, setManualOpen] = useState(false);
+  const emptyManual = {
+    client: "",
+    email: "",
+    origen: "Clínica" as Origen,
+    tipo: "Consulta" as Tipo,
+    concept: "",
+    date: "2026-07-15",
+    amount: "",
+    metodo: "Bizum" as Exclude<MetodoPago, "Tarjeta (Stripe)">,
+    estado: "Pagado" as "Pagado" | "Pendiente",
+  };
+  const [manualForm, setManualForm] = useState(emptyManual);
   const [expenseForm, setExpenseForm] = useState({
     concept: "",
     date: "2026-07-01",
@@ -368,10 +404,10 @@ export function Facturacion() {
 
   const transactions = useMemo<Transaction[]>(
     () =>
-      [...baseTransactions.map((t) => ({ ...t, estado: statusOverrides[t.id] ?? t.estado })), ...credits].sort(
+      [...baseTransactions.map((t) => ({ ...t, estado: statusOverrides[t.id] ?? t.estado })), ...credits, ...manualInvoices].sort(
         (a, b) => (a.date < b.date ? 1 : -1),
       ),
-    [baseTransactions, statusOverrides, credits],
+    [baseTransactions, statusOverrides, credits, manualInvoices],
   );
 
   const filtered = useMemo(
@@ -613,6 +649,40 @@ export function Facturacion() {
     setExpenseOpen(false);
   };
 
+  const addManualInvoice = () => {
+    const value = Number(manualForm.amount.replace(/\./g, "").replace(",", "."));
+    if (!manualForm.client.trim() || !manualForm.concept.trim() || !Number.isFinite(value) || value <= 0) {
+      toast.error("Indica cliente, concepto y un importe válido");
+      return;
+    }
+    const year = Number(manualForm.date.slice(0, 4));
+    const serie = nextManualNumber(manualInvoices.map((t) => t.serie ?? ""), year);
+    const client = manualForm.client.trim();
+    const tx: Transaction = {
+      id: `tx-man-${Date.now()}`,
+      date: manualForm.date,
+      client,
+      email: manualForm.email.trim() || "—",
+      initials: initialsOf(client),
+      role: "Cliente",
+      origen: manualForm.origen,
+      tipo: manualForm.tipo,
+      concept: manualForm.concept.trim(),
+      amount: value,
+      vat: vatFor(manualForm.tipo),
+      estado: manualForm.estado,
+      serie,
+      metodo: manualForm.metodo,
+      manual: true,
+    };
+    setManualInvoices((prev) => [tx, ...prev]);
+    toast.success(`Factura ${serie} emitida`, {
+      description: `${client} · ${fmtMoney(value)} · ${manualForm.metodo}`,
+    });
+    setManualForm(emptyManual);
+    setManualOpen(false);
+  };
+
   const resetFilters = () => {
     setQuery("");
     setEstado("todos");
@@ -792,6 +862,10 @@ export function Facturacion() {
                   <option value="T3">T3 2026 (jul–sep)</option>
                   <option value="T4">T4 2026 (oct–dic)</option>
                 </select>
+                <button type="button" className={s.btnGhost} onClick={() => setManualOpen(true)}>
+                  <Plus size={16} />
+                  Nueva factura manual
+                </button>
                 <button type="button" className={s.btnPrimary} onClick={exportQuarter}>
                   <FileSpreadsheet size={16} />
                   Exportar trimestre a CSV
@@ -898,7 +972,7 @@ export function Facturacion() {
                       <td>
                         <span className={s.concept}>{t.concept}</span>
                         <span className={s.conceptType}>
-                          {invoiceNumberOf(t)} · IVA {t.vat > 0 ? `${t.vat}%` : "exento"}
+                          {invoiceNumberOf(t)} · IVA {t.vat > 0 ? `${t.vat}%` : "exento"} · {t.metodo ?? "Tarjeta (Stripe)"}
                         </span>
                       </td>
                       <td className={`${s.amount} ${t.amount < 0 ? s.negative : ""}`}>
@@ -1225,6 +1299,10 @@ export function Facturacion() {
               <strong>{detail.concept}</strong>
             </div>
             <div className={s.subRow}>
+              <span>Forma de pago</span>
+              <strong>{detail.metodo ?? "Tarjeta (Stripe)"}{detail.manual ? " · Factura manual" : ""}</strong>
+            </div>
+            <div className={s.subRow}>
               <span>Base imponible</span>
               <strong>{fmtMoney(baseOf(detail))}</strong>
             </div>
@@ -1357,6 +1435,166 @@ export function Facturacion() {
               </button>
               <button type="button" className={s.btnPrimary} onClick={confirmRefund}>
                 Confirmar reembolso
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {manualOpen && (
+        <div className={s.overlay} onClick={() => setManualOpen(false)}>
+          <div className={s.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={s.cardHeader}>
+              <h2 className={s.cardTitle}>
+                <Receipt size={18} /> Nueva factura manual
+              </h2>
+              <button type="button" className={s.iconBtn} onClick={() => setManualOpen(false)} aria-label="Cerrar">
+                <X size={16} />
+              </button>
+            </div>
+            <p className={s.cardSub}>
+              Para cobros fuera de Stripe. Se numera en la serie M-{manualForm.date.slice(0, 4)}.
+            </p>
+            <div className={s.formGrid} style={{ marginTop: 14 }}>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="man-client">
+                  Cliente
+                </label>
+                <input
+                  id="man-client"
+                  className={s.input}
+                  placeholder="Nombre y apellidos"
+                  value={manualForm.client}
+                  onChange={(e) => setManualForm((f) => ({ ...f, client: e.target.value }))}
+                />
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="man-email">
+                  Email (opcional)
+                </label>
+                <input
+                  id="man-email"
+                  className={s.input}
+                  type="email"
+                  value={manualForm.email}
+                  onChange={(e) => setManualForm((f) => ({ ...f, email: e.target.value }))}
+                />
+              </div>
+              <div className={`${s.field} ${s.fieldWide}`}>
+                <label className={s.label} htmlFor="man-concept">
+                  Concepto
+                </label>
+                <input
+                  id="man-concept"
+                  className={s.input}
+                  placeholder="Consulta inicial, bono de 3 sesiones…"
+                  value={manualForm.concept}
+                  onChange={(e) => setManualForm((f) => ({ ...f, concept: e.target.value }))}
+                />
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="man-origen">
+                  Origen
+                </label>
+                <select
+                  id="man-origen"
+                  className={s.input}
+                  value={manualForm.origen}
+                  onChange={(e) => setManualForm((f) => ({ ...f, origen: e.target.value as Origen }))}
+                >
+                  {(["Clínica", "Academia"] as Origen[]).map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="man-tipo">
+                  Tipo
+                </label>
+                <select
+                  id="man-tipo"
+                  className={s.input}
+                  value={manualForm.tipo}
+                  onChange={(e) => setManualForm((f) => ({ ...f, tipo: e.target.value as Tipo }))}
+                >
+                  {MANUAL_TIPOS.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="man-date">
+                  Fecha
+                </label>
+                <input
+                  id="man-date"
+                  className={s.input}
+                  type="date"
+                  value={manualForm.date}
+                  onChange={(e) => setManualForm((f) => ({ ...f, date: e.target.value }))}
+                />
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="man-amount">
+                  Importe total con IVA (€)
+                </label>
+                <input
+                  id="man-amount"
+                  className={s.input}
+                  inputMode="decimal"
+                  placeholder="0,00"
+                  value={manualForm.amount}
+                  onChange={(e) => setManualForm((f) => ({ ...f, amount: e.target.value }))}
+                />
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="man-metodo">
+                  Forma de pago
+                </label>
+                <select
+                  id="man-metodo"
+                  className={s.input}
+                  value={manualForm.metodo}
+                  onChange={(e) => setManualForm((f) => ({ ...f, metodo: e.target.value as typeof f.metodo }))}
+                >
+                  {MANUAL_METHODS.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={s.field}>
+                <label className={s.label} htmlFor="man-estado">
+                  Estado
+                </label>
+                <select
+                  id="man-estado"
+                  className={s.input}
+                  value={manualForm.estado}
+                  onChange={(e) => setManualForm((f) => ({ ...f, estado: e.target.value as typeof f.estado }))}
+                >
+                  {(["Pagado", "Pendiente"] as const).map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <p className={s.cardSub} style={{ marginTop: 10 }}>
+              IVA aplicado: {vatFor(manualForm.tipo) > 0 ? `${vatFor(manualForm.tipo)}%` : "exento (servicio sanitario)"}
+            </p>
+            <div className={s.modalActions}>
+              <button type="button" className={s.btnGhost} onClick={() => setManualOpen(false)}>
+                Cancelar
+              </button>
+              <button type="button" className={s.btnPrimary} onClick={addManualInvoice}>
+                Emitir factura
               </button>
             </div>
           </div>
